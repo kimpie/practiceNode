@@ -1,6 +1,7 @@
 var io = require('socket.io'),
 	connect = require('connect'),
-	chatter = require('chatter');
+	chatter = require('chatter'),
+	express = require('express');
 
 var app = connect().use(connect.static('public')).listen(3000);
 var chat_room = io.listen(app);
