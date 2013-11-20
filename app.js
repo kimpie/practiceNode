@@ -8,7 +8,7 @@ var chatter = require('chatter'),
 
 
 //var app = connect().use(connect.static('public')).listen(3000);
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/public'));
 
 app.use(function(req,res) {
 	if( req.url === "/facebook"){
@@ -28,5 +28,5 @@ chat_room.sockets.on('connection', function (socket) {
 
 });
 
-server.listen(8080);
+server.listen(process.env.PORT || 8080);
 
