@@ -1,6 +1,6 @@
 <html>
 <head>
-<script src="http://localhost:3000/socket.io/socket.io.js"></script>
+<script src="http://www.completethesentence.com/socket.io/socket.io.js"></script>
 <script src="1.7.2.jquery.min.js"></script>
 <script type="text/javascript" charset="utf-8">
 jQuery(document).ready(function () {
@@ -17,20 +17,25 @@ jQuery(document).ready(function () {
 			li.css({'display': 'inline'});
 		}	
 		jQuery('#chat_log').append(li);
-		//alert($("li").text());
 	};
 
-	var display_id = function (name, view) {
+	var display_id = function (name, currentUser) {
 		var name = jQuery('<li />').text(name + "  ");
-		name.css({'display': 'inline'});
+		var myname = jQuery('<li />').text(currentUser + "  ");
+		if (currentUser === 'mine'){
+			name.css({'display': 'inline', 'font-weight': 'bold'});
+		}
+		else {
+			name.css({'display': 'inline'});
+		}
 		jQuery('#display_name').append(name);
 	};
 
 	
-	var socket = io.connect('http://localhost:3000');
+	var socket = io.connect('http://www.completethesentence.com/');
 
 	socket.on('users', function (data){
-		display_id(data.name);
+		display_id(data.name, 'mine');
 	});
 
 	socket.on('entrance', function (data){
@@ -82,11 +87,13 @@ jQuery(document).ready(function () {
 		background-color: blue;
 		height: 100px;
 		border: 1px solid #000;
+		border-radius: 10px;
 		border-bottom: 0px;
 		overflow: auto;
 		width: 100%;
 		padding: 10px;
 		padding-top: 0px;
+		margin-bottom: 10px;
 		position: relative;
 	}
 
