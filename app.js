@@ -1,10 +1,22 @@
-var io = require('socket.io'),
-	connect = require('connect'),
-	chatter = require('chatter'),
-	express = require('express');
+var chatter = require('chatter'),
+	express = require('express'),
+	app = express();
+	http = require('http'),
+	server = http.createServer(app),
+	io = require('socket.io').listen(server);
 
-var app = connect().use(connect.static('public')).listen();
-var chat_room = io.listen(app);
+
+
+//var app = connect().use(connect.static('public')).listen(3000);
+app.use(express.static('public'));
+
+app.use(function(req,res) {
+	if( req.url === "/facebook"){
+		res.send('facebook');
+	}
+});
+
+var chat_room = io;
 
 chatter.set_sockets(chat_room.sockets);
 
@@ -16,4 +28,5 @@ chat_room.sockets.on('connection', function (socket) {
 
 });
 
+server.listen(8080);
 

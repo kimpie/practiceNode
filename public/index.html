@@ -1,7 +1,8 @@
 <html>
 <head>
-<script src="http://www.completethesentence.com/socket.io/socket.io.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 <script src="1.7.2.jquery.min.js"></script>
+<script src="./facebook/js/myscript.js"></script>
 <script type="text/javascript" charset="utf-8">
 jQuery(document).ready(function () {
 	var log_chat_message = function (message, type) {
@@ -32,7 +33,9 @@ jQuery(document).ready(function () {
 	};
 
 	
-	var socket = io.connect('http://www.completethesentence.com/');
+	//var socket = io.connect('http://www.completethesentence.com/');
+	var socket = io.connect('http://localhost');
+
 
 	socket.on('users', function (data){
 		display_id(data.name, 'mine');
@@ -64,17 +67,21 @@ jQuery(document).ready(function () {
 		}
 	});
 });
-/*$("document").ready(function () {
-	var li = jQuery('<li />').text(message);
-	$("li:contains(config.username)").css("text-decoration", "underline");
-
-});*/
+/*<script src="http://www.completethesentence.com/socket.io/socket.io.js"></sc*/
 
 </script>
 <style type="text/css" media="screen">
+	.loggedoff {
+		display: block;
+	}
+
+	.loggedin {
+		display: none;
+	}
+
 	div#chatroom {
 		display: block;
-		height: 300px;
+		height: 100px;
 		border: 1px solid #999;
 		overflow: auto;
 		width: 100%;
@@ -123,6 +130,15 @@ jQuery(document).ready(function () {
 </style>
 </head>
 <body>
+	<div id="fb-root"></div>
+	<div id="content">
+		<div class="loggedoff">
+			<p>Welcome, you're not logged in.  To start please<a href="#" onclick="goLogIn()">Login</a></p>
+		</div>
+		<div class="loggedin">
+			<p>Welcome!  Thanks for visiting our App.</p> 
+		</div>
+	</div><!--content-->
 	<div id="display_name">
 		<h3>Current players:</h3>
 		<ul id="user_list">
