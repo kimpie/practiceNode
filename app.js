@@ -3,9 +3,8 @@ var io = require('socket.io'),
 	chatter = require('chatter'),
 	express = require('express');
 
-var app = connect().use(connect.static('public')).listen(3000);
+var app = connect().use(connect.static('public')).listen();
 var chat_room = io.listen(app);
-
 
 chatter.set_sockets(chat_room.sockets);
 
