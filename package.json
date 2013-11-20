@@ -1,17 +1,30 @@
 {
   "name": "chat_room",
-  "version": "0.0.1",
+  "version": "0.0.1-12",
   "private": true,
   "scripts": {
     "start": "node app.js"
   },
+  "domains": [
+    "completethesentence.com",
+    "www.completethesentence.com"
+  ],
   "dependencies": {
     "socket.io": "*",
-    "connect": "*"
+    "connect": "*",
+    "express": "*"
   },
+  "engines": {
+    "node": "*",
+    "npm": "*"
+  },
+  "bundleDependencies": [
+    "chatter"
+  ],
   "description": "Chat room with socket.io",
   "main": "app.js",
   "devDependencies": {},
   "author": "Kim Pienta",
-  "license": "BSD-2-Clause"
+  "license": "BSD-2-Clause",
+  "subdomain": "sentencegame"
 }
