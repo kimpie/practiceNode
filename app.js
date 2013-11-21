@@ -2,7 +2,7 @@ var chatter = require('chatter'),
 	express = require('express'),
 	app = express();
 	https = require('https'),
-	server = http.createServer(app),
+	server = https.createServer(app),
 	io = require('socket.io').listen(server),
 	fs = require('fs');
 
