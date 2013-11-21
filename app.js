@@ -1,10 +1,15 @@
 var chatter = require('chatter'),
 	express = require('express'),
 	app = express();
-	http = require('http'),
+	https = require('https'),
 	server = http.createServer(app),
-	io = require('socket.io').listen(server);
+	io = require('socket.io').listen(server),
+	fs = require('fs');
 
+var options = {
+	key: fs.readFileSync('key.pem'),
+	cert: fs.readFileSync('cert.pem')
+};
 //var app = connect().use(connect.static('public')).listen(3000);
 //app.use(express.static(__dirname + '/public'));
 
