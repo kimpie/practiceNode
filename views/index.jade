@@ -1,7 +1,16 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+	h1= title
+	p Welcome to #{title}
 
-  
+	#display_name
+		ul#user_list
+			li#user_id
+	#chatroom
+		ul#chat_log
+			li#chat_li
+	input#chat_box(type='text' name='chat_box' value='' placeholder='type to chat...')
+
+block scripts
+	script(src='/js/views/index.js')
