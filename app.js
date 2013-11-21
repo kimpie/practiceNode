@@ -41,5 +41,5 @@ chat_room.sockets.on('connection', function (socket) {
 
 });
 
-server.listen(process.env.PORT || 8080);
+server.listen();
 
