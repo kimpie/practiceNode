@@ -9,7 +9,7 @@ var chatter = require('chatter'),
 //app.use(express.static(__dirname + '/public'));
 
 app.configure(function(){
-	app.set('port', 8080);
+	//app.set('port', 8080);
 	app.set('views', __dirname + '/views');
 	app.set('view engine', 'jade');
 	app.locals.pretty = true;
