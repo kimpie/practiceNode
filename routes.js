@@ -8,4 +8,8 @@ module.exports = function (app) {
 		res.render('facebook', {title: "Facebook app."});
 	});
 
+	app.post('/facebook/*', function(req, res) {
+		res.redirect('facebook');
+	})
+
 };
