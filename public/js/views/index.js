@@ -20,8 +20,8 @@ jQuery(document).ready(function () {
 	};
 
 	
-	var socket = io.connect('http://www.completethesentence.com/');
-	//var socket = io.connect('http://localhost');
+	var socket = io.connect('https://www.completethesentence.com/', {secure: true});
+	//var socket = io.connect('https://localhost', {secure: true});
 
 
 	socket.on('users', function (data){
