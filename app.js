@@ -1,20 +1,24 @@
 var chatter = require('chatter'),
 	express = require('express'),
-	app = express();
-	https = require('https'),
-	server = https.createServer(options, app),
-	io = require('socket.io').listen(server),
+	app = express(),
 	fs = require('fs');
 
 var options = {
 	key: fs.readFileSync('key.pem'),
 	cert: fs.readFileSync('cert.pem')
 };
+
+var	https = require('https'),
+	//http = require('http'),
+	server = https.createServer(options, app),
+	io = require('socket.io').listen(server);
+
+//var server = https.createServer(options, app);
 //var app = connect().use(connect.static('public')).listen(3000);
 //app.use(express.static(__dirname + '/public'));
 
 app.configure(function(){
-	app.set('port', 80);
+	app.set('port', 8080);
 	app.set('views', __dirname + '/views');
 	app.set('view engine', 'jade');
 	app.locals.pretty = true;
