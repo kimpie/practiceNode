@@ -6,5 +6,14 @@ block content
 
 	#fb_root
 
+	#content
+		.loggedoff
+		p Welcome, you're not logged in.  To get started pleas, 
+		a(href="#" #onclick="goLogIn()") Login 
+		
+
+		.loggedin
+		p Welcome, thanks for visiting my app!
+
 block scripts
 	script(src='/js/views/facebook.js')

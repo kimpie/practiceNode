@@ -3,14 +3,14 @@ var chatter = require('chatter'),
 	app = express(),
 	fs = require('fs');
 
-var options = {
+/*var options = {
 	key: fs.readFileSync('key.pem'),
 	cert: fs.readFileSync('cert.pem')
 };
-
-var	https = require('https'),
+*/
+var	http = require('http'),
 	//http = require('http'),
-	server = https.createServer(options, app),
+	server = http.createServer(app),
 	io = require('socket.io').listen(server);
 
 //var server = https.createServer(options, app);

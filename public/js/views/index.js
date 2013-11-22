@@ -20,7 +20,7 @@ jQuery(document).ready(function () {
 	};
 
 	
-	var socket = io.connect('https://completethesentence.com/', {secure: true});
+	var socket = io.connect('http://completethesentence.com/');
 	//var socket = io.connect('https://localhost', {secure: true});
 
 
