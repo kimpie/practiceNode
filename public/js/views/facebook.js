@@ -79,6 +79,8 @@ jQuery(document).ready(function () {
     jQuery('#display_name').append(name);
   };
 
+  jQuery('.loggedoff').click(goLogIn);
+
   
   var socket = io.connect('http://completethesentence.com/');
   //var socket = io.connect('http://localhost');
