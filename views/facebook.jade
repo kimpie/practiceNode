@@ -1,5 +1,9 @@
 extends layout
 
+block head
+<meta property="og:title" content="Facebook App"/>
+<meta property="og:url" content="http://www.completethesentence.com/facebook/"/>
+
 block content
 	h1= title
 	p Welcome to my #{title}
@@ -8,12 +12,20 @@ block content
 
 	#content
 		.loggedoff
-		p Welcome, you're not logged in.  To get started pleas, 
-		a(href="#" #onclick="goLogIn()") Login 
-		
+			p Welcome, you're not logged in.  To get started please 
+			a(href="#" #onclick="#goLogIn()") Login		
 
-		.loggedin
+	.loggedin
 		p Welcome, thanks for visiting my app!
+
+		#display_name
+			ul#user_list
+				li#user_id
+		#chatroom
+			ul#chat_log
+				li#chat_li
+		#inputbox
+			input#chat_box(type='text' name='chat_box' value='' placeholder='type to chat...')
 
 block scripts
 	script(src='/js/views/facebook.js')

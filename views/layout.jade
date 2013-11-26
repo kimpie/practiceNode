@@ -1,11 +1,13 @@
 doctype 5
 html
-  head
-    title= title
-    link(rel='stylesheet', href='stylesheets/style.css')
-    script(src='/socket.io/socket.io.js')
-    script(src='js/1.7.2.jquery.min.js')
-    script(type='text/javascript' charset='utf-8')
-  body
-    block content
-    block scripts
+	head
+		title= title
+		link(rel='stylesheet', href='stylesheets/style.css')
+		script(src='/socket.io/socket.io.js')
+		script(src='js/1.7.2.jquery.min.js')
+		script(type='text/javascript' charset='utf-8')
+		block head
+
+	body
+	block content
+	block scripts

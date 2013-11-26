@@ -1,3 +1,13 @@
+/* Large desktop */
+@media (min-width: 980px) {
+
+}
+
+/* Landscape phones and down */
+@media (max-width: 480px) {
+
+}
+
 .loggedoff {
 	display: block;
 }
@@ -18,7 +28,6 @@ div#chatroom {
 }
 
 div#display_name {
-	display: block;
 	background-color: #FFFF33;
 	height: 50px;
 	border: 1px solid #000;
@@ -53,4 +62,9 @@ li#chat_li {
 
 input#chat_box {
 	width: 99%;
-	}
+}
+
+div#inputbox {
+	width: 99%;
+	height: 30%;
+}
