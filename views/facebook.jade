@@ -9,16 +9,14 @@ block content
 	p Welcome to my #{title}
 
 	#fb_root
-	fb:login-button(show-faces="true" width="200" max-rows="1")
 	
 	#content
 		.loggedoff
-			p Welcome, you're not logged in.  To get started please 
-			a(href="#" #onclick="#goLogIn()") Login		
-
+			p Please login to get started.
+			fb:login-button(show-faces="true" width="200" max-rows="1")
 		.loggedin
-			p Welcome, thanks for visiting my app!
-
+			#social
+				p Invite Friends!
 			#display_name
 				ul#user_list
 					li#user_id
