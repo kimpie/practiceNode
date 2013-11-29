@@ -1,6 +1,6 @@
 {
   "name": "chat_room",
-  "version": "0.0.1-76",
+  "version": "0.0.1-115",
   "private": true,
   "scripts": {
     "start": "node app.js"
@@ -12,7 +12,7 @@
   "dependencies": {
     "socket.io": "0.9.16",
     "connect": "2.11.0",
-    "express": "3.4.4",
+    "express": "3.4.5",
     "stylus": "0.40.3",
     "jade": "0.35.0"
   },

@@ -6,7 +6,11 @@ block head
 
 block content
 	h1= title
-	p Welcome to #{title}
+	p Welcome to the #{title}.
+
+	#description
+		p Here we'll describe the app and let you know how to get started.  
+		p For now check out this | a(href='/facebook') page
 
 	#display_name
 		ul#user_list

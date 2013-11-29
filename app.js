@@ -1,21 +1,13 @@
 var chatter = require('chatter'),
         express = require('express'),
         app = express(),
+        connect = require('connect'),
         fs = require('fs');
-
-/*var options = {
-        key: fs.readFileSync('key.pem'),
-        cert: fs.readFileSync('cert.pem')
-};*/
 
 var http = require('http'),
         //http = require('http'),
         server = http.createServer(app),
         io = require('socket.io').listen(server);
-
-//var server = https.createServer(options, app);
-//var app = connect().use(connect.static('public')).listen(3000);
-//app.use(express.static(__dirname + '/public'));
 
 app.configure(function(){
         app.set('port', 8080);
@@ -26,7 +18,7 @@ app.configure(function(){
 //        app.use(express.logger('dev'));
         app.use(express.bodyParser());
         app.use(express.cookieParser());
-        app.use(express.session({ secret: 'super-duper-secret-secret' }));
+        app.use(express.session({ key: 'express.sid', secret: 'secret'}));
         app.use(express.methodOverride());
         app.use(require('stylus').middleware({ src: __dirname + '/public' }));
         app.use(express.static(__dirname + '/public'));
@@ -47,7 +39,6 @@ chat_room.sockets.on('connection', function (socket) {
                 socket: socket,
                 username: socket.id
         });
-
 });
 
 server.listen();
