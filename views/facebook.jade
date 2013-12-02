@@ -17,14 +17,8 @@ block content
 		.loggedin
 			#social
 				p Invite Friends!
-			#display_name
-				ul#user_list
-					li#user_id
-			#chatroom
-				ul#chat_log
-					li#chat_li
-			#inputbox
-				input#chat_box(type='text' name='chat_box' value='' placeholder='type to chat...')
-
+			#console
+				a(href='/game')Start Game
+			
 block scripts
 	script(src='/js/views/facebook.js')

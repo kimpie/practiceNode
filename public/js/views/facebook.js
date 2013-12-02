@@ -78,6 +78,16 @@ function requestDialog() {
     });
 };
 
+//function newGame () {
+    //enter info here to start rooms/authorization
+
+//};
+
+  jQuery('#social').click(requestDialog);
+
+  //jQuery('#console').click(newGame);
+
+
 
 //End of Facebook Scripts
 
@@ -99,20 +109,13 @@ jQuery(document).ready(function () {
     } 
     jQuery('#chat_log').append(li);
   };
-  //REQUEST DIALOG
-  jQuery('#social').click(requestDialog);
-
-  jQuery('#console').click(newGame);
-
+  
   var display_id = function testAPI() {
     FB.api('/me', function(info) {
       jQuery('#display_name').append(info.first_name);
     });
   };
 
-  function newGame () {
-    //enter info here to start rooms/authorization
-  };
 
   var socket = io.connect('https://completethesentence.com/');
   //var socket = io.connect('http://localhost');

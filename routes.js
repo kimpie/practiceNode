@@ -8,6 +8,10 @@ module.exports = function (app) {
 		res.render('facebook', {title: "Facebook app"});
 	});
 
+	app.get('/game', function(req, res) {
+		res.render('game', {title: "Complete the Sentence Game"});
+	});
+
 	app.post('/facebook/*', function(req, res) {
 		res.redirect('facebook');
 	})
