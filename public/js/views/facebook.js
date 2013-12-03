@@ -78,14 +78,15 @@ function requestDialog() {
     });
 };
 
-//function newGame () {
-    //enter info here to start rooms/authorization
-
-//};
+/*function newGame () {
+    socket.join('room')
+};*/
 
   jQuery('#social').click(requestDialog);
 
-  //jQuery('#console').click(newGame);
+  jQuery('#console').click('/game');
+
+  //jQuery('#start').load(newGame);
 
 
 
@@ -117,9 +118,18 @@ jQuery(document).ready(function () {
   };
 
 
-  var socket = io.connect('https://completethesentence.com/');
-  //var socket = io.connect('http://localhost');
+ // var socket = io.connect('https://completethesentence.com/');
+  var socket = io.connect('http://localhost');
 
+
+
+  socket.on('data', function (data) {
+    console.log(data);
+  });
+
+  socket.on('connect', function (){
+    console.info('successfully established a working and authorized connection');
+  });
 
   socket.on('users', function (data){
     display_id(data.name, 'mine');

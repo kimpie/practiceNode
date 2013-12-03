@@ -1,5 +1,5 @@
 var chatter = require('chatter'),
-        express = require('express'),
+        express = require('express.io'),
         app = express(),
         cookie = require('cookie'),
         connect = require('connect'),
@@ -40,13 +40,16 @@ app.configure('development', function(){
 
 require('./routes')(app);
 
+
+var chat_room = io;
+/*
 // Configure global authorization handling. handshakeData will contain
 // the request data associated with the handshake request sent by
 // the socket.io client. 'accept' is a callback function used to either
 // accept or reject the connection attempt.
 // We will use the session id (attached to a cookie) to authorize the user.
 // in this case, if the handshake contains a valid session id, the user will be authorized.
-io.set('authorization', function (handshakeData, accept) {
+chat_room.set('authorization', function (handshakeData, accept) {
     // check if there's a cookie header
     if (handshakeData.headers.cookie) {
         // if there is, parse the cookie
@@ -67,9 +70,9 @@ io.set('authorization', function (handshakeData, accept) {
     } 
     // accept the incoming connection
     accept(null, true);
-}); //end of authorization
+}); //end of authorization*/
 
-var chat_room = io;
+
 
 chatter.set_sockets(chat_room.sockets);
 
@@ -80,4 +83,4 @@ chat_room.sockets.on('connection', function (socket) {
         });
 });
 
-server.listen();
+server.listen(8080);

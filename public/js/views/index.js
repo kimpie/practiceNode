@@ -12,6 +12,7 @@ jQuery(document).ready(function () {
 			li.css({'display': 'inline'});
 		}	
 		jQuery('#chat_log').append(li);
+		jQuery('.button').click('/facebook');
 	};
 
 	var display_id = function (name, currentUser) {
@@ -20,8 +21,8 @@ jQuery(document).ready(function () {
 	};
 
 	
-	var socket = io.connect('https://completethesentence.com/');
-	//var socket = io.connect('http://localhost:8080/');
+	//var socket = io.connect('https://completethesentence.com/');
+	var socket = io.connect('http://localhost:8080/');
 
 
 	socket.on('users', function (data){

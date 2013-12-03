@@ -1,6 +1,6 @@
 {
   "name": "chat_room",
-  "version": "0.0.1-122",
+  "version": "0.0.1-135",
   "private": true,
   "scripts": {
     "start": "node app.js"
@@ -14,7 +14,11 @@
     "connect": "2.11.0",
     "express": "3.4.5",
     "stylus": "0.40.3",
-    "jade": "0.35.0"
+    "jade": "0.35.0",
+    "mongoose": "~3.8.1",
+    "connect-mongo": "~0.4.0",
+    "cookie": "~0.1.0",
+    "express.io": "~1.1.13"
   },
   "engines": {
     "node": "0.10.x",

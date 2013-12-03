@@ -4,6 +4,9 @@
 .loggedin {
   display: none;
 }
+.button {
+  color: #00f;
+}
 div#chatroom {
   display: block;
   height: 200px;
