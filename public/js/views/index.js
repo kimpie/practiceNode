@@ -21,8 +21,8 @@ jQuery(document).ready(function () {
 	};
 
 	
-	//var socket = io.connect('https://completethesentence.com/');
-	var socket = io.connect('http://localhost:8080/');
+	var socket = io.connect('https://completethesentence.com/');
+	//var socket = io.connect('http://localhost:8080/');
 
 
 	socket.on('users', function (data){
