@@ -2,7 +2,7 @@ var AppRouter = Backbone.Router.extend({
 	routes: {
 		"": "games",
 		"inGame/new": "gameButton",
-		"inGame/:game": "gameDetails"
+		"inGame/:game": "gameDetails",
 	},
 
 	initialize: function () {
@@ -13,6 +13,7 @@ var AppRouter = Backbone.Router.extend({
 		this.inGameView = new inGameDetails({model: this.inGameModel});
 
 		this.listGamesView = new listGames({collection: this.ActiveGames});
+		this.NewGameBtn = new newGameButton({model: new gameModel()});
 
 	},
 
@@ -21,14 +22,17 @@ var AppRouter = Backbone.Router.extend({
 	},
 
 	gameDetails: function (game) {
-		this.inGameView.model = this.ActiveGames.get(game);
+		this.inGameModel.set('id', game);
+		this.inGameModel.fetch();
+//		this.inGameView.model = this.ActiveGames.get(game);
 		$('#app').html(this.inGameView.render().el);
 	},
 
 	gameButton: function () {
-		$('#app').html('New game button');
+		$('#app').html(this.NewGameBtn.render().el);
 	}
 });
+
 
 var app = new AppRouter();
 

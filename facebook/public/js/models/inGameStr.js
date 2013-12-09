@@ -5,4 +5,5 @@ var gameModel = Backbone.Model.extend({
 		title: 'Game with ',
 		name: ''
 	}
+
 });

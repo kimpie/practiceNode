@@ -1,5 +1,5 @@
-//chatter = require('chatter'),
-var     express = require('express'),
+var chatter = require('chatter'),
+        express = require('express'),
         app = express(),
         //fs = require('fs'),
         inGame = require('./data/inGame');
@@ -7,7 +7,7 @@ var     express = require('express'),
 
 var http = require('http'),
         server = http.createServer(app);
-       // io = require('socket.io').listen(server);
+        io = require('socket.io').listen(server);
 
 app.configure(function(){
         //app.set('port', 8080);
@@ -64,6 +64,17 @@ app.get('/inGame/:game_name', function  (req, res) {
 
 });
 
+var chat_room = io;
+
+chatter.set_sockets(chat_room.sockets);
+
+chat_room.sockets.on('connection', function (socket) {
+        chatter.connect_chatter({
+                socket: socket,
+                username: socket.id
+        });
+});
+
 app.delete('/inGame/:game_name', function  (req, res) {
 
   var found = false;
@@ -86,14 +97,7 @@ app.delete('/inGame/:game_name', function  (req, res) {
 app.get('/*', function  (req, res) {
   res.json(404, {status: 'not found'});
 });
-/*
-chatter.set_sockets(chat_room.sockets);
 
-chat_room.sockets.on('connection', function (socket) {
-        chatter.connect_chatter({
-                socket: socket,
-                username: socket.id
-        });
+server.listen(8080, function (){
+  console.log('Server listening on port 8080');
 });
-*/
-server.listen(8080);
