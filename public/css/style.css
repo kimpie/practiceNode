@@ -8,6 +8,14 @@
 
 }
 
+div#not_joined {
+	display: block;
+}
+
+div#joined {
+	display: none;
+}
+
 .loggedoff {
 	display: block;
 }
@@ -33,7 +41,6 @@ div#display_name {
 	border: 1px solid #000;
 	border-radius: 10px;
 	border-bottom: 0px;
-	overflow: auto;
 	width: 100%;
 	padding-top: 0px;
 	margin-bottom: 10px;

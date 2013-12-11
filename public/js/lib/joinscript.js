@@ -1,0 +1,20 @@
+jQuery(document).ready(function () {
+	var check_status = function (status){
+		if (status === 'joined'){
+			$('#not_joined').css({'display': 'none'});
+			$('#joined').css({'display': 'block'});
+		}
+		else {
+			$('#not_joined').css({'display': 'block'});
+			$('#joined').css({'display': 'none'});
+		}
+	};
+
+	socket = io.connect('https://completethesentence.com/');
+
+	socket.on('join', function (data) {
+		check_status(data.status);
+	});
+
+
+});
