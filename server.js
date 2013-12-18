@@ -1,18 +1,21 @@
 var chatter = require('chatter'),
         express = require('express'),
         app = module.exports = express(),
-        mongoose = require('mongoose'),
-        MongoStore = require('connect-mongo')(express),
-        inGame = require('./data/inGame');
+        //app = express(),
+        //db = require('./mongoose'),
+        MongoStore = require('connect-mongo')(express);
         //beforeGame = require('./data/beforeGame.json');
-
-mongoose.connect('mongodb://nodejitsu_kapienta:u62qdrfun7e30jeq9m1onp3qq8@ds045978.mongolab.com:45978/nodejitsu_kapienta_nodejitsudb4870797025');
+        inGame = require('./data/inGame');
+var mongoose = require('mongoose');
+var uri = 'mongodb://nodejitsu_kapienta:u62qdrfun7e30jeq9m1onp3qq8@ds045978.mongolab.com:45978/nodejitsu_kapienta_nodejitsudb4870797025';
+global.db = mongoose.createConnection(uri);
 
 var http = require('http'),
         server = http.createServer(app);
         io = require('socket.io').listen(server);
 
 app.configure(function(){
+        app.set('view engine', 'handlebars');
         app.use(express.bodyParser());
         app.use(express.cookieParser());
         app.use(express.session({ 
@@ -30,7 +33,13 @@ app.configure('development', function(){
        app.use(express.errorHandler());
 });
 
-var api = require('/controllers/api.js')
+
+var api = require('./controllers/api.js');
+
+app.get('/messages', api.exampleg);
+
+app.post('/messages', api.postMessage);
+
 app.get('/inGame', function  (req, res) {
   res.json(inGame);
 });
@@ -56,6 +65,7 @@ app.get('/inGame/:game_name', function  (req, res) {
   });
 
   if (matches.length > 0) {
+    api.postPlayer;
     res.json(matches[0]);
   } else {
     res.json(404, {status: 'invalid game name'});

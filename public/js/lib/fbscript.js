@@ -69,20 +69,18 @@ window.fbAsyncInit = function() {
 function testAPI() {
   console.log('Welcome!  Fetching your information.... ');
   FB.api('/me', function(info) {
-    if (info.id === Users){
-      console.log('We already have this info');
-    }
-    else {
-      Users.save(function (err, Users){
-        if (err); //
-      });
-    }
+    console.log(info);
+    currentUser = info.id;
+    first_name = info.first_name;
+    last_name = info.last_name;
+//    location = info.location.name;
+//    gender = info.gender;
   });
 };
 
 function requestDialog() {
   FB.ui({method: 'apprequests',
-     message: 'Play Complete the Sentence game with me! It\'s hilaious!' 
+     message: 'Make up a story with me at Complete the Sentence game!' 
     });
 };
 

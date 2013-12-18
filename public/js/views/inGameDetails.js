@@ -1,18 +1,16 @@
 var inGameDetails = Backbone.View.extend({
 	template: Handlebars.compile(
 		'<div id="not_joined">' +
-		'<div>' +
-		'<button type="button" class="btn btn-primary">Start New Game</button>' +
-		'</div>'+
+		'<div id="social>'+
+		'<h3>To Start a New Game:</h3>' +
+		'<button type="button" class="btn btn-success">Invite Friends</button>'+
+		'</div>' +
 		'</div>' +
 
 		'<div id="joined">'+
-		'<div id="social>'+
-		'<button type="button" class="btn btn-success">Send Invite to Friends</button>'+
-		'</div>' +
 		'<div>' +
-		'<h1>{{msg}} {{name}}</h1>' +
-		'<h2> You\'re in room {{room}}</h2>' +
+		'<h1>Hello {{name}}</h1>' +
+		'<h2> Game with {{Player2}}</h2>' +
 		'</div>'+
 		'<div id="display_name" >' +
 		'<ul id="user_list">'+
@@ -55,12 +53,47 @@ var inGameDetails = Backbone.View.extend({
 		}		
 	},
 
+
+/*need to have a list of curerntGames per user and will need to match this up 
+add this somewhere: 
+var currentGame = (player1 === currentUser && player2 === response.to)
+ the result should be a boolean if true, there is a current game, if false there is now game
+*/
 	requestDialog: function () {
+		this.setCurrentUser();
+
 	  FB.ui({method: 'apprequests',
-	     message: 'Play Complete the Sentence game with me! It\'s hilaious!' 
-	    });
+	     message: 'Make up a story with me at Complete the Sentence game!' 
+	    }, requestCallback);
+	  	
+	  	function requestCallback (response){
+		  	if (response != undefined) {
+		  		socket.emit('join', {status: 'joined'});
+				console.log(response);
+				//game.create
+				/*if (response.to && currentUser !=== currentGame){
+		  			createGame 
+			  	}
+			  	else {
+			  		alert('You\'re currently in a game with this Friend');
+			  	}*/
+		  	}
+		  	else {
+		  		socket.emit('join', {status: 'not_joined'});
+				console.log('No player selected, response is ' + response);
+		  	}
+		};
 	},
 
+	setCurrentUser: function (){
+		this.model.set({
+			fb_id: currentUser,
+			first_name: first_name,
+			last_name: last_name
+//			location: location,
+//			gender: gender
+		});
+	},
 
 	send_chat: function (event) {
 		if (event.which == 32 || event.which == 13) {

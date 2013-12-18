@@ -8,6 +8,15 @@
 
 }
 
+body{
+	padding-top: 50px;
+
+}
+
+.main {
+	text-align: center;
+}
+
 div#not_joined {
 	display: block;
 }
@@ -22,6 +31,10 @@ div#joined {
 
 .loggedin {
 	display: none;
+}
+
+div#msg {
+	border: 1px solid red;
 }
 
 div#chatroom {
