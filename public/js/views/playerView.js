@@ -1,6 +1,7 @@
-var inGameDetails = Backbone.View.extend({
+var playerView = Backbone.View.extend({
 
 	template: Handlebars.compile(
+
 		'<div id="not_joined">' +
 		'<div id="social>'+
 		'<h3>To Start a New Game:</h3>' +
@@ -27,7 +28,6 @@ var inGameDetails = Backbone.View.extend({
 		'<input id="chat_box" type="text" name="chat_box" placeholder="type to chat..."></>' +
 		'</div>' +
 		'</div>'  //div for joined
-
 	),
 
 	initialize: function  () {
@@ -61,8 +61,6 @@ var currentGame = (player1 === currentUser && player2 === response.to)
  the result should be a boolean if true, there is a current game, if false there is now game
 */
 	requestDialog: function () {
-		this.register();
-	
 	  FB.ui({method: 'apprequests',
 	     message: 'Make up a story with me at Complete the Sentence game!' 
 	    }, requestCallback);
@@ -70,7 +68,7 @@ var currentGame = (player1 === currentUser && player2 === response.to)
 	  	function requestCallback (response){
 		  	if (response.to !== undefined) {
 		  		socket.emit('join', {status: 'joined'});
-				console.log("Sent request to " + response.to);
+				console.log("Sent request to " + response);
 				testAPI();
 				//game.create
 				/*if (response.to && currentUser !=== currentGame){
@@ -82,12 +80,10 @@ var currentGame = (player1 === currentUser && player2 === response.to)
 		  	}
 		  	else {
 		  		socket.emit('join', {status: 'not_joined'});
-				console.log('No player selected, response is ' + response);
+				console.log('No player selected, response is ' + response.to);
 		  	}
 		};
-	},
-
-	register: function () {
+	
 		this.setPlayerData();	
 		console.log('We are now saving user data.');
 		this.model.save(this.model.attributes,
@@ -98,6 +94,7 @@ var currentGame = (player1 === currentUser && player2 === response.to)
 		    }
 
 	    });
+	
 	},
 
 	setPlayerData: function (){
@@ -105,9 +102,11 @@ var currentGame = (player1 === currentUser && player2 === response.to)
 			fb_id: currentUser,
 			first_name: first_name,
 			last_name: last_name,
-			url: currentUser
+			url: currentUser,
+			name: name,
 //			location: location,
-//			gender: gender
+			gender: gender,
+			id: null
 		});
 	},
 

@@ -19,4 +19,4 @@ var gameSchema = mongoose.Schema({
  
 });
 
-module.exports = mongoose.model('Game', gameSchema);
+module.exports = db.model('Game', gameSchema);

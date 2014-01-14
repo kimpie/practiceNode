@@ -8,12 +8,16 @@
 
 }
 
-body{
-	padding-top: 50px;
-
+div#fblogin{
+	padding-top: 80px;
+	text-align: center;
 }
 
-.main {
+div#inGame{
+	text-align: left;
+}
+
+div#main {
 	text-align: center;
 }
 
@@ -25,12 +29,15 @@ div#joined {
 	display: none;
 }
 
-.loggedoff {
+#loggedoff {
 	display: block;
+	text-align: center;
 }
 
-.loggedin {
+#loggedin {
 	display: none;
+	text-align: center;
+	padding-top: 50px;
 }
 
 div#msg {

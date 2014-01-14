@@ -1,5 +1,5 @@
 var gameModel = Backbone.Model.extend({
-	urlRoot: '/inGame',
+	urlRoot: '/players',
 	defaults: {
 		msg: 'Welcome',
 		title: 'Game with ',

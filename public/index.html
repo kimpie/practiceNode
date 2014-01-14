@@ -1,6 +1,35 @@
-<html>
+<html lang="en" data-framework="backbonejs">
 <head>
 	<title>Testing App with Backbone</title>
+
+	<link rel="stylesheet" type="text/css" href="css/style.css" />	
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css" />
+</head>
+<body>
+	<div id="fb_root"></div>
+	<div class="container" id="app">
+		<div id="header">
+			<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+				<a class="navbar-brand navbar-center brand" href="/facebook">Complete the Sentence</a>
+				<button type="button" class="btn btn-default btn-lg navbar-right">
+				<span class="glyphicon glyphicon-th"></span>
+				</button>
+			</nav>
+			<div id="fblogin">
+				<fb:login-button show-faces="true" width="200" max-rows="1" id="login"></fb:login-button>
+			</div>
+		</div>
+
+		<div id="main">
+			<section id="userName"></section>
+			<h2>Games</h2>
+			<button type="button" class="btn btn-success" id="btn-success">Invite Friends</button>
+			<ul id="currentGames"></ul>
+			<div id="inPlay"></div>
+
+		</div>
+	</div>
 
 	<script src="/socket.io/socket.io.js"></script>
 
@@ -13,52 +42,13 @@
 	<script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/lib/handlebars-v1.1.2.js"></script>
 
-	<script type="text/javascript" src="js/models/inGameStr.js"></script>
-	<script type="text/javascript" src="js/models/messageModel.js"></script>
-	<script type="text/javascript" src="js/collections/activeGames.js"></script>
-	<script type="text/javascript" src="js/collections/messages.js"></script>		
+	<script type="text/javascript" src="js/models/playerModel.js"></script>
+	<script type="text/javascript" src="js/collections/players.js"></script>
+	<script type="text/javascript" src="js/views/AppView.js"></script>
+	<script type="text/javascript" src="js/views/PlayersView.js"></script>
 	<script type="text/javascript" src="js/views/listGames.js"></script>
-	<script type="text/javascript" src="js/views/gameRules.js"></script>
-	<script type="text/javascript" src="js/views/messageView.js"></script>
-	<script type="text/javascript" src="js/views/inGameDetails.js"></script>
 	<script type="text/javascript" src="js/app.js"></script>
 
-	<link rel="stylesheet" type="text/css" href="css/style.css" />	
-	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
-	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css" />
-</head>
-<body>
-
-	<div class="container">
-		<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-			<a class="navbar-brand" href="#/">Complete the Sentence</a>
-			<button type="button" class="btn btn-default btn-lg navbar-right">
-			<span class="glyphicon glyphicon-th"></span>
-			</button>
-		</nav>
-		<h4><em>Two people, one silly sentence.</em></h4>
-		
-		<ul class="nav nav-pills">
-			<li><a href="#/inGame/how">How to Play</a></li>
-			<li><a href="#">Games</a></li>
-			<li><a href="#/inGame/sussie">sussie</a></li>
-			<li><a href="#/message-item/new">Message</a></li>
-		</ul>
-		<div class="main">
-			<div id="fb_root">
-			</div>
-			<div class="loggedoff">
-				<h2>Welcome!</h2>
-				<h3>To begin, login</h3>
-				<fb:login-button show-faces="true" width="200" max-rows="1"></fb:login-button>
-
-			</div>
-		</div>
-	</div>
-	<div class="loggedin">
-		<div class="container" id="app">
-		</div>
-	</div>
 
 </body>
 </html>

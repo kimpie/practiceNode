@@ -20,8 +20,8 @@ window.fbAsyncInit = function() {
       // login status of the person. In this case, we're handling the situation where they 
       // have logged in to the app.
       testAPI();
-      $(".loggedin").css('display', 'block');
-      $(".loggedoff").css('display', 'none');
+      $("#loggedin").css('display', 'block');
+      $("#loggedoff").css('display', 'none');
     } else if (response.status === 'not_authorized') {
       // In this case, the person is logged into Facebook, but not into the app, so we call
       // FB.login() to prompt them to do so. 
@@ -30,16 +30,16 @@ window.fbAsyncInit = function() {
       // (1) JavaScript created popup windows are blocked by most browsers unless they 
       // result from direct interaction from people using the app (such as a mouse click)
       // (2) it is a bad experience to be continually prompted to login upon page load.
-      $(".loggedin").css('display', 'none');
-      $(".loggedoff").css('display', 'block');
+      $("#loggedin").css('display', 'none');
+      $("#loggedoff").css('display', 'block');
     } else {
       // In this case, the person is not logged into Facebook, so we call the login() 
       // function to prompt them to do so. Note that at this stage there is no indication
       // of whether they are logged into the app. If they aren't then they'll see the Login
       // dialog right after they log in to Facebook. 
       // The same caveats as above apply to the FB.login() call here.
-      $(".loggedin").css('display', 'none');
-      $(".loggedoff").css('display', 'block');
+      $("#loggedin").css('display', 'none');
+      $("#loggedoff").css('display', 'block');
     }
   });
 };  //fbAsyngInit
@@ -73,8 +73,11 @@ function testAPI() {
     currentUser = info.id;
     first_name = info.first_name;
     last_name = info.last_name;
-//    location = info.location.name;
-//    gender = info.gender;
+    name = info.name;
+    city = info.location.name;
+    gender = info.gender;
+    var e = jQuery.Event("click");
+    $("#login").trigger(e);
   });
 };
 

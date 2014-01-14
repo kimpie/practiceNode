@@ -5,7 +5,7 @@ var chatter = require('chatter'),
         //db = require('./mongoose'),
         MongoStore = require('connect-mongo')(express);
         //beforeGame = require('./data/beforeGame.json');
-        inGame = require('./data/inGame');
+       // inGame = require('./data/inGame');
 var mongoose = require('mongoose');
 var uri = 'mongodb://nodejitsu_kapienta:u62qdrfun7e30jeq9m1onp3qq8@ds045978.mongolab.com:45978/nodejitsu_kapienta_nodejitsudb4870797025';
 global.db = mongoose.createConnection(uri);
@@ -36,39 +36,25 @@ app.configure('development', function(){
 
 var api = require('./controllers/api.js');
 
-app.get('/messages', api.exampleg);
+//app.get('/messages', api.exampleg);
 
-app.post('/messages', api.postMessage);
+//app.post('/messages', api.postMessage);
 
-app.get('/inGame', function  (req, res) {
-  res.json(inGame);
-});
+app.get('/players', api.getPlayers);
 
-app.post('/inGame', function  (req, res) {
-  var matches = inGame.filter(function  (game) {
-    return game.url === req.body.url;
+app.post('/players', api.postPlayer);
+app.put('/players/:fb_id', api.updatePlayer);
+
+app.get('/players/:player_name', function  (req, res) {
+  var matches = players.filter(function  (player) {
+    return player.url === req.params.player_name;
   });
 
   if (matches.length > 0) {
-    res.json(409, {status: 'item already exists'});
-  } else {
-    req.body.id = req.body.url;
-    inGame.push(req.body);
-    res.json(req.body);
-  }
-
-});
-
-app.get('/inGame/:game_name', function  (req, res) {
-  var matches = inGame.filter(function  (game) {
-    return game.url === req.params.game_name;
-  });
-
-  if (matches.length > 0) {
-    api.postPlayer;
     res.json(matches[0]);
+    api.getPlayer;
   } else {
-    res.json(404, {status: 'invalid game name'});
+    res.json(404, {status: 'invalid player name'});
   }
 
 });
@@ -96,21 +82,21 @@ io.sockets.on('connection', function (socket) {
 
 
 
-app.delete('/inGame/:game_name', function  (req, res) {
+app.delete('/players/:player_name', function  (req, res) {
 
   var found = false;
 
-  inGame.forEach(function (game, index) {
-    if (game.url === req.params.game_name) {
+  player.forEach(function (player, index) {
+    if (player.url === req.params.player_name) {
       found = index;
     }
   });
 
   if (found) {
-    inGame.splice(found, 1);
+    player.splice(found, 1);
     res.json(200, {status: 'deleted'});
   } else {
-    res.json(404, {status: 'invalid game name'});
+    res.json(404, {status: 'invalid player name'});
   }
 
 });
@@ -119,6 +105,8 @@ app.get('/*', function  (req, res) {
   res.json(404, {status: 'not found'});
 });
 
-server.listen(8080, function (){
-  console.log('Server listening on port 8080');
-});
+server.listen(
+//  8080, function (){
+//  console.log('Server listening on port 8080');
+//}
+);

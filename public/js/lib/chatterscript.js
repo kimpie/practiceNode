@@ -20,7 +20,7 @@ jQuery(document).ready(function () {
 	};
 
 	socket = io.connect('https://completethesentence.com/');
-
+	//socket = io.connect('http://localhost:8080/');
 
 	socket.on('users', function (info){
 		display_id(info.name);

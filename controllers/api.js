@@ -9,6 +9,7 @@ var Player = require('../mongoose_models/player.js');
 var Game = require('../mongoose_models/game.js');
 var Example = require('../mongoose_models/example.js');
 
+//example purposes - can delete postmessage and exampleg when finished
 exports.postMessage = function (req, res) {
   Example.create({
   	name: req.body.name, 
@@ -32,13 +33,31 @@ exports.exampleg = function (req, res){
 
 };
 
+// Player logic - create a new player on login
+
 exports.postPlayer = function (req, res){
-	var currentUser = info.id;
-	Player.create({
-		fb_id: currentUser, 
-		name: name
-	},
-		function(err, player){
+	/*var matches = players.filter(function  (player) {
+    return player.url === req.body.url;
+	  });
+
+	  if (matches.length > 0) {
+	    res.json(409, {status: 'item already exists'});
+	  } else {
+	    req.body.id = req.body.url;
+	    players.push(req.body);
+	    */
+	    Player.create({
+		fb_id: req.body.fb_id, 
+		name: req.body.name,
+		first_name: req.body.first_name,
+		last_name: req.body.last_name,
+		city: req.body.city,
+		gender: req.body.gender,
+		url: req.body.url,
+	    last_login: req.body.last_login
+
+		},
+		function (err, player){
 			if (err){
 				console.log(err);
 				res.status(500).json({status: 'failure'});
@@ -46,22 +65,73 @@ exports.postPlayer = function (req, res){
 				res.json({status: 'success'});
 			}
 		}
-	);
+		);
+	    //res.json(req.body);
+	  //}
+};
+
+exports.updatePlayer = function (req, res){
+	console.log( 'Updating player ' + req.body.fb_id );
+    return app.playerModel.findById( request.params.fb_id, function( err, player ) {
+    	player.fb_id = req.body.fb_id; 
+		player.name = req.body.name;
+		player.first_name = req.body.first_name;
+		player.last_name = req.body.last_name;
+		player.city = req.body.city;
+		player.gender = req.body.gender;
+		player.url = req.body.url;
+	    player.last_login = req.body.last_login;
+        
+        return player.save( function( err ) {
+            if( !err ) {
+                console.log( 'player updated' );
+            } else {
+                console.log( err );
+            }
+            return response.send( player );
+        });
+    });
+};
+//Player logic - find the player once they login
+exports.getPlayers = function (req, res){
+	Player.find(function(err, players){
+    res.send(players);
+  });
+
+};
+
+exports.getPlayer = function (req, res){
+	Player.findOne({fb_id: currentUser}, function(err, players){
+	res.send(players);
+	});
 };
 
 
-exports.game = function (req, res){
+// Game logic - create a new game upon button invite
+/*exports.game = function (req, res){
 	//var randomNumber = function getRandomInt(min, max) {   
 	//		return Math.floor(Math.random() * (max - min + 1) + min);
-	new Game({game: game1, Player1: currentUser, Player2: response.to}).save();
+	Game.create({
+	  	game:  
+	  	msg: req.body.msg, 
+	  	url: req.body.url 
+	}, 
+  	function (err, example) {
+  		if (err) {
+  			console.log(err);
+  			res.status(500).json({status: 'failure'});
+		} else {
+			res.json({status: 'success'});
+		}   	
+    });new Game({game: game1, Player1: currentUser, Player2: response.to}).save();
 };
 
 exports.list = function (req, res){
 	Game.find(function (err, games){
 		res.send(games);
 	});
-}
-
+};
+*/
 
 /*
 exports.play = function (req, res){

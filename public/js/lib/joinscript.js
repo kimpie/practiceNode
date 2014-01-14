@@ -11,6 +11,7 @@ jQuery(document).ready(function () {
 	};
 
 	socket = io.connect('https://completethesentence.com/');
+//	socket = io.connect('http://localhost:8080/');
 
 	socket.on('join', function (data) {
 		check_status(data.status);
