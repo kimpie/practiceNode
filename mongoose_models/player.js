@@ -5,7 +5,7 @@ ObjectId = Schema.ObjectId;
 
 var playerSchema = new Schema ({
 	name: String,
-	fb_id: {type: Number,index: true},
+	fb_id: Number,
 	first_name: String,
 	last_name: String,
 	city: String,
@@ -15,12 +15,12 @@ var playerSchema = new Schema ({
     last_login: String,
 
 	games: [mongoose.Schema({
-	  id: Number,
+	  game_id: Number,
 	  sentence: String,
 	  completed: String,
 	  turn: String,
-	  player1: String,
-	  player2: String
+	  player1: Number,
+	  player2: Number
 	}, { _id: false })]
 });
 

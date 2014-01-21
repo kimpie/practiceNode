@@ -16,24 +16,27 @@
 				<span class="glyphicon glyphicon-th"></span>
 				</button>
 			</nav>
-			<div id="fblogin">
-				<fb:login-button show-faces="true" width="200" max-rows="1" id="login"></fb:login-button>
-			</div>
+		</div>
+		<div id="fblogin">
+			<fb:login-button show-faces="true" width="200" max-rows="1" id="login"></fb:login-button>
 		</div>
 
 		<div id="main">
-			<section id="userName"></section>
+			<section id="userName">
+
+			</section>
 			<h2>Games</h2>
-			<button type="button" class="btn btn-success" id="btn-success">Invite Friends</button>
 			<ul id="currentGames"></ul>
 			<div id="inPlay"></div>
 
 		</div>
 	</div>
 
+
 	<script src="/socket.io/socket.io.js"></script>
 
 	<script type="text/javascript" src="js/lib/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="js/lib/dateFormat.js"></script>
 	<script type="text/javascript" src="js/lib/fbscript.js"></script>
 	<script type="text/javascript" src="js/lib/joinscript.js"></script>
 	<script type="text/javascript" src="js/lib/chatterscript.js"></script>
@@ -47,6 +50,7 @@
 	<script type="text/javascript" src="js/views/AppView.js"></script>
 	<script type="text/javascript" src="js/views/PlayersView.js"></script>
 	<script type="text/javascript" src="js/views/listGames.js"></script>
+	<script type="text/javascript" src="js/routers/router.js"></script>	
 	<script type="text/javascript" src="js/app.js"></script>
 
 

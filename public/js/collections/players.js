@@ -3,8 +3,8 @@ var app = app || {};
 (function () {
         'use strict';
 
-	var Players = Backbone.Collection.extend({
-		comparator: 'fb_id',
+	app.Players = Backbone.Collection.extend({
+		//comparator: 'id',
 		model: app.playerModel,
 		url: '/players',
 
@@ -24,5 +24,5 @@ var app = app || {};
 	    }
 	});
 
-  app.players = new Players();
+ // app.players = new Players();
 })();

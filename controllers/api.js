@@ -32,6 +32,14 @@ exports.exampleg = function (req, res){
   });
 
 };
+//Player logic - find all players
+exports.getPlayers = function (req, res){
+	Player.find(function(err, players){
+    res.send(players);
+  });
+
+};
+
 
 // Player logic - create a new player on login
 
@@ -43,36 +51,36 @@ exports.postPlayer = function (req, res){
 	  if (matches.length > 0) {
 	    res.json(409, {status: 'item already exists'});
 	  } else {
-	    req.body.id = req.body.url;
-	    players.push(req.body);
+	   // req.body.id = req.body.url;
+	    //players.push(req.body);
 	    */
-	    Player.create({
-		fb_id: req.body.fb_id, 
-		name: req.body.name,
-		first_name: req.body.first_name,
-		last_name: req.body.last_name,
-		city: req.body.city,
-		gender: req.body.gender,
-		url: req.body.url,
-	    last_login: req.body.last_login
-
-		},
-		function (err, player){
+	    var player = new Player({
+			fb_id: req.body.fb_id, 
+			name: req.body.name,
+			first_name: req.body.first_name,
+			last_name: req.body.last_name,
+			city: req.body.city,
+			gender: req.body.gender,
+			url: req.body.url,
+		    last_login: req.body.last_login
+		});
+		player.save( function (err){
 			if (err){
 				console.log(err);
-				res.status(500).json({status: 'failure'});
+				//res.status(500).json({status: 'failure'});
 			} else {
-				res.json({status: 'success'});
+				console.log('created');
 			}
-		}
-		);
+		});
+		return res.send(player);
 	    //res.json(req.body);
 	  //}
+	 	
 };
 
 exports.updatePlayer = function (req, res){
-	console.log( 'Updating player ' + req.body.fb_id );
-    return app.playerModel.findById( request.params.fb_id, function( err, player ) {
+	console.log( 'Updating player ' + req.body.id );
+    return Player.findById( req.params.id, function( err, player ) {
     	player.fb_id = req.body.fb_id; 
 		player.name = req.body.name;
 		player.first_name = req.body.first_name;
@@ -81,29 +89,31 @@ exports.updatePlayer = function (req, res){
 		player.gender = req.body.gender;
 		player.url = req.body.url;
 	    player.last_login = req.body.last_login;
+	    //player.games.game_id = req.body.game_id;
+	    //player.games.player1 = req.body.player1;
+	    //player.games.player2 = req.body.player2;
         
-        return player.save( function( err ) {
-            if( !err ) {
-                console.log( 'player updated' );
-            } else {
-                console.log( err );
-            }
-            return response.send( player );
-        });
+	    return player.save( function( err ) {
+	        if( !err ) {
+	            console.log( 'player updated' );
+	        } else {
+	            console.log( err );
+	        }
+	    	return res.send( player );
+	    });
     });
 };
+
 //Player logic - find the player once they login
-exports.getPlayers = function (req, res){
-	Player.find(function(err, players){
-    res.send(players);
-  });
-
-};
-
 exports.getPlayer = function (req, res){
-	Player.findOne({fb_id: currentUser}, function(err, players){
-	res.send(players);
-	});
+	return Player.findById( req.params.id, function( err, player) {
+        if( !err ) {
+            return res.send( player );
+        } else {
+            return console.log( err );
+        }
+    });
+   
 };
 
 

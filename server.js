@@ -39,25 +39,27 @@ var api = require('./controllers/api.js');
 //app.get('/messages', api.exampleg);
 
 //app.post('/messages', api.postMessage);
-
+app.get('/', function (req, res){
+  res.render(index.html);
+})
 app.get('/players', api.getPlayers);
-
+app.get( '/players/:id', api.getPlayer);
 app.post('/players', api.postPlayer);
-app.put('/players/:fb_id', api.updatePlayer);
+app.put('/players/:id', api.updatePlayer);
 
-app.get('/players/:player_name', function  (req, res) {
+/*app.get('/players/:fb_id', function  (req, res) {
   var matches = players.filter(function  (player) {
-    return player.url === req.params.player_name;
+    return player.url === req.params.fb_id;
   });
 
   if (matches.length > 0) {
     res.json(matches[0]);
     api.getPlayer;
   } else {
-    res.json(404, {status: 'invalid player name'});
+    res.json(404, {status: 'invalid player'});
   }
 
-});
+});*/
 
 io.sockets.on('connection', function (socket) {
   socket.on('join', function (data){
@@ -82,7 +84,7 @@ io.sockets.on('connection', function (socket) {
 
 
 
-app.delete('/players/:player_name', function  (req, res) {
+/*app.delete('/players/:player_name', function  (req, res) {
 
   var found = false;
 
@@ -99,14 +101,14 @@ app.delete('/players/:player_name', function  (req, res) {
     res.json(404, {status: 'invalid player name'});
   }
 
-});
+});*/
 
 app.get('/*', function  (req, res) {
   res.json(404, {status: 'not found'});
 });
 
 server.listen(
-//  8080, function (){
-//  console.log('Server listening on port 8080');
-//}
+  8080, function (){
+  console.log('Server listening on port 8080');
+}
 );

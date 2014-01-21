@@ -1,23 +1,15 @@
-/* Large desktop */
-@media (min-width: 980px) {
-
-}
-
-/* Landscape phones and down */
-@media (max-width: 480px) {
-
-}
 
 div#fblogin{
 	padding-top: 80px;
 	text-align: center;
 }
 
-div#inGame{
+div#inGame {
 	text-align: left;
 }
 
 div#main {
+	padding-top: 90px;
 	text-align: center;
 }
 
@@ -29,15 +21,14 @@ div#joined {
 	display: none;
 }
 
-#loggedoff {
+.loggedoff {
 	display: block;
 	text-align: center;
 }
 
-#loggedin {
+.loggedin {
 	display: none;
 	text-align: center;
-	padding-top: 50px;
 }
 
 div#msg {
@@ -67,16 +58,16 @@ div#display_name {
 	position: relative;
 }
 
-ul#user_list {
+div#user_list {
 	display: inline;
 	list-style: none;
 }
 
-li#user_id {
+div#user_id {
 	display: inline;
 }
 
-ul#chat_log {
+div#chat_log {
 	list-style: none;
 	position: absolute;
 	bottom: 0px;
