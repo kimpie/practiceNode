@@ -1,38 +1,9 @@
-//export methods:
-// post:  create a new player
-// game: create a new game
-// play: Show the new game
-// list: return the list of games
-  // Create your schemas and models here.
-
 var Player = require('../mongoose_models/player.js');
 var Game = require('../mongoose_models/game.js');
-var Example = require('../mongoose_models/example.js');
 
-//example purposes - can delete postmessage and exampleg when finished
-exports.postMessage = function (req, res) {
-  Example.create({
-  	name: req.body.name, 
-  	msg: req.body.msg, 
-  	url: req.body.url 
-  }, 
-  	function (err, example) {
-  		if (err) {
-  			console.log(err);
-  			res.status(500).json({status: 'failure'});
-		} else {
-			res.json({status: 'success'});
-		}   	
-    });
-};
 
-exports.exampleg = function (req, res){
-	Example.find(function(err, examples){
-    res.send(examples);
-  });
-
-};
-//Player logic - find all players
+//------------------------------------------Player logic------------------------------------ 
+//Find all players
 exports.getPlayers = function (req, res){
 	Player.find(function(err, players){
     res.send(players);
@@ -40,20 +11,21 @@ exports.getPlayers = function (req, res){
 
 };
 
+//Find a player on login
+exports.getPlayer = function (req, res){
+	return Player.findById( req.params.id, function( err, player) {
+        if( !err ) {
+            return res.send( player );
+        } else {
+            return console.log( err );
+        }
+    });
+   
+};
 
-// Player logic - create a new player on login
+// Create a new player on login
 
 exports.postPlayer = function (req, res){
-	/*var matches = players.filter(function  (player) {
-    return player.url === req.body.url;
-	  });
-
-	  if (matches.length > 0) {
-	    res.json(409, {status: 'item already exists'});
-	  } else {
-	   // req.body.id = req.body.url;
-	    //players.push(req.body);
-	    */
 	    var player = new Player({
 			fb_id: req.body.fb_id, 
 			name: req.body.name,
@@ -65,18 +37,26 @@ exports.postPlayer = function (req, res){
 		    last_login: req.body.last_login
 		});
 		player.save( function (err){
-			if (err){
-				console.log(err);
-				//res.status(500).json({status: 'failure'});
-			} else {
-				console.log('created');
-			}
+			if (err) return handleError (err);
+			
+			/*var game1 = new Game({
+				game_id : req.body.game_id;
+				player1: player._id
+				player2: req.body.player2;
+			});
+
+			game1.save(function (err){
+				if (err) handleError (err);
+			});*/
+
 		});
 		return res.send(player);
 	    //res.json(req.body);
 	  //}
 	 	
 };
+
+// Update player when new data comes in
 
 exports.updatePlayer = function (req, res){
 	console.log( 'Updating player ' + req.body.id );
@@ -89,26 +69,38 @@ exports.updatePlayer = function (req, res){
 		player.gender = req.body.gender;
 		player.url = req.body.url;
 	    player.last_login = req.body.last_login;
-	    //player.games.game_id = req.body.game_id;
-	    //player.games.player1 = req.body.player1;
-	    //player.games.player2 = req.body.player2;
-        
+        player.games = req.body.games;
+
 	    return player.save( function( err ) {
 	        if( !err ) {
 	            console.log( 'player updated' );
 	        } else {
 	            console.log( err );
 	        }
+	        Player.populate(player, {path: 'games'}, function (err, player) {
+	        	console.log(player.games);
+	        })
+	        
 	    	return res.send( player );
 	    });
     });
 };
 
-//Player logic - find the player once they login
-exports.getPlayer = function (req, res){
-	return Player.findById( req.params.id, function( err, player) {
+
+//---------------------------------------------Game logic------------------------------- 
+// Find all games
+exports.getGames = function (req, res){
+	Game.find(function(err, games){
+    res.send(games);
+  });
+
+};
+
+//Find the game once selected
+exports.getGame = function (req, res){
+	return Game.findById( req.params.id, function( err, game) {
         if( !err ) {
-            return res.send( player );
+            return res.send( game );
         } else {
             return console.log( err );
         }
@@ -116,47 +108,21 @@ exports.getPlayer = function (req, res){
    
 };
 
-
-// Game logic - create a new game upon button invite
-/*exports.game = function (req, res){
-	//var randomNumber = function getRandomInt(min, max) {   
-	//		return Math.floor(Math.random() * (max - min + 1) + min);
-	Game.create({
-	  	game:  
-	  	msg: req.body.msg, 
-	  	url: req.body.url 
-	}, 
-  	function (err, example) {
-  		if (err) {
-  			console.log(err);
-  			res.status(500).json({status: 'failure'});
-		} else {
-			res.json({status: 'success'});
-		}   	
-    });new Game({game: game1, Player1: currentUser, Player2: response.to}).save();
+exports.postGame = function (req, res){
+	    var game = new Game({
+			game_id: req.body.game_id,
+			p1url: req.body.p1url,
+			sentence: req.body.sentence,
+			completed: req.body.completed,
+			turn: req.body.turn, 
+			player1: req.body.player1,
+			player2: req.body.player2
+		});
+		game.save( function (err){				
+			if (err) return handleError (err);			
+		});
+		return res.send(game);
+	    //res.json(req.body);
+	  //}
+	 	
 };
-
-exports.list = function (req, res){
-	Game.find(function (err, games){
-		res.send(games);
-	});
-};
-*/
-
-/*
-exports.play = function (req, res){
-	Game.findOne({game: req.params.game})
-}
-	var matches = inGame.filter(function  (game) {
-	    return game.url === req.body.url;
-	});
-
-	if (matches.length > 0) {
-	  res.json(409, {status: 'item already exists'});
-	} else {
-	  new Player({fb_id: currentUser}).save();
-	  req.body.id = req.body.url;
-	  inGame.push(req.body);
-	  res.json(req.body);
-	}
-}*/

@@ -1,22 +1,16 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+ObjectId = Schema.ObjectId;
 
-var gameSchema = mongoose.Schema({
-	game: { type: Number, index: true },
-	status: String,
-	Player1: Number,
-	Player2: Number
-
-	/*players: [mongoose.Schema({
-	  id: Number,
-	  name: String,
-	  first_name: String,
-	  last_name: String,
-	  location: String,
-	  gender: String,
-	  status: String
-	}, { _id: false })]*/
- 
+var gameSchema = new Schema({
+	game_id: Number,
+	p1url: String,
+	sentence: String,
+	complete: String,
+	turn: String,
+	active: String,
+	player1: Number,
+	player2: Number
 });
 
 module.exports = db.model('Game', gameSchema);

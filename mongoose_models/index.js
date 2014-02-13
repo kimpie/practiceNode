@@ -2,7 +2,9 @@
 
 //models
 Player = require('./player');
+Game = require('./game');
 
 
 //exports
 exports.Player = Player.playerModel;
+exports.Game = Game.gameModel;

@@ -1,0 +1,24 @@
+Game Notes
+
+Q = Question, represnts an current issue.
+S = Solving, represents an attempt to solve the issue.
+A = Answer, represents the way I resolved the issue.
+
+2/04/14
+Current puzzle: 
+1Q. When player1 invites player2 to a new game, the program needs to recognize if an ongoing game between these two players exists and it should pull that game up.  Currently, program code to identify a game by 'player1' and 'player2' is not working, however it works when manualy entered on the console.  Why is this?  
+	1S. Perhaps the program does not see the game because nowhere is there code to retrieve an individual game.  Trying to load an individual game when its created to the view and then we may be able to use that games data on a new invite.  
+	1S. Now, I have it pulling the unique player's games and console logging them.  Next, need to have them load on the page in a <ul>.
+		1bQ. Still working on this, its now showing the bullet points for the <ul> but no data. 
+
+2Q. URL's when refreshed show the database data.  Need to update router.js to show the appropriate vies.
+
+2/11/14
+3Q. Need the game list to load once a user logs in.  
+	3S. One way I could do this is to use mongoose to save game id's in the player model and then pull this data from the player upon login.
+2/12/14
+4Q. When the games collection is fetched, the p1url for each game is passed through to the options of the Game collection and changes the URL.  The player and game data are too closely related, constantly borrowing data from each other but have kept the URL's for saving and creating new models separate which poses various problems.
+	Perhaps we save the game data directly with the Player data.  The main reason I kept them separate originally was because the game data needs to be saved to both players.  If I save it first to the player who initiates the game, how can the same game data be saved to the second player?  Maybe with the same mongoose populate?
+5Q. 
+
+

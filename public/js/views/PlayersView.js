@@ -6,66 +6,55 @@ var app = app || {};
 	app.PlayersView = Backbone.View.extend({
 
 		template: Handlebars.compile(
-			'<h3>Welcome {{name}}</h3>' +
-			'<button type="button" class="btn btn-success" id="btn-success">Invite Friends</button>'
+			'<h3>Welcome {{name}}</h3>' 
 		),
 
 		events: {
-			"click #btn-success": "requestDialog"
+
 		},
 
 		initialize: function  () {
 			console.log('PlayersView has been initialized');
+			//this.model.save(this.setPlayerData(), {patch: true});
+			//this.model.bind("change:loggedin", this.render, this);
+
+			this.listenTo(this.model, "change", this.notice);
 			this.listenTo(this.model, "change", this.render);
-			this.render();
 		//	socket = io.connect('https://completethesentence.com/');
+		},
+
+		PlayerData: function (){
+			this.model.save(this.PlayerData());
+		},
+
+		setPlayerData: function(){
+			var x = new Date();
+		    var currentTimeZoneOffsetInHours = x.getTimezoneOffset() / 60;
+			return {
+				fb_id: currentUser,
+				first_name: first_name,
+				last_name: last_name,
+				name: name,
+				city: city,
+				url: currentUser,
+				gender: gender,
+				last_login: x
+			};
+		},
+
+		notice: function (){
+			console.log('Something on the model has changed.');
 		},
 
 		render: function () {
 			this.$el.html(this.template(this.model.attributes));
-
 			//this.$el.toggleClass( 'completed', this.model.get('completed') ); // NEW
 			//this.toggleVisible();                                             // NEW
 			
 			return this;
-		},
-
-		requestDialog: function () {
-			var model = this.model;
-
-		  FB.ui({method: 'apprequests',
-		     message: 'Join me to tell a crazy story!' 
-		    }, requestCallback);
-
-		  	function requestCallback (response){
-			  	if (response.to !== undefined) {
-			  		//socket.emit('join', {status: 'joined'});
-					console.log(response);
-					model.save(this.setGameData);
-					//game.create
-					/*if (response.to && currentUser !=== currentGame){
-			  			createGame 
-				  	}
-				  	else {
-				  		alert('You\'re currently in a game with this Friend');
-				  	}*/
-			  	}
-			  	else {
-			  		//socket.emit('join', {status: 'not_joined'});
-					console.log('No player selected, response is ' + response);
-			  		}
-			};
-		},
-		
-		setGameData: function (){
-			return {
-					game_id: response.request,
-					player1: currentUser,
-					player2: response.to
-			};
 		}
 
-
+		
 	    /*toggleVisible : function () {
 	      this.$el.toggleClass( 'hidden',  this.isHidden());
 	    }

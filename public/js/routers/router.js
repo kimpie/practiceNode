@@ -6,28 +6,35 @@ var app = app || {};
 
         var AppRouter = Backbone.Router.extend({
                 routes: {
-                        'players/:player': 'playerDetails'
+                        '/facebook': 'index',
+                        '/facebook/players/:player': 'playerOn',
+                        '/facebook/players/:player/games': 'gameOn',
+                        '/facebook/players/:player/games/:game': 'showGames'
                 },
 
                 initialize: function () {
-                        console.log('Router is initialized');
-                        this.collection = new app.Players();
-                        this.collection.fetch({reset: true});
-
-                        this.playerModel = new app.playerModel();
-                        this.playerView = new app.PlayersView({model: this.playerModel});   
-
+                    console.log('Router is initialized');
                 },
 
-                playerDetails: function (player) {
-                        this.playerView.model = this.collection.get(player);
-                        console.log('Router has been triggered with ' + player);
-                        $('#userName').html(this.playerView.render().el);
+                index: function (){
+                    alert('On Index Page.');
+                    app.AppView.render().el;
+                },
+
+                playerOn: function (player) {
+                    alert('On player page.');
+                },
+
+                gameOn: function(){
+                    alert('On game page.');
+                },
+
+                showGames: function(game){
+                    alert('On individual game page.');
                 }
 
         });
 
         app.AppRouter = new AppRouter();
-
-        Backbone.history.start();
+        Backbone.history.start({pushState: true});
 })();

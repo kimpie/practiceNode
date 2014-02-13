@@ -40,12 +40,22 @@ var api = require('./controllers/api.js');
 
 //app.post('/messages', api.postMessage);
 app.get('/', function (req, res){
+  res.render(index.html);;
+});
+/*app.get('/players', function (req, res){
   res.render(index.html);
-})
+});*/
 app.get('/players', api.getPlayers);
 app.get( '/players/:id', api.getPlayer);
 app.post('/players', api.postPlayer);
+app.put('/players', api.updatePlayer);
 app.put('/players/:id', api.updatePlayer);
+
+app.get('/players/:id/games', api.getGames);
+//app.get('/players/:id/games/:gameid', api.getGame);
+app.post('/players/:id/games', api.postGame);
+/*app.put('/players/:id/:game', api.updateGame);
+app.delete('/players/:id/:game', api.deleteGame);*/
 
 /*app.get('/players/:fb_id', function  (req, res) {
   var matches = players.filter(function  (player) {
@@ -108,7 +118,7 @@ app.get('/*', function  (req, res) {
 });
 
 server.listen(
-  8080, function (){
-  console.log('Server listening on port 8080');
-}
+//  8080, function (){
+//  console.log('Server listening on port 8080');
+//}
 );

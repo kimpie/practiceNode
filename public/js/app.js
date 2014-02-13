@@ -33,7 +33,7 @@
 //		this.PlayerModel.get(player);
 //		this.inGameView.model = this.ActiveGames.get(game);
 		$('#app').html(this.appView.render().el);
-	},
+	},s
 
 	example: function (){
 		$('#app').html(this.exMessage.render().el);

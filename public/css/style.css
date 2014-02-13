@@ -31,6 +31,15 @@ div#joined {
 	text-align: center;
 }
 
+ul.list{
+	border: 1px solid blue;
+}
+
+li.listitem{
+	text-align: center;
+	color: yellow;
+}
+
 div#msg {
 	border: 1px solid red;
 }

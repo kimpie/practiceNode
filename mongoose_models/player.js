@@ -10,18 +10,9 @@ var playerSchema = new Schema ({
 	last_name: String,
 	city: String,
 	gender: String,
-	url: String,
 	total_games: Number,
     last_login: String,
-
-	games: [mongoose.Schema({
-	  game_id: Number,
-	  sentence: String,
-	  completed: String,
-	  turn: String,
-	  player1: Number,
-	  player2: Number
-	}, { _id: false })]
+	games: [{ type: Schema.Types.ObjectId, ref: 'Game' }]
 });
 
 module.exports = db.model('Player', playerSchema);

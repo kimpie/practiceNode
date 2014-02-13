@@ -15,66 +15,77 @@ var app = app || {};
 			url: "",
 			total_games: "",
       		last_login: "",
-
-			games: [{
-			  game_id: "",
-			  completed: false,
-			  turn: "",
-			  player1: "",
-			  player2: "",
-        	  sentence: ""
-			}, 
-			{ _id: false }]
+      		games: []
 			},
 
 		idAttribute: '_id',
-/*		parse: function(response) {
-		   response.id = response.fb_id;
-		   return response;
-		},*/
-
-		/*setUrl: function(){
-			if (this.idAttribute){
-				url = this.idAttribute;
-				console.log('Setting URL on initialization');
-			} else {
-				url = "";
-			}
-		},*/
 
 		initialize: function(){
 			console.log('The playerModel has been initialized.');
 		//	this.checkNew();
 		},
 
-		saveUser: function () {
-			if (currentUser !== fb_id){
-				this.save
-			}
+
+		login: function(){
+			console.log('playerModel has triggered login function.');
+			this.set({loggedin: true});
+			this.collection.loginPlayer(this);
 		},
 
-  	// Save the updated sentence once a new word has been added and signal a new turn.
-   /* updateSentence: function () {
-      this.save({
-        sentence: 
-        turn:
-      })
-    },*/
+		renderPlayer: function(player){
+            app.AppRouter.navigate('/players/' + player.id);
 
-    //Save game as completed.
-    endGame: function() {
-      this.save({
-        completed: !this.get('completed')
-      });
-    }
+        },
+
+        setGameData: function(game, player, player2model){
+        	var thismodel = player;
+        	console.log('Displaying the current player model: '); 
+        	console.log(thismodel);
+        	thismodel.save(this.gameArray(game, player), {
+        		success: function(game, player){
+		        	console.log('Saving game id ' + game.id + ' to the player ' + player.id);
+        		}
+        	});
+        	var othermodel = player2model;
+        	othermodel.save(this.gameArray2(game, player2model), {
+        		success: function(game,player2model){
+	        	console.log('Saving game id ' + game.id + ' to the player2 ' + player2model.id);        	
+        		}
+        	});
+        },
+
+        gameArray: function(game, player){
+        	var x = game.id;
+        	var games = player.attributes.games;
+        	console.log('gameArray found ' + games.length + ' game(s).');
+        	games.push(x);
+        },
+
+        gameArray2: function(game, player2model){
+        	var x = game.id;
+        	var games2 = player2model.attributes.games;
+        	games2.push(x);
+        },
+
+
+
+      /*  sendGame: function(game){
+        	this.collection.showGame(game);        
+        },*/
+
+		show: function (){
+			var showonlogin = {};
+
+			_.extend(showonlogin, Backbone.Events);
+
+			showonlogin.on("log", function(msg) {
+			  console.log("Triggered " + msg);
+			});
+		}
+		
+
 
     });
 
 
 })();
-
-/*
-Leaving off at a good spot - Next get url navigation working upon login which will tie into 
-app.get and app.put.  You're doing GREAT!  Making excellent progress - keep it up!
-Getting close :)
-*/
