@@ -1,41 +1,63 @@
-<html>
+<html lang="en" data-framework="backbonejs">
 <head>
 	<title>Testing App with Backbone</title>
-
-	<script src="/socket.io/socket.io.js"></script>
-	<script type="text/javascript" src="js/lib/jquery-1.10.2.min.js"></script>
-	<script type="text/javascript" src="js/lib/chatterscript.js"></script>
-	<script type="text/javascript" src="js/lib/underscore.min.js"></script>
-	<script type="text/javascript" src="js/lib/backbone-min.js"></script>
-	<script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
-	<script type="text/javascript" src="js/lib/handlebars-v1.1.2.js"></script>
-
-	<script type="text/javascript" src="js/models/inGameStr.js"></script>
-	<script type="text/javascript" src="js/collections/activeGames.js"></script>	
-	<script type="text/javascript" src="js/views/listGames.js"></script>
-	<script type="text/javascript" src="js/views/newGameBtn.js"></script>
-	<script type="text/javascript" src="js/views/inGameDetails.js"></script>
-	<script type="text/javascript" src="js/app.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="css/style.css" />	
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css" />
 </head>
 <body>
-
-	<div class="container">
-		<h1>Testing App with Backbone</h1>
-
-		<ul class="nav nav-pills">
-			<li><a href="#">Games</a></li>
-			<li><a href="#/inGame/new">New Game</a></li>
-			<li><a href="#/inGame/sussie">sussie</a></li>
-		</ul>
-	</div>
-
+	<div id="fb_root"></div>
 	<div class="container" id="app">
+		<div id="header">
+			<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+				<a class="navbar-brand navbar-center brand" href="/facebook">Complete the Sentence</a>
+				<button type="button" class="btn btn-default btn-lg navbar-right">
+				<span class="glyphicon glyphicon-th"></span>
+				</button>
+			</nav>
+		</div>
+		<div id="fblogin">
+			<fb:login-button show-faces="true" width="200" max-rows="1" id="login"></fb:login-button>
+		</div>
 
+		<div id="main">
+			<section id="userName">
+				<button type="button" class="btn btn-success" id="btn-success">Invite Friends</button>
+			</section>
+			<div id="games">
+				<h2>Games</h2>
+				<section id="currentGames"></section>
+			</div>			
+			<div id="inPlay"></div>
+
+		</div>
 	</div>
+	<script id="gamelist" type="text/x-handlebars-template">
+	  {{#list games}}{{player2}}{{/list}}
+	</script>
+	
+	<script src="/socket.io/socket.io.js"></script>
+
+	<script type="text/javascript" src="js/lib/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="js/lib/dateFormat.js"></script>
+	<script type="text/javascript" src="js/lib/fbscript.js"></script>
+	<script type="text/javascript" src="js/lib/joinscript.js"></script>
+	<script type="text/javascript" src="js/lib/chatterscript.js"></script>
+	<script type="text/javascript" src="js/lib/underscore.min.js"></script>
+	<script type="text/javascript" src="js/lib/backbone-min.js"></script>
+	<script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/lib/handlebars-v1.1.2.js"></script>
+
+	<script type="text/javascript" src="js/models/playerModel.js"></script>
+	<script type="text/javascript" src="js/models/gameModel.js"></script>
+	<script type="text/javascript" src="js/collections/players.js"></script>
+	<script type="text/javascript" src="js/collections/Games.js"></script>
+	<script type="text/javascript" src="js/views/PlayersView.js"></script>
+	<script type="text/javascript" src="js/views/gameItem.js"></script>
+	<script type="text/javascript" src="js/views/AppView.js"></script>
+	<script type="text/javascript" src="js/routers/router.js"></script>
+	<script type="text/javascript" src="js/app.js"></script>	
 
 </body>
 </html>
