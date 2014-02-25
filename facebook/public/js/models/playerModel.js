@@ -33,7 +33,7 @@ var app = app || {};
 		},
 
 		renderPlayer: function(player){
-            app.AppRouter.navigate('players/' + player.id, true);
+            app.AppRouter.navigate('/players/' + player.id, true);
 
         },
 
@@ -55,7 +55,7 @@ var app = app || {};
         },
 
         gameArray: function(game, player){
-        	var x = game.id;
+        	var x = {id: game.id, player2_name: game.attributes.player2_name};
         	var games = player.attributes.games;
         	console.log('gameArray found ' + games.length + ' game(s).');
         	games.push(x);

@@ -13,7 +13,8 @@ var app = app || {};
 			active: "",
 			turn: "",
 			player1: "",
-			player2: ""
+			player2: "",
+			player2_name: ""
 		},
 
 		idAttribute: '_id',
@@ -40,15 +41,15 @@ var app = app || {};
 
 		url: function(){
 			if (this.y !== undefined){
-				return 'players/' + this.y + '/games';
+				return '/players/' + this.y + '/games';
 			} else {
-				return 'players/' + 'x' + '/games';
+				return '/players/' + 'x' + '/games';
 			}
 			
 		},
 
 		renderGame: function(){
-			app.AppRouter.navigate('players/' + this.y + '/games', true);
+			app.AppRouter.navigate('/players/' + this.y + '/games', true);
 			//this.trigger('gameStarted');
 		}
 

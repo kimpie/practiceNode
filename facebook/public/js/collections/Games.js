@@ -20,7 +20,7 @@ var app = app || {};
 		},
 
 		renderGame: function(){
-			app.AppRouter.navigate('players/' + this.y + '/games', true);
+			app.AppRouter.navigate('/players/' + this.y + '/games', true);
 			//this.trigger('gameStarted');
 		},
 
@@ -36,9 +36,9 @@ var app = app || {};
 
 		url: function(){
 			if (this.y !== undefined){
-				return 'players/' + this.y + '/games';
+				return '/players/' + this.y + '/games';
 			} else {
-				return 'players/' + 'x' + '/games';
+				return '/players/' + 'x' + '/games';
 			}
 		},
 

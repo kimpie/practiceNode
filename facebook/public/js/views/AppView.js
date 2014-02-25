@@ -1,7 +1,7 @@
 var app = app || {};
 
 (function ($) {
-        'use strict';
+ //       'use strict';
 
 
 	app.AppView = Backbone.View.extend({
@@ -134,6 +134,7 @@ var app = app || {};
 			this.gameCollection.fetch({reset:true});
 			var that = this;
 			var pcollection = this.collection;
+
 		  	function requestCallback (response){
 		  		//players.fetch({reset: true});
 	  			//var player = pcollection.findWhere({fb_id: Number(currentUser)});
@@ -143,44 +144,57 @@ var app = app || {};
 		  		if (response.to !== undefined) {
 					console.log(response);
 
-					var t = gcollection.where({player1: Number(response.to)}) 
-					&& gcollection.where({player2: Number(currentUser)});
-					var s = gcollection.where({player1: Number(currentUser)}) 
-					&& gcollection.where({player2: Number(response.to)});
-					var matchedGame = [];
-					if (t.length != 0) {
-						matchedGame.push(t);
-					} else if (s.length != 0) {
-						matchedGame.push(s);
-					}
-					console.log(matchedGame.length + ' matches were found: ');
-					console.log(matchedGame);
+					var p2n = String(response.to);
+					FB.api(p2n, function (info){
+						//{
+							//window.fbn = info.name;
+							//console.log(info);
+						//}, createGame
+					//);	
 
-					if (matchedGame.length == 0) {
-						gcollection.create(
-							{
-								game_id: Number(response.request),
-								player1: Number(currentUser),
-								player2: Number(response.to),
-								complete: false,
-								active: false,
-								p1url: x
-							},
-							{
-				    			success: function(game){
-				    				//var model = new app.gameModel();
-				    				//model.renderGame(game);
-				    				console.log('Saving game data for id: ' + game.id);
-				    				var player = pcollection.findWhere({fb_id: Number(currentUser)});
-				    				pcollection.savegame(game, player);
-				    				//that.gamelist(game);
-				    			}
-				    		}
-			    		);
-					} else {
-						console.log('This game already exists.');
-					}
+					//function (info){
+						console.log('player 2 name is : ' + info.name);
+						//console.log('Or fbn is ' + window.fbn);
+						var t = gcollection.where({player1: Number(response.to)}) 
+						&& gcollection.where({player2: Number(currentUser)});
+						var s = gcollection.where({player1: Number(currentUser)}) 
+						&& gcollection.where({player2: Number(response.to)});
+						var matchedGame = [];
+						if (t.length != 0) {
+							matchedGame.push(t);
+						} else if (s.length != 0) {
+							matchedGame.push(s);
+						}
+						console.log(matchedGame.length + ' matches were found: ');
+						console.log(matchedGame);				
 
+						if (matchedGame.length == 0) {
+
+							gcollection.create(
+								{
+									game_id: Number(response.request),
+									player1: Number(currentUser),
+									player2: Number(response.to),
+									player2_name: info.name,
+									complete: false,
+									active: false,
+									p1url: x
+								},
+								{
+					    			success: function(game){
+					    				//var model = new app.gameModel();
+					    				//model.renderGame(game);
+					    				console.log('Saving game data for id: ' + game.id);
+					    				var player = pcollection.findWhere({fb_id: Number(currentUser)});
+					    				pcollection.savegame(game, player);
+					    				//that.gamelist(game);
+					    			}
+					    		}
+				    		);
+						} else {
+							console.log('This game already exists.');
+						}
+					});										
 			  	}
 			  	else {
 			  		//socket.emit('join', {status: 'not_joined'});

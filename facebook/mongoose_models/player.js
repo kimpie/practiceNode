@@ -12,7 +12,7 @@ var playerSchema = new Schema ({
 	gender: String,
 	total_games: Number,
     last_login: String,
-	games: [{ type: Schema.Types.ObjectId, ref: 'Game' }]
+	games: [{ id: [{type: Schema.Types.ObjectId, ref: 'Game'}], player2_name: String }]
 });
 
 module.exports = db.model('Player', playerSchema);

@@ -7,8 +7,8 @@ var app = app || {};
         var AppRouter = Backbone.Router.extend({
                 routes: {
                         "": "index",
-                        "players/:id": "playerOn",
-                        "players/:id/games": "gameOn"
+                        "/players/:id": "playerOn",
+                        "/players/:id/games": "gameOn"
                 },
 
                 initialize: function () {

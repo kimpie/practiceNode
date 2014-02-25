@@ -69,7 +69,9 @@ exports.updatePlayer = function (req, res){
 		player.gender = req.body.gender;
 		player.url = req.body.url;
 	    player.last_login = req.body.last_login;
-        player.games = req.body.games;
+        player.games = req.body.games.id;
+        player.games = req.body.games.player2_name;
+        //player.games.opponent = req.body.games.opponent;
 
 	    return player.save( function( err ) {
 	        if( !err ) {
@@ -77,7 +79,7 @@ exports.updatePlayer = function (req, res){
 	        } else {
 	            console.log( err );
 	        }
-	        Player.populate(player, {path: 'games'}, function (err, player) {
+	        Player.populate(player, {path: 'games.id games.player2_name'}, function (err, player) {
 	        	console.log(player.games);
 	        })
 	        
@@ -116,7 +118,8 @@ exports.postGame = function (req, res){
 			completed: req.body.completed,
 			turn: req.body.turn, 
 			player1: req.body.player1,
-			player2: req.body.player2
+			player2: req.body.player2,
+			player2_name: req.body.player2_name
 		});
 		game.save( function (err){				
 			if (err) return handleError (err);			

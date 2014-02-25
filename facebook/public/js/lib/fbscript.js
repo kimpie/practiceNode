@@ -93,11 +93,6 @@ function requestDialog() {
     });
 };
 
-/*function newGame () {
-    socket.join('room')
-};*/
-
-  jQuery('#social').click(requestDialog);
 
 
 //End of Facebook Scripts

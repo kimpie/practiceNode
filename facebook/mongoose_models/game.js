@@ -10,7 +10,8 @@ var gameSchema = new Schema({
 	turn: String,
 	active: String,
 	player1: Number,
-	player2: Number
+	player2: Number,
+	player2_name: String
 });
 
 module.exports = db.model('Game', gameSchema);

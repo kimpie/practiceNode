@@ -38,18 +38,15 @@ app.configure('development', function(){
 
 var api = require('./controllers/api.js');
 
+app.get('/', function (req, res){
+  res.redirect('/facebook/');
+});
 
 app.get('/facebook/', function (req, res){
     fs.readFile('public/index.html', 'utf8', function(err, html){
         res.send(html);
     });
 });
-
-/*app.get('/facebook/css/style.css', function (req, res){
-    fs.readFile('/facebook/public/css/style.css', 'utf8', function(err, css){
-        res.send(css);
-    });
-});*/
 
 app.post('/facebook/', function (req, res){
     fs.readFile('public/index.html', 'utf8', function(err, html){
@@ -130,9 +127,9 @@ app.get('/*', function  (req, res) {
 });
 
 server.listen(
-  8080, function (){
-  console.log('Server listening on port 8080');
-}
+//  8080, function (){
+//  console.log('Server listening on port 8080');
+//}
 );
 
 //Create a function to return the get url requested so that it will load every script tag
