@@ -22,9 +22,27 @@ var app = app || {};
 	  	savegame: function(game, player){
 	  		var model = this.get(player);
 	  		var player2model = this.findWhere({fb_id: game.attributes.player2});
-	  		console.log('Data for player2: ');
-	  		console.log(player2model);
-	  		model.setGameData(game, player, player2model);
+	  		var that = this;
+	  		if (player2model != undefined){
+	  			console.log('Data for player2: ');
+		  		console.log(player2model);
+		  		model.setGameData(game, player, player2model);
+	  		} else {
+	  			this.create({
+	  				fb_id: game.attributes.player2,
+	  				name: game.attributes.player2_name
+	  			}, 
+	  			{
+	  				success: function (player2){
+	  					console.log('To save game to player2, first created the player ' + player2.id);
+		  				var player2model = that.get(player2);
+			  			model.setGameData(game, player, player2model);
+	  				}
+
+	  			});
+	  		}
+	  		
+	  		
 	  	},
 
 	  	showGame: function (game){

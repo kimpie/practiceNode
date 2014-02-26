@@ -21,6 +21,10 @@ div#joined {
 	display: none;
 }
 
+li#player_name{
+	list-style-type: none;
+	margin-bottom: 5px;
+}
 
 .loggedoff {
 	display: block;

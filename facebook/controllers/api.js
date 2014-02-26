@@ -69,9 +69,8 @@ exports.updatePlayer = function (req, res){
 		player.gender = req.body.gender;
 		player.url = req.body.url;
 	    player.last_login = req.body.last_login;
-        player.games = req.body.games.id;
-        player.games = req.body.games.player2_name;
-        //player.games.opponent = req.body.games.opponent;
+        player.games = req.body.games;
+        //player.games.player2_name = req.body.player2_name;
 
 	    return player.save( function( err ) {
 	        if( !err ) {
@@ -79,9 +78,9 @@ exports.updatePlayer = function (req, res){
 	        } else {
 	            console.log( err );
 	        }
-	        Player.populate(player, {path: 'games.id games.player2_name'}, function (err, player) {
-	        	console.log(player.games);
-	        })
+	       // Player.populate(player, {path: 'games.id', model: 'Game'}, function (err, player) {
+	        //	console.log(player);
+	        //})
 	        
 	    	return res.send( player );
 	    });
@@ -118,6 +117,7 @@ exports.postGame = function (req, res){
 			completed: req.body.completed,
 			turn: req.body.turn, 
 			player1: req.body.player1,
+			player1_name: req.body.player1_name,
 			player2: req.body.player2,
 			player2_name: req.body.player2_name
 		});

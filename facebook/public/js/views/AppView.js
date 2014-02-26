@@ -17,15 +17,16 @@ var app = app || {};
 			//this.gameCollection.fetch({reset: true});
 
 			//this.listenTo(this.collection, 'gameStarted', this.showGame);
-			this.listenTo(this.gameCollection, 'add', this.showGame);
 			this.listenTo(app.AppRouter, 'playerOn', this.test);
+			this.listenTo(app.AppRouter, 'inGame', this.play);
 
 			this.listenToOnce(this.collection, 'add', this.showPlayer);
 			this.listenToOnce(this.collection, 'loggedin', this.showPlayer);
 			this.listenTo(this.collection, 'reset', this.render);
 
 			this.userName = this.$('#userName');
-			this.currentGames = this.$('#currentGames');		
+			this.currentGames = this.$('#currentGames');	
+			this.main = this.$('#main');	
 
 			//socket = io.connect('https://completethesentence.com/');
 		},
@@ -46,42 +47,10 @@ var app = app || {};
             //this.showGame(player);
 		},
 
-		showGame: function(player) {
-			var gc = this.gameCollection;
-			console.log(player);
-			var source = $("#gamelist").html();
-			var thisplayer = player;
-			Handlebars.registerHelper('list', function(thisplayer, options) {
-			  var games = gc.where({p1url: player.id});
-			  var out = "<ul>";
-			  for(var i=0, l=games.length; i<l; i++) {
-			    out = out + "<li>" + options.fn(games[i]) + "</li>";
-			  }
-
-			  return out + "</ul>";
-			  //return '<a href="/facebook/players/' + thisplayer.id + '/games/' + this.id + '">' + options.fn(this) + '</a>';
-			});
-			var template = Handlebars.compile(source);
-			var games = this.gameCollection.where({p1url: player.id});
-			this.currentGames.append(template(games));
-            /*Handlebars.registerHelper('link', function(thisplayer, options) {
-              var games = gc.where({p1url: player.id});
-			  var out = "<ul>";
-			  for(var i=0, l=games.length; i<l; i++) {
-			    out = out + "<li>" + options.fn(games[i]) + "</li>";
-			  }
-
-			  return out + "</ul>";
-			});
-			var games = this.gameCollection.where({p1url: player.id});
-			console.log('showGame invoked');
-			var source = $("#gamelist").html();
-			var context = games;
-			console.log(context);
-			var template = Handlebars.compile(source);
-			var html = template(context);
-			//var gameItem = new app.gameItem({model: game});*/
-            //this.currentGames.append(.render().el);
+		play: function(game){
+			console.log('Found ' + game);
+			var gameview = new app.gameView({model: game});
+			this.main.append(gameview.render().el);
 		},
 
 		setPlayerData: function (){
@@ -103,6 +72,7 @@ var app = app || {};
 			var player = this.collection.findWhere({fb_id: Number(currentUser)});
 			console.log(currentUser);
 			console.log(player);
+			this.gameCollection.fetch({reset: true});
 			console.log('loginPlayer has been invoked');
 			if (player == undefined){
 				console.log('New Player is about to be posted.');
@@ -131,7 +101,7 @@ var app = app || {};
 			var player = this.collection.findWhere({fb_id: Number(currentUser)});
 	  		var x = player.id;
 			var gcollection = this.gameCollection;
-			this.gameCollection.fetch({reset:true});
+			//this.gameCollection.fetch({reset:true});
 			var that = this;
 			var pcollection = this.collection;
 
@@ -174,6 +144,7 @@ var app = app || {};
 								{
 									game_id: Number(response.request),
 									player1: Number(currentUser),
+									player1_name: name,
 									player2: Number(response.to),
 									player2_name: info.name,
 									complete: false,
@@ -203,45 +174,6 @@ var app = app || {};
 			};
 		},
 
-		/*playersgames: function(player){
-			var games = this.gameCollection.where({p1url: player.id});
-			return games;
-		},
-
-		/*gamelist: function(game){
-			var glist = this.gameCollection.where({p1url: game.p1url});
-			console.log(game.p1url);
-			console.log(glist);
-		},*/
-
-
-	    // render library by rendering each book in its collection
-	    /*renderList: function() {
-			var playersGames = this.gameCollection.where({player1: Number(currentUser)}) ||
-				this.gameCollection.where({player2: Number(currentUser)});
-			if (playersGames.length > 0){
-				this.gameCollection.each(function( game ) {
-	            	this.renderGame( game );
-	        	}, this );
-			} else {
-				console.log('Player has no active games.');
-				//can later populate a view that says "Invite a friend to play to get started"
-			}
-
-		},*/
-
-	    // render a book by creating a BookView and appending the
-	    // element it renders to the library's element
-	    renderGame: function(game) {
-	        var gameitem = new app.gameItem({model: game});
-	        this.$el.append(gameitem.render().el);
-	    }
 
 	});
 })(jQuery);
-// Congratulations!! You got the game data to save to the player data :)
-// Next, check if the game is new or not and either save it or console log that game is already
-// started.  Then display the games on the players view - from the games list!
-
-//Need it to first seach the games collection for the game_id with player1 and player2 in there,
-//then check the player.attributes.games for that game_id.

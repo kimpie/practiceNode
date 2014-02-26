@@ -47,22 +47,31 @@ var app = app || {};
         		}
         	});
         	var othermodel = player2model;
-        	othermodel.save(this.gameArray2(game, player2model), {
+       		othermodel.save(this.gameArray2(game, player2model), {
         		success: function(game,player2model){
-	        	console.log('Saving game id ' + game.id + ' to the player2 ' + player2model.id);        	
+		        	console.log('Saving game id ' + game.id + ' to the player2 ' + player2model.id);        	
         		}
-        	});
+    		});
+       	
         },
 
         gameArray: function(game, player){
-        	var x = {id: game.id, player2_name: game.attributes.player2_name};
+        	var x = {
+                id: game.id, 
+                player2_name: game.attributes.player2_name,
+                url: String('#/players/' + player.id + '/games/' + game.id)
+                };
         	var games = player.attributes.games;
         	console.log('gameArray found ' + games.length + ' game(s).');
         	games.push(x);
         },
 
         gameArray2: function(game, player2model){
-        	var x = game.id;
+        	var x = {
+                id: game.id, 
+                player2_name: game.attributes.player1_name,
+                url: String('#/players/' + player2model.id + '/games/' + game.id)
+                };
         	var games2 = player2model.attributes.games;
         	games2.push(x);
         },

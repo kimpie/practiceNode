@@ -10,6 +10,7 @@ var gameSchema = new Schema({
 	turn: String,
 	active: String,
 	player1: Number,
+	player1_name: String,
 	player2: Number,
 	player2_name: String
 });

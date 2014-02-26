@@ -13,6 +13,7 @@ var app = app || {};
 			active: "",
 			turn: "",
 			player1: "",
+			player1_name: "",
 			player2: "",
 			player2_name: ""
 		},

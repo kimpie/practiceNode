@@ -7,19 +7,20 @@ var app = app || {};
 
 		template: Handlebars.compile(
 			'<h3>Welcome {{name}}</h3>' +
-			'<div id="games">' +
-				'<h2>Your Games with: </h2>' +
-				'<ul #games>' + 
-				'<li>{{game.id}}</li>' +
-//going to need to safe players names to the player.games object when creating a new game.
-// or could I initialize this view from AppView and in there search for the matching games in 
-//Games collection and use the name from there to load into the view?
-				'</ul>' +
+			'<div id="games" class="panel panel-default">' +
+				'<div class="panel-heading" >Your games</div>' +
+				'<div class="panel-body">' +
+					'<ul>' +
+					'{{#each games}}' +
+					'<li id="player_name"><a class="btn btn-default btn-lg btn-block" id="indGame" href="{{url}}">{{player2_name}}</a></li>' +
+					'{{/each}}' +
+					'</ul>' +
+				'</div>'+
 			'</div>'
 		),
 
 		events: {
-
+			"click #indGame": "loadGame"
 		},
 
 		initialize: function  () {
@@ -31,6 +32,11 @@ var app = app || {};
 			this.listenTo(this.model, "change", this.notice);
 			this.listenTo(this.model, "change", this.render);
 		//	socket = io.connect('https://completethesentence.com/');
+		},
+
+		loadGame: function(data){
+			//need to route to the page with the game id associated with player2
+			console.log('loadGame triggered on PlayersView');
 		},
 
 		PlayerData: function (){

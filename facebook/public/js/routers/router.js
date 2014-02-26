@@ -7,8 +7,9 @@ var app = app || {};
         var AppRouter = Backbone.Router.extend({
                 routes: {
                         "": "index",
-                        "/players/:id": "playerOn",
-                        "/players/:id/games": "gameOn"
+                        "players/:id": "playerOn",
+                        "players/:id/games": "gameOn",
+                        "players/:id/games/:gameid": "inGame"
                 },
 
                 initialize: function () {
@@ -30,6 +31,11 @@ var app = app || {};
 
                 gameOn: function(){
                     console.log('Router on gameOn page.');
+                },
+
+                inGame: function(gameid){
+                    console.log('ROUTER on inGame page: ' + gameid);
+                    this.trigger('inGame', gameid);
                 }
 
         });
