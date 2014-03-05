@@ -5,6 +5,7 @@ ObjectId = Schema.ObjectId;
 var gameSchema = new Schema({
 	game_id: Number,
 	p1url: String,
+	p2url: String,
 	sentence: String,
 	complete: String,
 	turn: String,

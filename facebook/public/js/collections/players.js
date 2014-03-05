@@ -19,15 +19,16 @@ var app = app || {};
 	  		//this.vent.trigger("player:loggedin", player);
 	  	},
 
-	  	savegame: function(game, player){
+	  	savegame: function(game, player, player2){
 	  		var model = this.get(player);
-	  		var player2model = this.findWhere({fb_id: game.attributes.player2});
-	  		var that = this;
-	  		if (player2model != undefined){
-	  			console.log('Data for player2: ');
+	  		var player2model = this.get(player2);
+	  		//var player2model = this.findWhere({fb_id: game.attributes.player2});
+	  		//var that = this;
+	  		/*if (player2model != undefined){
+	  			console.log('Data for player2: ');*/
 		  		console.log(player2model);
 		  		model.setGameData(game, player, player2model);
-	  		} else {
+	  	/*	} else {
 	  			this.create({
 	  				fb_id: game.attributes.player2,
 	  				name: game.attributes.player2_name
@@ -39,8 +40,8 @@ var app = app || {};
 			  			model.setGameData(game, player, player2model);
 	  				}
 
-	  			});
-	  		}
+	  			});*/
+	  	//	}
 	  		
 	  		
 	  	},

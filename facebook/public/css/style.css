@@ -8,17 +8,9 @@ div#inGame {
 	text-align: left;
 }
 
-div#main {
-	padding-top: 90px;
+div#top {
+	padding-top: 70px;
 	text-align: center;
-}
-
-div#not_joined {
-	display: block;
-}
-
-div#joined {
-	display: none;
 }
 
 li#player_name{
@@ -34,6 +26,14 @@ li#player_name{
 .loggedin {
 	display: none;
 	text-align: center;
+}
+
+div#input_area{
+	display: block;
+}
+
+div#disabled_input_area{
+	display: none;
 }
 
 ul.list{

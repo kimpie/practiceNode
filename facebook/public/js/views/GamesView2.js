@@ -2,7 +2,7 @@ var app = app || {};
 
 (function ($) {
 
-	app.GamesView = Backbone.View.extend({
+	app.GamesView2 = Backbone.View.extend({
 
 		template2: Handlebars.compile(
 
@@ -14,7 +14,6 @@ var app = app || {};
 			'{{sentence}}' +
 		'</div>' +
 		'<div id="turn">'+
-			'<h4>Your turn</h4>' +
 		'</div>' +
 		'<div id="input_area">' +
 			'<input id="enter" type="text" name="enter_word" placeholder="enter a word..."></>' +
@@ -23,15 +22,6 @@ var app = app || {};
 			'<input id="disabledInput" type="text" name="enter_word" placeholder="waiting for {{player2_name}}" disabled></>' +
 		'</div>' 
 	),
-
-		template3: Handlebars.compile(
-			'<div id="inGame1">' +
-			'<h4> Game with {{player2_name}}</h4>' +
-			'</div>'+
-			'<div id="disabled_input_area">' +
-			'<input id="disabledInput" type="text" name="enter_word" placeholder="waiting for {{player2_name}}" disabled></>' +
-			'</div>'
-		),
 
 	initialize: function  () {
 		console.log('GamesView initialized');
@@ -65,7 +55,7 @@ var app = app || {};
 			event.preventDefault();
 			var $turn = this.$('#input_area');
 			var $wait = this.$('#disabled_input_area');
-			$turn.html({'display' : 'none'});
+			$turn.css({'display' : 'none'});
 			$wait.css({'display': 'block'});
 		}
 
@@ -79,7 +69,6 @@ var app = app || {};
 			this.$el.html(this.template3(this.model.attributes));
 			return this;
 		}
-		
 	}
 
 	});

@@ -11,12 +11,15 @@ var app = app || {};
 			console.log(options);
 			this.listenTo(this, 'add', this.triggerURL);
 			if (options !== undefined){
-				if(options.p1url = player.id){
+				if(options.p1url == player.id){
 					this.y = options.p1url;
+				} else if (options.p2url == player.id){
+					this.y = options.p2url;
 				}
-			} else {
-				this.y = undefined;
-			}
+			 } else {
+					this.y = undefined;
+				}
+
 		},
 
 		renderGame: function(){

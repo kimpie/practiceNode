@@ -113,6 +113,7 @@ exports.postGame = function (req, res){
 	    var game = new Game({
 			game_id: req.body.game_id,
 			p1url: req.body.p1url,
+			p2url: req.body.p2url,
 			sentence: req.body.sentence,
 			completed: req.body.completed,
 			turn: req.body.turn, 
@@ -128,4 +129,23 @@ exports.postGame = function (req, res){
 	    //res.json(req.body);
 	  //}
 	 	
+};
+
+exports.updateGame = function (req, res){
+	console.log( 'Updating game ' + req.body.game );
+    return Game.findById( req.params.id, function( err, game ) {
+    	game.sentence = req.body.sentence; 
+		game.turn = req.body.turn;
+
+	    return game.save( function( err ) {
+	        if( !err ) {
+	            console.log( 'game updated' );
+	        } else {
+	            console.log( err );
+	        }
+
+	        
+	    	return res.send( game );
+	    });
+    });
 };

@@ -6,6 +6,7 @@ var app = app || {};
 	app.PlayersView = Backbone.View.extend({
 
 		template: Handlebars.compile(
+			
 			'<h3>Welcome {{name}}</h3>' +
 			'<div id="games" class="panel panel-default">' +
 				'<div class="panel-heading" >Your games</div>' +

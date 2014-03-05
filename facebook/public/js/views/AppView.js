@@ -17,16 +17,16 @@ var app = app || {};
 			//this.gameCollection.fetch({reset: true});
 
 			//this.listenTo(this.collection, 'gameStarted', this.showGame);
-			this.listenTo(app.AppRouter, 'playerOn', this.test);
+			this.listenTo(app.AppRouter, 'playerOn', this.headerurl);
 			this.listenTo(app.AppRouter, 'inGame', this.play);
 
-			this.listenToOnce(this.collection, 'add', this.showPlayer);
+			//this.listenToOnce(this.collection, 'add', this.showPlayer);
 			this.listenToOnce(this.collection, 'loggedin', this.showPlayer);
 			this.listenTo(this.collection, 'reset', this.render);
 
 			this.userName = this.$('#userName');
-			this.currentGames = this.$('#currentGames');	
 			this.main = this.$('#main');	
+			this.header = this.$('#headerUrl');
 
 			//socket = io.connect('https://completethesentence.com/');
 		},
@@ -36,21 +36,39 @@ var app = app || {};
 			"click #btn-success": "requestDialog"
 		},
 
-		test: function(id){
-			console.log('test function called from router with id ' + id);
+		headerurl: function(id){
+			console.log('headerurl called with id: ' + id);
+			this.header.html('<a type="button" class="btn btn-success btn-lg" href="/facebook/#players/'+ id + '">All Games</a>');
+			var player = this.collection.findWhere({_id: id});
+			console.log('headerurl player: ');
+			console.log(player);
+			this.showPlayer(player);
 		},
 
 		showPlayer: function(player) {
-			console.log('showPlayer invoked');
+			console.log('showPlayer invoked with');
+			console.log(player);
+			playerOpen = true;
 			var playerView = new app.PlayersView({model: player});
-            this.userName.append(playerView.render().el);
+            this.main.html(playerView.render().el);
             //this.showGame(player);
 		},
 
-		play: function(game){
-			console.log('Found ' + game);
-			var gameview = new app.gameView({model: game});
-			this.main.append(gameview.render().el);
+		play: function(gameid){
+			console.log('play in appview received gameid: ' + gameid);
+			var game_model = this.gameCollection.findWhere({_id: gameid});
+			console.log('AppView was passed game info: ');
+			console.log(game_model);
+			if (game_model.attributes.player1 == Number(currentUser)){
+				console.log('showing inGame1');
+				var gameview = new app.GamesView({model: game_model});
+				this.main.html(gameview.render().el);
+			} else {
+				console.log('showing inGame2');
+				var gameview2 = new app.GamesView2({model: game_model});
+				this.main.html(gameview2.render().el);				
+
+			}
 		},
 
 		setPlayerData: function (){
@@ -72,7 +90,6 @@ var app = app || {};
 			var player = this.collection.findWhere({fb_id: Number(currentUser)});
 			console.log(currentUser);
 			console.log(player);
-			this.gameCollection.fetch({reset: true});
 			console.log('loginPlayer has been invoked');
 			if (player == undefined){
 				console.log('New Player is about to be posted.');
@@ -84,11 +101,13 @@ var app = app || {};
 						console.log('Creating new model with URL: ' + player.id);
 						//this.playersgames(player);
 				    }
-				});	
+				});
+				this.gameCollection.fetch({reset: true});	
 			} else {
 				var thisplayer = this.collection.get(player);
 				this.collection.renderPlayer(thisplayer);
 				console.log('Retrieved existing player ' + player.id);
+				this.gameCollection.fetch({reset: true});
 				//this.playersgames(player);
 			}
 		},
@@ -101,7 +120,7 @@ var app = app || {};
 			var player = this.collection.findWhere({fb_id: Number(currentUser)});
 	  		var x = player.id;
 			var gcollection = this.gameCollection;
-			//this.gameCollection.fetch({reset:true});
+			this.gameCollection.fetch({reset:true});
 			var that = this;
 			var pcollection = this.collection;
 
@@ -114,13 +133,26 @@ var app = app || {};
 		  		if (response.to !== undefined) {
 					console.log(response);
 
+
+			  		
 					var p2n = String(response.to);
 					FB.api(p2n, function (info){
-						//{
-							//window.fbn = info.name;
-							//console.log(info);
-						//}, createGame
-					//);	
+						
+						var player2 = pcollection.findWhere({fb_id: Number(response.to)});
+				  		if (player2 !== undefined){
+					  		var z = player2.id;
+				  		} else {
+				  			pcollection.create({
+				  				fb_id: Number(response.to),
+				  				name: info.name
+				  			}, 
+				  			{
+				  				success: function (player2){
+				  					z = player2.id;
+				  				}
+
+				  			});
+				  		}
 
 					//function (info){
 						console.log('player 2 name is : ' + info.name);
@@ -149,7 +181,8 @@ var app = app || {};
 									player2_name: info.name,
 									complete: false,
 									active: false,
-									p1url: x
+									p1url: x,
+									p2url: z
 								},
 								{
 					    			success: function(game){
@@ -157,7 +190,8 @@ var app = app || {};
 					    				//model.renderGame(game);
 					    				console.log('Saving game data for id: ' + game.id);
 					    				var player = pcollection.findWhere({fb_id: Number(currentUser)});
-					    				pcollection.savegame(game, player);
+					    				var player2 = pcollection.findWhere({fb_id: Number(response.to)});
+					    				pcollection.savegame(game, player, player2);
 					    				//that.gamelist(game);
 					    			}
 					    		}
@@ -172,8 +206,13 @@ var app = app || {};
 					console.log('No player selected, response is ' + response.to);
 			  		}
 			};
-		},
+		}
 
+/*	render: function(){
+		if (playerOpen == true){
+			this.
+		}
+	}*/
 
 	});
 })(jQuery);

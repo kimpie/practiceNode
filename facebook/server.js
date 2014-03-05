@@ -60,25 +60,16 @@ app.post('/players', api.postPlayer);
 app.put('/players', api.updatePlayer);
 app.put('/players/:id', api.updatePlayer);
 
-app.get('/players/:id/games', api.getGames);
-//app.get('/players/:id/games/:gameid', api.getGame);
-app.post('/players/:id/games', api.postGame);
-/*app.put('/players/:id/:game', api.updateGame);
-app.delete('/players/:id/:game', api.deleteGame);*/
+app.get('/players/:playerid/games', api.getGames);
+app.post('/players/:playerid/games', api.postGame);
+app.get('/players/:playerid/games/:id', api.getGame);
+app.put('/players/:playerid/games/:id', api.updateGame);
+app.post('/players/:playerid/games/:id', api.postGame);
 
-/*app.get('/players/:fb_id', function  (req, res) {
-  var matches = players.filter(function  (player) {
-    return player.url === req.params.fb_id;
-  });
 
-  if (matches.length > 0) {
-    res.json(matches[0]);
-    api.getPlayer;
-  } else {
-    res.json(404, {status: 'invalid player'});
-  }
+/*app.delete('/players/:id/:game', api.deleteGame);*/
 
-});*/
+
 
 io.sockets.on('connection', function (socket) {
   socket.on('join', function (data){

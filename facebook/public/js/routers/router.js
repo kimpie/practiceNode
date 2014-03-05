@@ -8,20 +8,11 @@ var app = app || {};
                 routes: {
                         "": "index",
                         "players/:id": "playerOn",
-                        "players/:id/games": "gameOn",
-                        "players/:id/games/:gameid": "inGame"
+                        "players/:id/games/:game": "inGame"
                 },
 
                 initialize: function () {
                     console.log('Router is initialized.');
-                },
-
-                appView: function(){
-                    console.log('Router on appView');
-                },
-
-                index: function (){
-                    console.log('Router on index page.');
                 },
 
                 playerOn: function (id) {
@@ -29,11 +20,8 @@ var app = app || {};
                     console.log('Router on player page: ' + id);
                 },
 
-                gameOn: function(){
-                    console.log('Router on gameOn page.');
-                },
-
-                inGame: function(gameid){
+                inGame: function(id, game){
+                    var gameid = game;
                     console.log('ROUTER on inGame page: ' + gameid);
                     this.trigger('inGame', gameid);
                 }
