@@ -12,8 +12,17 @@ var uri = 'mongodb://nodejitsu_kapienta:u62qdrfun7e30jeq9m1onp3qq8@ds045978.mong
 global.db = mongoose.createConnection(uri);
 
 var http = require('http'),
-        server = http.createServer(app);
-        io = require('socket.io').listen(server);
+        server = http.createServer(app),
+        io = require('socket.io').listen(server, {
+          resource: '/facebook/socket.io'
+        });
+
+var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', 'http://completethesentence.com https://www.completethesentence.com/ https://completethesentence.com https://completethesentence.com/facebook/ https://www.completethesentence.com/facebook/socket.io/ https://completethesentence.com/facebook/socket.io/1/ https://www.completethesentence.com/facebook/socket.io/1/ http://completethesentence.com/socket.io https://facebook.com /facebook/socket.io/socket.io.js');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+
+    next();
+};
 
 app.configure(function(){
         app.set('view engine', 'handlebars');
@@ -28,8 +37,10 @@ app.configure(function(){
                 })
         }));
         app.use(express.methodOverride());
+        app.use(allowCrossDomain);
         app.use("/facebook",express.static(__dirname + '/public'));
 });
+
 
 app.configure('development', function(){
        app.use(express.errorHandler());
@@ -42,10 +53,11 @@ app.get('/', function (req, res){
   res.redirect('/facebook/');
 });
 
-app.get('/facebook/', function (req, res){
+app.get('/facebook/', function (req, res, next){
     fs.readFile('public/index.html', 'utf8', function(err, html){
         res.send(html);
     });
+    next();
 });
 
 app.post('/facebook/', function (req, res){
@@ -54,34 +66,48 @@ app.post('/facebook/', function (req, res){
     });
 });
 
-app.get('/players', api.getPlayers);
-app.get( '/players/:id', api.getPlayer);
-app.post('/players', api.postPlayer);
-app.put('/players', api.updatePlayer);
-app.put('/players/:id', api.updatePlayer);
+app.get('/facebook/players', api.getPlayers);
+app.get( '/facebook/players/:id', api.getPlayer);
+app.post('/facebook/players', api.postPlayer);
+app.put('/facebook/players', api.updatePlayer);
+app.put('/facebook/players/:id', api.updatePlayer);
 
-app.get('/players/:playerid/games', api.getGames);
-app.post('/players/:playerid/games', api.postGame);
-app.get('/players/:playerid/games/:id', api.getGame);
-app.put('/players/:playerid/games/:id', api.updateGame);
-app.post('/players/:playerid/games/:id', api.postGame);
+app.get('/facebook/players/:playerid/games', api.getGames);
+app.post('/facebook/players/:playerid/games', api.postGame);
+app.get('/facebook/players/:playerid/games/:id', api.getGame);
+app.put('/facebook/players/:playerid/games/:id', api.updateGame);
+app.post('/facebook/players/:playerid/games/:id', api.postGame);
 
+/*  socket.on('addGame', function (data){
+    //socket.room = data.room;
+    //socket.p1 = data.p1;
+    //socket.p2 = data.p2;
+    socket.join(data.room, function (data){
+      socket.broadcast.to(data.room).emit('joined', {pre_msg: currentUser + " is ready to play!"});
+    });
+  });
 
-/*app.delete('/players/:id/:game', api.deleteGame);*/
-
-
-
-io.sockets.on('connection', function (socket) {
-  socket.on('join', function (data){
+/*  socket.on('join', function (data){
     socket.emit('join', {status: data.status});
 
     socket.join('room', function (data){
-      socket.broadcast.to('room').emit('joined', {message: socket.id + ' is in the room.'});
+      socket.broadcast.to('room').emit('joined', {message: 'Game is on!'});
     });//end of 'room'
   });//end of join
-}); //end of 'connection'
+  */
+//}); //end of 'connection'
 
-  var chat_room = io;
+var chat_room = io;
+
+chat_room.configure('production', function(){
+  chat_room.set('transports', 
+    [
+    'websocket'
+  , 'htmlfile'
+  , 'xhr-polling'
+  , 'jsonp-polling'
+    ]);
+});
 
   chatter.set_sockets(chat_room.sockets);
 
@@ -90,6 +116,7 @@ io.sockets.on('connection', function (socket) {
                   socket: socket,
                   username: socket.id
           });
+ 
   });
 
 
@@ -122,6 +149,3 @@ server.listen(
 //  console.log('Server listening on port 8080');
 //}
 );
-
-//Create a function to return the get url requested so that it will load every script tag
-//did a test witht he css/style.css and it worked.

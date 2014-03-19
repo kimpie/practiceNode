@@ -4,22 +4,36 @@ var app = app || {};
         'use strict';
 
 	app.Games = Backbone.Collection.extend({
+
 		model: app.gameModel,
 		
 		initialize: function(options){
 			console.log('Game Collection initialized with options id: ');
 			console.log(options);
+		    _.bindAll(this, 'renderGame', 'triggerURL', 'url', 'createGame');
+
 			this.listenTo(this, 'add', this.triggerURL);
+			
 			if (options !== undefined){
 				if(options.p1url == player.id){
 					this.y = options.p1url;
 				} else if (options.p2url == player.id){
 					this.y = options.p2url;
 				}
-			 } else {
+			} else {
 					this.y = undefined;
-				}
+			}
 
+		},
+
+		createGame: function(){
+		    var exists = this.get(data.id);
+		    if (!exists) {
+		      this.add(data);
+		    } else {
+		      data.fromServer = true;
+		      exists.set(data);
+		    }
 		},
 
 		renderGame: function(){
@@ -27,8 +41,17 @@ var app = app || {};
 			//this.trigger('gameStarted');
 		},
 
-//		url: '/players/games',
-		
+/*		sendSocket: function(game){
+			var o = String(game.attributes.player1);
+			var p = String(game.attributes.player2);
+			var q = o + p;
+			socket.emit('addGame', {
+				room: q,
+				p1: Number(o),
+				p2: Number(p)
+			});
+		},
+*/
 		triggerURL: function(options){
 			if (options !== undefined){
 				this.y = options.p1url;
@@ -39,17 +62,11 @@ var app = app || {};
 
 		url: function(){
 			if (this.y !== undefined){
-				return '/players/' + this.y + '/games';
+				return '/facebook/players/' + this.y + '/games';
 			} else {
-				return '/players/' + 'x' + '/games';
+				return '/facebook/players/' + 'x' + '/games';
 			}
-		},
-
-		//getlist: function(p1){
-		//	var allgames = this.where({p1url: p1});
-		//	console.log(allgames);
-		//}
-
+		}
 		
 	});
 

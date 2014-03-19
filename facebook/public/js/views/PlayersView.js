@@ -24,15 +24,16 @@ var app = app || {};
 			"click #indGame": "loadGame"
 		},
 
-		initialize: function  () {
-			console.log('PlayersView has been initialized');
-			//this.model.save(this.setPlayerData(), {patch: true});
-			//this.model.bind("change:loggedin", this.render, this);
-			//this.gl = new app.gamesListView();			
-			//this.render();			
+		initialize: function  (options) {
+			var i = this.model.attributes.games.length;
+			console.log('PlayersView has been initialized with ' + i + ' games');
+			this.model = options.model;
+			this.model.bind('reset', this.render);
+
+			app.AppView.vent.on('turn:update', this.alertPlayer);
+			
 			this.listenTo(this.model, "change", this.notice);
 			this.listenTo(this.model, "change", this.render);
-		//	socket = io.connect('https://completethesentence.com/');
 		},
 
 		loadGame: function(data){
@@ -40,23 +41,14 @@ var app = app || {};
 			console.log('loadGame triggered on PlayersView');
 		},
 
-		PlayerData: function (){
-			this.model.save(this.PlayerData());
-		},
 
-		setPlayerData: function(){
-			var x = new Date();
-		    var currentTimeZoneOffsetInHours = x.getTimezoneOffset() / 60;
-			return {
-				fb_id: currentUser,
-				first_name: first_name,
-				last_name: last_name,
-				name: name,
-				city: city,
-				url: currentUser,
-				gender: gender,
-				last_login: x
-			};
+		alertPlayer: function(info){
+			console.log('alertPlayer triggered with ' + info);
+			if (info == Number(currentUser)){
+				var $turn = this.$('#player_name');
+				$turn.css({'background-color': 'yellow'});
+			}
+			
 		},
 
 		notice: function (){
@@ -65,28 +57,9 @@ var app = app || {};
 
 		render: function () {
 			this.$el.html(this.template(this.model.attributes));
-			//this.$el.toggleClass( 'completed', this.model.get('completed') ); // NEW
-			//this.toggleVisible();        			                                    // NEW
-            //this.$el.append(this.gl.$el);
+
 			return this;
 		}
-
-		
-	    /*toggleVisible : function () {
-	      this.$el.toggleClass( 'hidden',  this.isHidden());
-	    }
-
-	   /* isHidden : function () {
-	      var isCompleted = this.model.get('completed');
-	      return ( // hidden cases only
-	        (!isCompleted && app.TodoFilter === 'completed')
-	        || (isCompleted && app.TodoFilter === 'active')
-	      );
-	    },
-
-	    togglecompleted: function() {
-	      this.model.toggle();
-	    },*/
 
 	});
 

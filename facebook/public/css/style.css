@@ -5,7 +5,7 @@ div#fblogin{
 }
 
 div#inGame {
-	text-align: left;
+	text-align: left; 
 }
 
 div#top {
@@ -33,7 +33,7 @@ div#input_area{
 }
 
 div#disabled_input_area{
-	display: none;
+	display: block;
 }
 
 ul.list{
@@ -90,6 +90,12 @@ div#chat_log {
 
 li#chat_li {
 	display: inline;
+}
+
+#display_word{
+	list-style: none;
+	display: inline;
+
 }
 
 input#chat_box {

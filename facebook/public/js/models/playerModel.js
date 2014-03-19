@@ -2,9 +2,9 @@ var app = app || {};
 
 (function () {
         'use strict';
-	
+
 	app.playerModel = Backbone.Model.extend({
-		urlRoot: '/players',
+		//urlRoot: '/facebook/players',
 		defaults: {
 			fb_id: "",
 			first_name: "",
@@ -21,8 +21,9 @@ var app = app || {};
 		idAttribute: '_id',
 
 		initialize: function(){
+            _.bindAll(this, 'login', 'renderPlayer', 'setGameData', 'setGameData2', 'gameArray', 'gameArray2');
 			console.log('The playerModel has been initialized.');
-		//	this.checkNew();
+
 		},
 
 
@@ -34,7 +35,6 @@ var app = app || {};
 
 		renderPlayer: function(player){
             app.AppRouter.navigate('/players/' + player.id, true);
-
         },
 
         setGameData: function(game, player, player2model){
@@ -45,14 +45,17 @@ var app = app || {};
         		success: function(game, player){
 		        	console.log('Saving game id ' + game.id + ' to the player ' + player.id);
         		}
-        	});
-        	var othermodel = player2model;
-       		othermodel.save(this.gameArray2(game, player2model), {
-        		success: function(game,player2model){
-		        	console.log('Saving game id ' + game.id + ' to the player2 ' + player2model.id);        	
-        		}
-    		});
-       	
+        	});       	
+        },
+
+        setGameData2: function(game, player2model){
+            var othermodel = player2model;
+            othermodel.save(this.gameArray2(game, player2model), {
+                success: function(game,player2model){
+                    console.log('Saving game id ' + game.id + ' to the player2 ' + player2model.id);            
+                }
+            });
+        
         },
 
         gameArray: function(game, player){
@@ -74,25 +77,7 @@ var app = app || {};
                 };
         	var games2 = player2model.attributes.games;
         	games2.push(x);
-        },
-
-
-
-      /*  sendGame: function(game){
-        	this.collection.showGame(game);        
-        },*/
-
-		show: function (){
-			var showonlogin = {};
-
-			_.extend(showonlogin, Backbone.Events);
-
-			showonlogin.on("log", function(msg) {
-			  console.log("Triggered " + msg);
-			});
-		}
-		
-
+        }
 
     });
 

@@ -8,7 +8,6 @@ exports.getPlayers = function (req, res){
 	Player.find(function(err, players){
     res.send(players);
   });
-
 };
 
 //Find a player on login
@@ -16,11 +15,12 @@ exports.getPlayer = function (req, res){
 	return Player.findById( req.params.id, function( err, player) {
         if( !err ) {
             return res.send( player );
+            res.writeHead(200, { 'Content-Type': contentType, 'Access-Control-Allow-Origin': '*' });
         } else {
             return console.log( err );
         }
+
     });
-   
 };
 
 // Create a new player on login
@@ -94,7 +94,6 @@ exports.getGames = function (req, res){
 	Game.find(function(err, games){
     res.send(games);
   });
-
 };
 
 //Find the game once selected
@@ -115,7 +114,8 @@ exports.postGame = function (req, res){
 			p1url: req.body.p1url,
 			p2url: req.body.p2url,
 			sentence: req.body.sentence,
-			completed: req.body.completed,
+			complete: req.body.complete,
+			active: req.body.active,
 			turn: req.body.turn, 
 			player1: req.body.player1,
 			player1_name: req.body.player1_name,
@@ -136,6 +136,8 @@ exports.updateGame = function (req, res){
     return Game.findById( req.params.id, function( err, game ) {
     	game.sentence = req.body.sentence; 
 		game.turn = req.body.turn;
+		game.complete = req.body.complete;
+		game.active = req.body.active;
 
 	    return game.save( function( err ) {
 	        if( !err ) {
