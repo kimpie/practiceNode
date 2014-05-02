@@ -5,56 +5,9 @@
 	<link rel="stylesheet" type="text/css" href="css/style.css" />	
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css" />
-</head>
-<body>
-	<div id="fb-root"></div>
-	<div class="container" id="app">
-		<div id="header">
-			<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-				<a class="navbar-brand navbar-center brand" href="/facebook">Complete the Sentence</a>
-				<button type="button" class="btn btn-default btn-lg navbar-right">
-				<span class="glyphicon glyphicon-th"></span>
-				</button>
-			</nav>
-		</div>
-		<div class="row" id="top">
-		<div class="col-md-3" id="headerUrl">
-			
-		</div>
-		<div class="col-md-4">
-			<section id="userName" class="loggedin">
-				<button type="button" class="btn btn-success" id="btn-success">New Game</button>
-			</section>
-		</div>
-		<div class="col-md-5">
-			<button type="button" class="btn btn-info">Chat</button>
-		</div>
-		</div>
-		
-		<section id="main">
-		<div class="row" id="middle">
-			<div class="col-md-3" id="points">
-				<h4>Points Earned</h4>
-			</div>
-			<div class="col-md-9" id="game">
-			<div id="fblogin" class="loggedoff">
-				<h3>To begin Login with facebook: </h3>
-				<fb:login-button show-faces="true" width="200" max-rows="1" id="login"></fb:login-button>
-			</div>
-
-			
-			</div>
-			<div class="row">
-				<div class="col-md-3">
-					<h4>Suggested Friends</h4>
-				</div>
-			</div>
-		</div>
-		</section>
-	</div>
+	<link rel="stylesheet" type="text/css" href="css/pietimer.css">
 
 	<script type="text/javascript" src="/facebook/socket.io/socket.io.js"></script>
-
 	<script type="text/javascript" src="js/lib/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="js/lib/dateFormat.js"></script>
 	<script type="text/javascript" src="js/lib/fbscript.js"></script>
@@ -63,17 +16,123 @@
 	<script type="text/javascript" src="js/lib/backbone-min.js"></script>
 	<script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/lib/handlebars-v1.1.2.js"></script>
+	<script type="text/javascript" src="js/lib/jquery.pietimer.js"></script>
 
 	<script type="text/javascript" src="js/models/playerModel.js"></script>
+	<script type="text/javascript" src="js/models/contactModel.js"></script>
 	<script type="text/javascript" src="js/models/gameModel.js"></script>
 	<script type="text/javascript" src="js/collections/players.js"></script>
 	<script type="text/javascript" src="js/collections/Games.js"></script>
+	<script type="text/javascript" src="js/collections/contactCollection.js"></script>
 	<script type="text/javascript" src="js/views/PlayersView.js"></script>
 	<script type="text/javascript" src="js/views/GamesView.js"></script>
 	<script type="text/javascript" src="js/views/GamesView2.js"></script>
-	<script type="text/javascript" src="js/routers/router.js"></script>
+	<script type="text/javascript" src="js/views/VoteView.js"></script>
+	<script type="text/javascript" src="js/views/homeView.js"></script>
 	<script type="text/javascript" src="js/views/AppView.js"></script>
+	<script type="text/javascript" src="js/views/shareView.js"></script>
+	<script type="text/javascript" src="js/views/contactView.js"></script>
+	<script type="text/javascript" src="js/routers/router.js"></script>
 	<script type="text/javascript" src="js/app.js"></script>	
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
+	  ga('create', 'UA-50450286-1', 'completethesentence.com');
+	  ga('send', 'pageview');
+
+	</script>
+	<script type="text/javascript">
+    $(function() {
+      $('#timer').pietimer({
+          timerSeconds: 10,
+          color: '#234',
+          fill: false,
+          showPercentage: true,
+          callback: function() {
+              alert("yahoo, timer is done!");
+              $('#timer').pietimer('reset');
+          }
+      });
+    });
+  </script>
+</head>
+<body>
+	<div id="fb-root"></div>
+	<script>(function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0];
+	  if (d.getElementById(id)) return;
+	  js = d.createElement(s); js.id = id;
+	  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=611324685593536";
+	  fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));</script>
+	<div class="container" id="app">
+		<div id="header">
+			<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+				<a class="navbar-brand navbar-center brand" href="/facebook">MadFibs</a>
+			</nav>
+		</div>
+
+		<div class="row" id="play">
+			
+			<div class="col-md-4" id="left-panel">
+				
+				<div class="row" id="top_btn">
+					<div  class="col-md-2">
+						
+						<section id="home">
+
+						</section>
+					</div>
+					<div class="col-md-2 col-md-offset-1">
+						<section id="userName" class="loggedin">
+							<button type="button" class="btn btn-warning btn-lg" id="btn-success">NEW GAME</button>
+						</section>
+					</div>
+				</div>
+				
+				<section id="main">
+
+				</section>
+			</div>
+
+			<div class="col-md-8">
+				<section id="game">
+				<div class="loggedoff">
+					<div id="fblogin" class="jumbotron">
+						<h1>Best Game Eva!</h1>
+						<p lead> Welcome to the Sentence Game.  This game is currently only available through Facebook.  Enjoy!
+						<h3>To begin Login: </h3>
+						<fb:login-button show-faces="true" width="200" max-rows="1" id="login"></fb:login-button>
+					</div>
+				</div>
+				</section>
+				
+				<div class="row">
+					<div class="col-md-10 col-md-offset-1" id="footer">
+						<div class="col-md-2" id="fb_btn">
+							<div class="fb-send" data-href="https://apps.facebook.com/madfibs" data-width="1000px" data-show-faces="true" data-send="true"></div>
+						</div>
+						<div class="col-md-2 col-md-offset-1" id="fb_btn">
+							<div class="fb-like" data-href="https://apps.facebook.com/madfibs" data-width="1000px" data-layout="button" data-action="like" data-show-faces="true" data-share="false"></div>
+						</div>
+						<div class="col-md-2 col-md-offset-1">
+						<a href="/facebook/#contact/" id="contact">Contact</a>
+						</div>
+						<div class="col-md-3 col-md-offset-1">
+							<section id="share">
+							</section>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+		</div>
+	
+
+	</div>
 </body>
 </html>

@@ -1,0 +1,71 @@
+Ways to keep people interested in playing the game
+
+
+1. Earn points by entering creating/longer words.  The more points you earn the more perks you get such as:
+	- ending the game when you want wihtout the other users consent.  (make it so those with few points can only end a game if the other person agrees, once you earn a specific amount of points you have the power to end the game when you want.)
+
+
+Point System
+
+*Decide exact point allotments 
+
+In players view, displayed will be:
+
+What they've earned:
+*Total points
+*Badges
+
+*Their Ranking?
+
+*How they can earn more points
+
+* =  Do today (March 20)
+
+
+function checkGame(info){
+						var t = gcollection.findWhere({player1: Number(to), player2: Number(currentUser)});
+						var s = gcollection.findWhere({player1: Number(currentUser), player2: Number(to)}); 
+						if (t){
+							var match = t;
+						} else if (s) {
+							var match = s;
+						} else {
+							var match = undefined;
+						}
+						if (match != undefined){
+							console.log(match + ' should be an object');
+							var active = match.attributes.active;
+						} else {
+							console.log(match + ' should be undefined');
+							var active = false;
+						}
+						console.log(active);
+						return active;
+					};
+
+
+					var ifActive = checkGame(info);
+							//See if any games already exist between the two players.
+							if (ifActive) {
+								console.log(ifActive);
+								console.log('game exists');
+							} else {
+								console.log('ifActive is ' + ifActive + ' so creating game with ');
+								console.log(info);
+								console.log('from assignGameData gcollection is');
+								console.log(gcollection);
+								
+								var gameinfo = {
+									player2to: Number(to),
+									p2name: info.name,
+									p1url: x,
+									p2url: p2id
+								}
+								var game = gcollection.createGame(gameinfo);
+								var player = pcollection.findWhere({_id: x});
+			    				var player2 = pcollection.findWhere({_id: p2id});
+								pcollection.savegame(game, player, player2);
+
+Next:
+Need to put code in to check for duplicates
+Need to tell the Games collection updateGameInfo code to save active correctly.

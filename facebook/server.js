@@ -10,6 +10,7 @@ var chatter = require('chatter'),
 var mongoose = require('mongoose');
 var uri = 'mongodb://nodejitsu_kapienta:u62qdrfun7e30jeq9m1onp3qq8@ds045978.mongolab.com:45978/nodejitsu_kapienta_nodejitsudb4870797025';
 global.db = mongoose.createConnection(uri);
+fillinblank = 'ad8d386b72151909021d28d0830c6c72';
 
 var http = require('http'),
         server = http.createServer(app),
@@ -66,6 +67,7 @@ app.post('/facebook/', function (req, res){
     });
 });
 
+
 app.get('/facebook/players', api.getPlayers);
 app.get( '/facebook/players/:id', api.getPlayer);
 app.post('/facebook/players', api.postPlayer);
@@ -77,6 +79,9 @@ app.post('/facebook/players/:playerid/games', api.postGame);
 app.get('/facebook/players/:playerid/games/:id', api.getGame);
 app.put('/facebook/players/:playerid/games/:id', api.updateGame);
 app.post('/facebook/players/:playerid/games/:id', api.postGame);
+
+app.post('/facebook/contact', api.postContact);
+//app.delete( '/facebook/players/:playerid/games/:id', api.deleteGame); 
 
 /*  socket.on('addGame', function (data){
     //socket.room = data.room;
@@ -120,7 +125,6 @@ chat_room.configure('production', function(){
   });
 
 
-
 /*app.delete('/players/:player_name', function  (req, res) {
 
   var found = false;
@@ -145,7 +149,7 @@ app.get('/*', function  (req, res) {
 });
 
 server.listen(
-//  8080, function (){
-//  console.log('Server listening on port 8080');
-//}
+  8080, function (){
+  console.log('Server listening on port 8080');
+}
 );

@@ -1,6 +1,6 @@
 var Player = require('../mongoose_models/player.js');
 var Game = require('../mongoose_models/game.js');
-
+var Contact = require('../mongoose_models/contact.js');
 
 //------------------------------------------Player logic------------------------------------ 
 //Find all players
@@ -34,7 +34,8 @@ exports.postPlayer = function (req, res){
 			city: req.body.city,
 			gender: req.body.gender,
 			url: req.body.url,
-		    last_login: req.body.last_login
+		    last_login: req.body.last_login, 
+		    points: req.body.points
 		});
 		player.save( function (err){
 			if (err) return handleError (err);
@@ -70,6 +71,7 @@ exports.updatePlayer = function (req, res){
 		player.url = req.body.url;
 	    player.last_login = req.body.last_login;
         player.games = req.body.games;
+        player.points = req.body.points;
         //player.games.player2_name = req.body.player2_name;
 
 	    return player.save( function( err ) {
@@ -120,7 +122,11 @@ exports.postGame = function (req, res){
 			player1: req.body.player1,
 			player1_name: req.body.player1_name,
 			player2: req.body.player2,
-			player2_name: req.body.player2_name
+			player2_name: req.body.player2_name,
+			points: req.body.points,
+			votes: req.body.votes,
+			p1points: req.body.p1points,
+			p2points: req.body.p2points
 		});
 		game.save( function (err){				
 			if (err) return handleError (err);			
@@ -131,6 +137,22 @@ exports.postGame = function (req, res){
 	 	
 };
 
+
+/*exports.deleteGame = function( req, res ) {
+    console.log( 'Deleting book with id: ' + req.params.id );
+    return Game.findById( req.params.id, function( err, game ) {
+        return game.remove( function( err ) {
+            if( !err ) {
+                console.log( 'Game removed' );
+                return res.send( '' );
+            } else {
+                console.log( err );
+            }
+        });
+    });
+};*/
+
+
 exports.updateGame = function (req, res){
 	console.log( 'Updating game ' + req.body.game );
     return Game.findById( req.params.id, function( err, game ) {
@@ -138,6 +160,12 @@ exports.updateGame = function (req, res){
 		game.turn = req.body.turn;
 		game.complete = req.body.complete;
 		game.active = req.body.active;
+		game.points = req.body.points;
+		game.p2url = req.body.p2url;
+		game.votes = req.body.votes;
+		game.share = req.body.share;
+		game.p1points = req.body.p1points;
+		game.p2points = req.body.p2points;
 
 	    return game.save( function( err ) {
 	        if( !err ) {
@@ -150,4 +178,16 @@ exports.updateGame = function (req, res){
 	    	return res.send( game );
 	    });
     });
+};
+
+exports.postContact = function (req, res){
+	    var contact = new Contact({
+			player_id: req.body.player_id,
+			name: req.body.name,
+			comment: req.body.comment
+		});
+		contact.save( function (err){				
+			if (err) return handleError (err);			
+		});
+		return res.send(contact);	 	
 };

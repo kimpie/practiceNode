@@ -6,34 +6,60 @@ var app = app || {};
 	app.PlayersView = Backbone.View.extend({
 
 		template: Handlebars.compile(
-			
-			'<h3>Welcome {{name}}</h3>' +
-			'<div id="games" class="panel panel-default">' +
-				'<div class="panel-heading" >Your games</div>' +
-				'<div class="panel-body">' +
-					'<ul>' +
-					'{{#each games}}' +
-					'<li id="player_name"><a class="btn btn-default btn-lg btn-block" id="indGame" href="{{url}}">{{player2_name}}</a></li>' +
-					'{{/each}}' +
-					'</ul>' +
-				'</div>'+
+			'<div id="games_yours">' +
+				'<div style="text-align:center; background-color: 1c5f60; line-height: 3; color:white"><strong>YOUR TURN</strong></div>' +
+					'<div class="panel-body" id="gmPanel">' +
+						'<ul id="gamelist">' +
+						'{{#each games}}' +
+						'{{#if turn}}' +
+						'<li id="player_name"><a class="btn btn-default btn-lg btn-block" id="indGame" href="{{url}}">Fib with {{player2_name}}</a></li>' +
+						'{{/if}}' +
+						'{{/each}}' +
+						'</ul>' +
+					'</div>' +
+			'</div>' +
+			'<div id="games_theirs">' +
+				'<div style="text-align:center;  background-color: 1c5f60; line-height: 3; color:white">Their Turn</div>' +
+					'<div class="panel-body" id="gmPanel">' +
+						'<ul id="gamelist">' +
+						'{{#each games}}' +
+						'{{#unless turn}}' +
+						'<li id="player_name"><a class="btn btn-default btn-lg btn-block" id="indGame" href="{{url}}">Fib with {{player2_name}}</a></li>' +
+						'{{/unless}}' +
+						'{{/each}}' +
+						'</ul>' +
+					'</div>' +
 			'</div>'
 		),
+
 
 		events: {
 			"click #indGame": "loadGame"
 		},
 
 		initialize: function  (options) {
+			console.log(options);
+			this.model = options.model;
 			var i = this.model.attributes.games.length;
 			console.log('PlayersView has been initialized with ' + i + ' games');
-			this.model = options.model;
-			this.model.bind('reset', this.render);
-
-			app.AppView.vent.on('turn:update', this.alertPlayer);
-			
+			this.model.bind('reset', this.render);			
 			this.listenTo(this.model, "change", this.notice);
 			this.listenTo(this.model, "change", this.render);
+			//app.AppView.vent.on('saveNewSentence', this.newTurn, this);
+		},
+
+		newTurn: function(info){
+			console.log('newTurn triggered with info:');
+			console.log(info);
+			var player = this.model;
+			var game = info.game;
+			if (info.turn == Number(currentUser)){
+				console.log('PlayersView says its my turn for fb_id ' + player.attributes.fb_id);
+				player.turn(player, game);
+			} else {
+				console.log('PlayersView says its not my turn for fb_id ' + player.attributes.fb_id);
+				player.noturn(player, game);
+			}
 		},
 
 		loadGame: function(data){

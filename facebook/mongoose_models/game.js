@@ -13,7 +13,12 @@ var gameSchema = new Schema({
 	player1: Number,
 	player1_name: String,
 	player2: Number,
-	player2_name: String
+	player2_name: String,
+	p1points: Number,
+	p2points: Number,
+	points: Number,
+	votes: Number,
+	share: Boolean
 });
 
 module.exports = db.model('Game', gameSchema);

@@ -1,16 +1,159 @@
+/* Small devices (tablets, 768px and up) */
+@media (min-width: @640px) { 
+
+	body{
+		background-image: url(https://i.imgur.com/Da7poh6.png);
+	}
+
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: @900px) { 
+
+	body{
+		background-image: url(https://i.imgur.com/b5AurLp.png);
+	}
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: @1200px) { 
+
+	body{
+		background-image: url(https://i.imgur.com/gH28NXx.png);
+	}
+}
+
+
+body{
+		background-image: url(https://i.imgur.com/cyFwgpL.png);
+}
+
+div#play{
+	padding-top: 70px;
+}
 
 div#fblogin{
 	padding-top: 80px;
 	text-align: center;
 }
 
+ul#gamelist{
+	padding-left: 0px;
+}
+
+div#games_yours{
+	border-width: 5px;
+	border: solid 1c5f60;
+	border-radius: 10px 10px 10px 10px;
+	margin-bottom: 10px;
+}
+
+div#games_theirs{
+	border: solid 1c5f60;
+	border-width: 5px;
+	border-radius: 10px 10px 10px 10px;
+}
+
+div#points{
+	border: solid 1c5f60;
+	border-width: 5px;
+	border-radius: 10px 10px 10px 10px;
+	background-color: 1c5f60;
+	color: white;
+}
+
+.alignleft {
+	float: left;
+}
+.alignright {
+	float: right;
+}
+
+#top_point{
+	margin-top: 10px;
+	margin-bottom: 0px;
+}
+
+#mid_point{
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+
+#btm_point{
+	margin-top: 0px;
+	margin-bottom: 10px;
+}
+
+
 div#inGame {
 	text-align: left; 
 }
 
-div#top {
-	padding-top: 70px;
+div#gameover{
+	padding-top: 40px;
 	text-align: center;
+}
+
+button#deleteGame{
+	padding-top: 10px;
+}
+
+div#fb_btn{
+	margin-top: 10px;
+	margin-left: 2px;
+	margin-right: 2px;
+	margin-bottom: 10px;
+}
+
+div#top {
+	margin-top: 70px;
+	text-align: center;
+}
+
+div#sentence{
+	border: ridge white;
+	border-radius: 10px 10px 10px 10px;
+	border-width: 3px;
+	background-color: white;  
+	text-align: left;
+	margin: 60px 20px 30px;
+	vertical-align: text-center;
+	padding: 20px 10px;
+}
+
+div#endsentence{
+	border: ridge c7c6eb;
+	border-radius: 10px 10px 10px 10px;
+	border-width: 3px;
+	background-color: c7c6eb;  
+	text-align: left;
+	margin: 30px 20px 30px;
+	vertical-align: text-center;
+	padding: 20px 10px;
+}
+
+div#footer{
+	border: none;
+	border-radius: 10px 10px 10px 10px;
+	background: rgba(225, 225, 225, .8);
+	margin-top: 140px;
+}
+
+div#contact{
+	padding-top: 10px;
+}
+
+div#sample{
+	text-align: center;
+}
+
+div#intro{
+	text-align: center;
+	padding-bottom: 20px;
+}
+
+div#rules{
+	text-align: justify;
 }
 
 li#player_name{
@@ -27,13 +170,17 @@ li#player_name{
 	display: none;
 	text-align: center;
 }
-
-div#input_area{
-	display: block;
+.btn{
+	padding-top: 3px;
 }
 
-div#disabled_input_area{
+div#top_btn{
+	margin-bottom: 10px;
+}
+
+div#input{
 	display: block;
+	margin-bottom: 20px;
 }
 
 ul.list{
@@ -92,10 +239,8 @@ li#chat_li {
 	display: inline;
 }
 
-#display_word{
-	list-style: none;
+li#show{
 	display: inline;
-
 }
 
 input#chat_box {
