@@ -6,8 +6,8 @@ var app = app || {};
 
 		template: Handlebars.compile(
 		'<div class="row">' +
-			'<div class="col-md-4 col-md-offset-1" id="timer">' +
-			'</div>' +
+			'<div class="col-md-5 col-md-offset-1" id="timer">'+
+			'</div>'+
 			'<div class="col-md-5 col-md-offset-1" id="points">' +
 				'<h5 id="top_point" style="font-weight:bold" class="alignleft">{{player1_name}}</h5><h5 style="font-weight:bold;" id="top_point" class="alignright">{{p1points}}</h5>' +
 				'<div style="clear: both;"></div>' +
@@ -32,8 +32,8 @@ var app = app || {};
 
 		template3: Handlebars.compile(
 		'<div class="row">' +
-			'<div class="col-md-4 col-md-offset-1" id="timer">' +
-			'</div>' +
+			'<div class="col-md-5 col-md-offset-1" id="timer">'+
+			'</div>'+
 			'<div class="col-md-5 col-md-offset-1" id="points">' +
 				'<h5 id="top_point" style="font-weight:bold" class="alignleft">{{player1_name}}</h5><h5 style="font-weight:bold;" id="top_point" class="alignright">{{p1points}}</h5>' +
 				'<div style="clear: both;"></div>' +
@@ -57,8 +57,8 @@ var app = app || {};
 
 		template4: Handlebars.compile(
 		'<div class="row">' +
-			'<div class="col-md-4 col-md-offset-1" id="timer">' +
-			'</div>' +
+			'<div class="col-md-5 col-md-offset-1" id="timer">'+
+			'</div>'+
 			'<div class="col-md-5 col-md-offset-1" id="points">' +
 				'<h5 id="top_point" style="font-weight:bold" class="alignleft">{{player1_name}}</h5><h5 style="font-weight:bold;" id="top_point" class="alignright">{{p1points}}</h5>' +
 				'<div style="clear: both;"></div>' +
@@ -120,7 +120,7 @@ var app = app || {};
 		app.AppView.vent.on('saveNewSentence', this.sNs, this);
 		this.turn = this.$('#turn');
 		this.sentence = this.$('#sentence');
-
+		this.timer = this.$('#timer');
 		this.render();
 	},
 
@@ -197,6 +197,23 @@ var app = app || {};
 				this.model.saveData(info, model);
 				console.log('sns triggered in games view 1');
 				app.AppView.vent.trigger('playersTurn', info.turn, model);
+				/*var count=30;
+
+				var counter=setInterval(timer, 1000); //1000 will  run it every 1 second
+
+				function timer()
+				{
+				  count=count-1;
+				  if (count <= 0)
+				  {
+				     clearInterval(counter);
+				        this.timer.html('times up');
+				        console.log('do something at end of timer');
+				     return;
+				  }
+
+				 document.getElementById("timer").innerHTML= 'Time Remaining' + count;
+				}*/
 			}
 		}
 	
@@ -309,7 +326,6 @@ var app = app || {};
 		}
 
 	},
-
 
 	render: function () {
 		if ( this.model.get('turn') == Number(currentUser) ) {

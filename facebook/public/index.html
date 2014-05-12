@@ -5,7 +5,7 @@
 	<link rel="stylesheet" type="text/css" href="css/style.css" />	
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css" />
-	<link rel="stylesheet" type="text/css" href="css/pietimer.css">
+	<link rel="stylesheet" type="text/css" href="css/TimeCircles.css">
 
 	<script type="text/javascript" src="/facebook/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="js/lib/jquery-1.10.2.min.js"></script>
@@ -16,7 +16,6 @@
 	<script type="text/javascript" src="js/lib/backbone-min.js"></script>
 	<script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/lib/handlebars-v1.1.2.js"></script>
-	<script type="text/javascript" src="js/lib/jquery.pietimer.js"></script>
 
 	<script type="text/javascript" src="js/models/playerModel.js"></script>
 	<script type="text/javascript" src="js/models/contactModel.js"></script>
@@ -45,20 +44,6 @@
 	  ga('send', 'pageview');
 
 	</script>
-	<script type="text/javascript">
-    $(function() {
-      $('#timer').pietimer({
-          timerSeconds: 10,
-          color: '#234',
-          fill: false,
-          showPercentage: true,
-          callback: function() {
-              alert("yahoo, timer is done!");
-              $('#timer').pietimer('reset');
-          }
-      });
-    });
-  </script>
 </head>
 <body>
 	<div id="fb-root"></div>

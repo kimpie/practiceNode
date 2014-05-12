@@ -4,7 +4,6 @@ jQuery(document).ready(function () {
 		li.css({'display': 'inline'});
 		//jQuery('#chat_log').append(li);
 		jQuery('#show').append(li);
-
 	};
 
 	var end = function(data){
@@ -22,8 +21,8 @@ jQuery(document).ready(function () {
 		} 
 	};
 
-	var notify_points = function(data){
-		jQuery('#notify_points').append('<h4>Word: ' + data.word + '\n' + 'Points: ' + data.points + '</h4>');
+	var pic = function(data){
+		jQuery('#image').
 	};
 
 	/*var notify_turn = function(turn){
@@ -76,7 +75,6 @@ jQuery(document).ready(function () {
 //		log_chat_message(data.message, 'normal');
 		//notify_turn(data.turn);
 		end(data);
-		notify_points(data);
 		app.AppView.vent.trigger('saveNewSentence', data);
 	});
 

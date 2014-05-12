@@ -38,7 +38,6 @@ var app = app || {};
 				      	'<p class="lead"> Playing the game is simple and only takes your imagination.</p>' +
 						'<p> Start a new game by inviting a friend to play.  Whoever starts the sentence sets the tone for the game by entering the first word.</p>' +
 						'<p>The other player enters the next word and game continues going back and forth until someone ends the game with either a "." , "!" or "?"</p>' +
-						'<p class="lead"> One thing - there is a timer.  As your sentence gets longer the timer gets shorter.  If the timer goes off before your submit a word, you loose sheep to the wolf.</p>'+
 						'<p>Create the greatest fib ever or a hilarious story. The better your story is the more points you\'ll earn. Earn points individually and together. ' +
 
 						'<p>Watch out, theres a wolf sneaking around stealing sheep. The more points you earn the more sheep you save from the big bad wolf.' + 

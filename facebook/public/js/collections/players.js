@@ -58,6 +58,7 @@ var app = app || {};
 				var player = this.findWhere({fb_id: Number(currentUser)});
 				console.log(player);
 				console.log('loginPlayer has been invoked');
+				var that = this;
 				if (player == undefined){
 					console.log('New Player is about to be posted.');
 					that.createPlayer();
