@@ -5,156 +5,163 @@ var app = app || {};
 	app.GamesView2 = Backbone.View.extend({
 
 		template2: Handlebars.compile(
-		'<div class="row">' +
-			'<div class="col-md-5 col-md-offset-1" id="timer">'+
-			'</div>'+
-			'<div class="col-md-5 col-md-offset-1" id="points">' +
-				'<h5 id="top_point" style="font-weight:bold" class="alignleft">{{player2_name}}</h5><h5 style="font-weight:bold;" id="top_point" class="alignright">{{p2points}}</h5>' +
-				'<div style="clear: both;"></div>' +
-				'<h5 id="mid_point" class="alignleft">{{player1_name}}</h5><h5 id="mid_point" class="alignright">{{p1points}}</h5>' +
-				'<div style="clear: both;"></div>' +
-				'<h5 id="btm_point" class="alignleft">Game Points</h5><h5 id="btm_point" class="alignright">{{points}}</h5>' +
-				'<div style="clear: both;"></div>' +
-			'</div>'+
-		'</div>' +
-		'<div class="row">' +
-			'<div class="col-md-10 col-md-offset-1">' +
-				'<div id="sentence">' +
-					'<h4>{{sentence}}</h4>' +
+		'<div class="row" id="gameview">' +
+			'<div class="col-md-4" id="opponenet-panel">'+
+				'<div class="row" id="progress_bar">' +
+					'<div class="col-md-4">' +
+						'<h5>L1</h5>' +
+					'</div>' +
+					'<div class="col-md-4">' +
+						'<h5>L2</h5>' +
+					'</div>' +
+					'<div class="col-md-4">' +
+						'<h5>L3</h5>' +
+					'</div>' +
 				'</div>' +
-				'<div><p style="text-align:center"><em>Hitting return or space on the keyboard will submit your word</em></p></div>' +
-				'<div id="input">' +
-					'<input class="form-control input-lg" id="enter" type="text" name="enter_word" placeholder="enter a word..."></>' +
+				'<h4>Live Fib with</h4>' +
+				'<hr></hr>' +
+				'<h4>{{player2_name}}</h4>' +
+			'</div>' +
+			'<div class="col-md-8" id="gameplay">' +
+				'<div class="row">'+
+					'<div class="col-md-4" id="turn">' +
+						'<h5>Turn</h5>'+
+					'</div>' +
+					'<div class="col-md-4" id="stage">'+
+						'<div class="row">' +
+							'<div class="col-md-12" id="level"><h5>Level</h5></div>'+
+							'<div class="col-md-12" id="stage"><h5>Stage</h5></div>'+
+						'</div>' +
+					'</div>' +
+					'<div class="col-md-4" id="game_up">' +
+						'<h5>Timer/Counter</h5>'+
+					'</div>' +
 				'</div>' +
-			'</div>' +
-		'</div>' 
-/*		'<div class="row">' +
-			'<div class="col-md-10 col-md-offset-1">' +
-				'<div id="turn">'+
-				'</div>'+
-				'<div><p style="text-align:center"><em>Hitting return or space on the keyboard will submit your word</em></p></div>' +
-				'<div id="input">' +
-					'<input class="form-control input-lg" id="enter" type="text" name="enter_word" placeholder="enter a word..."></>' +
+				'<div class="row">'+
+					'<div class="well" id="card"></div>'+	
 				'</div>' +
+				'<div class="row">' +
+					'<div class="col-md-10 col-md-offset-1">' +
+						'<div id="sentence">' +
+							'<h4>{{sentence}}</h4>' +
+						'</div>' +
+						'<div><p style="text-align:center"><em>Hitting return or space on the keyboard will submit your word</em></p></div>' +
+						'<div id="input">' +
+							'<input class="form-control input-lg" id="enter" type="text" name="enter_word" placeholder="enter a word..."></>' +
+						'</div>' +
+					'</div>' +
+				'</div>' + 
 			'</div>' +
-		'</div>' +
-		'<div class="row">'+
-			'<div class="col-md-2 col-md-offset-9">' +
-				'<button type="button" class="btn btn-default" id="deleteGame">Delete Game</button>' +
-			'</div>' +
-		'</div>' +
-		'<div class="row">'+
-		'<div class="col-md-4 col-md-offset-4>' +
-		'<div data-toggle="modal" data-target=".confirm-modal" id="confirm"></div> ' +
-		'<div class="modal fade confirm-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true"> ' +
-  			'<div class="modal-dialog modal-sm"> '+
-   				' <div class="modal-content">' +
-      				'Are you sure you want to end the game?' +
-      				'<div class="checkbox">' +
-					    '<label><input type="checkbox"> Check this box to earn more points and get votes \nby sharing this sentence other players.</label>' +
-				    '</div>' +
-				    '<button type="button" class="btn btn-success">End Game</button>' +
-    			'</div>' +
-  			'</div>' +
-		'</div>' +
-		'</div>' +
 		'</div>'
-*/	),
+	),
 
 	template3: Handlebars.compile(
-		'<div class="row">' +
-			'<div class="col-md-5 col-md-offset-1" id="timer">'+
-			'</div>'+
-			'<div class="col-md-5 col-md-offset-1" id="points">' +
-				'<h5 id="top_point" style="font-weight:bold" class="alignleft">{{player2_name}}</h5><h5 style="font-weight:bold;" id="top_point" class="alignright">{{p2points}}</h5>' +
-				'<div style="clear: both;"></div>' +
-				'<h5 id="mid_point" class="alignleft">{{player1_name}}</h5><h5 id="mid_point" class="alignright">{{p1points}}</h5>' +
-				'<div style="clear: both;"></div>' +
-				'<h5 id="btm_point" class="alignleft">Game Points</h5><h5 id="btm_point" class="alignright">{{points}}</h5>' +
-				'<div style="clear: both;"></div>' +
-			'</div>'+
-		'</div>' +
-		'<div class="row">' +
-			'<div class="col-md-10 col-md-offset-1">' +
-				'<div id="sentence">' +
-					'<h4>{{sentence}}</h4>' +
+		'<div class="row" id="gameview">' +
+			'<div class="col-md-4" id="opponenet-panel">'+
+				'<div class="row" id="progress_bar">' +
+					'<div class="col-md-4">' +
+						'<h5>L1</h5>' +
+					'</div>' +
+					'<div class="col-md-4">' +
+						'<h5>L2</h5>' +
+					'</div>' +
+					'<div class="col-md-4">' +
+						'<h5>L3</h5>' +
+					'</div>' +
 				'</div>' +
-				'<div class="col-md-10 col-md-offset-1" id="input">' +
-					'<input class="form-control input-lg" id="disabledInput" type="text" name="enter_word" placeholder="waiting for {{player1_name}}" disabled></>' +
+				'<h4>Live Fib with</h4>' +
+				'<hr></hr>' +
+				'<h4>{{player2_name}}</h4>' +
+			'</div>' +
+			'<div class="col-md-8" id="gameplay">' +
+				'<div class="row">'+
+					'<div class="col-md-4" id="turn">' +
+						'<h5>Turn</h5>'+
+					'</div>' +
+					'<div class="col-md-4" id="stage">'+
+						'<div class="row">' +
+							'<div class="col-md-12" id="level"><h5>Level</h5></div>'+
+							'<div class="col-md-12" id="stage"><h5>Stage</h5></div>'+
+						'</div>' +
+					'</div>' +
+					'<div class="col-md-4" id="game_up">' +
+						'<h5>Timer/Counter</h5>'+
+					'</div>' +
+				'</div>' +
+				'<div class="row">'+
+					'<div class="well" id="card"></div>'+	
+				'</div>' +
+				'<div class="row">' +
+					'<div class="col-md-10 col-md-offset-1">' +
+						'<div id="sentence">' +
+							'<h4>{{sentence}}</h4>' +
+						'</div>' +
+						'<div class="col-md-10 col-md-offset-1" id="input">' +
+							'<input class="form-control input-lg" id="disabledInput" type="text" name="enter_word" placeholder="waiting for {{player1_name}}" disabled></>' +
+						'</div>' +
+					'</div>' +
 				'</div>' +
 			'</div>' +
-		'</div>' 
-/*		'<div class="row">' +
-			'<div class="col-md-10 col-md-offset-1" id="input">' +
-					'<input class="form-control input-lg" id="disabledInput" type="text" name="enter_word" placeholder="waiting for {{player1_name}}" disabled></>' +
-			'</div>' +
-		'</div>' +
-		'<div class="row">' +
-			'<div class="col-md-2 col-md-offset-9">' +
-				'<button type="button" class="btn btn-default" id="deleteGame">Delete Game</button>' +
-			'</div>' +
-		'</div>' 
-*/
+		'</div>'
 	),
 
 	template4: Handlebars.compile(
-		'<div class="row">' +
-			'<div class="col-md-5 col-md-offset-1" id="timer">'+
-			'</div>'+
-			'<div class="col-md-5 col-md-offset-1" id="points">' +
-				'<h5 id="top_point" style="font-weight:bold" class="alignleft">{{player2_name}}</h5><h5 style="font-weight:bold;" id="top_point" class="alignright">{{p2points}}</h5>' +
-				'<div style="clear: both;"></div>' +
-				'<h5 id="mid_point" class="alignleft">{{player1_name}}</h5><h5 id="mid_point" class="alignright">{{p1points}}</h5>' +
-				'<div style="clear: both;"></div>' +
-				'<h5 id="btm_point" class="alignleft">Game Points</h5><h5 id="btm_point" class="alignright">{{points}}</h5>' +
-				'<div style="clear: both;"></div>' +
-			'</div>'+
-		'</div>' +
-		'<div class="row">' +
-			'<div class="col-md-7 col-md-offset-2">' +
-				'<div id="notify">' +
+		'<div class="row" id="gameview">' +
+			'<div class="col-md-4" id="opponenet-panel">'+
+				'<div class="row" id="progress_bar">' +
+					'<div class="col-md-4">' +
+						'<h5>L1</h5>' +
+					'</div>' +
+					'<div class="col-md-4">' +
+						'<h5>L2</h5>' +
+					'</div>' +
+					'<div class="col-md-4">' +
+						'<h5>L3</h5>' +
+					'</div>' +
 				'</div>' +
-			'</div>' +	
-			'<div class="col-md-1">' +
-				'<div id="notifybtn">' +
+				'<h4>Live Fib with</h4>' +
+				'<hr></hr>' +
+				'<h4>{{player2_name}}</h4>' +
+			'</div>' +
+			'<div class="col-md-8" id="gameplay">' +
+				'<div class="row">'+
+					'<div class="col-md-4" id="turn">' +
+						'<h5>Turn</h5>'+
+					'</div>' +
+					'<div class="col-md-4" id="stage">'+
+						'<div class="row">' +
+							'<div class="col-md-12" id="level"><h5>Level</h5></div>'+
+							'<div class="col-md-12" id="stage"><h5>Stage</h5></div>'+
+						'</div>' +
+					'</div>' +
+					'<div class="col-md-4" id="game_up">' +
+						'<h5>Timer/Counter</h5>'+
+					'</div>' +
 				'</div>' +
-			'</div>' +
-		'</div>'+
-		'<div class="row">' +
-			'<div class="col-md-10 col-md-offset-1" id="gameover">' +
-				
-			'</div>' +
-		'</div>'+
-		'<div class="row">'+
-			'<div class="col-md-10 col-md-offset-1">' +
-				'<div id="endsentence">' +
-					'<h4>{{sentence}}<h4>' +
+				'<div class="row">' +
+					'<div class="col-md-7 col-md-offset-2">' +
+						'<div id="notify">' +
+						'</div>' +
+					'</div>' +	
+					'<div class="col-md-1">' +
+						'<div id="notifybtn">' +
+						'</div>' +
+					'</div>' +
+				'</div>'+
+				'<div class="row">' +
+					'<div class="col-md-10 col-md-offset-1" id="gameover">' +
+						
+					'</div>' +
+				'</div>'+
+				'<div class="row">'+
+					'<div class="col-md-10 col-md-offset-1">' +
+						'<div id="endsentence">' +
+							'<h4>{{sentence}}<h4>' +
+						'</div>' +
+					'</div>' +
 				'</div>' +
-			'</div>' +
-		'</div>' 
-/*		'<div class="row">' +
-			'<div class="col-md-4 col-md-offset-1">'+
-				'<h4>Send the story to a specific friend or a group of friends</h4>' +
-			'</div>' +
-			'<div class="col-md-4 col-md-offset-2">' +
-				'<h4>Start a New Game with {{player1_name}}</h4>' +
-			'</div>'+
-		'</div>' +
-		'<div class="row">' +
-			'<div class="col-md-4 col-md-offset-1">' +
-			'<div class="fb-send" data-href="http://www.facebook.com/madfibs" data-width="450" data-show-faces="true" data-send="true"></div>' +
-			//'<div class="fb-send" data-href="https://completethesentence.com/facebook/#/players/{{p2url}}/games/{{_id}}" data-colorscheme="light"><h4>Send</h4></div>' +
-			'</div>' +
-			'<div class="col-md-4 col-md-offset-2">' +
-				'<button type="button" class="btn btn-success btn-block" id="deleteAndStart">New Game with {{player1_name}}</button>' +
-			'</div>'+
-		'</div>' +
-		'<div class="row">' +
-			'<div class="col-md-3 col-md-offset-8">' +
-			'<button type="button" class="btn btn-default" id="deleteGame">Delete Game</button>' +
 			'</div>' +
 		'</div>'
-*/
 	),
 
 	initialize: function  (options) {

@@ -9,7 +9,8 @@
 
 	<script type="text/javascript" src="/facebook/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="js/lib/jquery-1.10.2.min.js"></script>
-	<script type="text/javascript" src="js/lib/dateFormat.js"></script>
+	<script type="text/javascript" src="js/lib/jQuery-Autocomplete/dist/jquery.autocomplete.js"></script>
+<!--	<script type="text/javascript" src="js/lib/perfect-scrollbar/src/perfect-scrollbar.js"></script> -->
 	<script type="text/javascript" src="js/lib/fbscript.js"></script>
 	<script type="text/javascript" src="js/lib/chatterscript.js"></script>
 	<script type="text/javascript" src="js/lib/underscore.min.js"></script>
@@ -31,6 +32,7 @@
 	<script type="text/javascript" src="js/views/AppView.js"></script>
 	<script type="text/javascript" src="js/views/shareView.js"></script>
 	<script type="text/javascript" src="js/views/contactView.js"></script>
+	<script type="text/javascript" src="js/views/versionView.js"></script>
 	<script type="text/javascript" src="js/routers/router.js"></script>
 	<script type="text/javascript" src="js/app.js"></script>	
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
@@ -62,30 +64,58 @@
 		</div>
 
 		<div class="row" id="play">
-			
-			<div class="col-md-4" id="left-panel">
-				
-				<div class="row" id="top_btn">
-					<div  class="col-md-2">
-						
-						<section id="home">
 
-						</section>
-					</div>
-					<div class="col-md-2 col-md-offset-1">
-						<section id="userName" class="loggedin">
-							<button type="button" class="btn btn-warning btn-lg" id="btn-success">NEW GAME</button>
-						</section>
-					</div>
-				</div>
-				
-				<section id="main">
+			<div class="col-md-8 col-md-offset-2">
+				<section id="userName" class="loggedin">
+					<button type="button" class="btn btn-default btn-block" id="top_btn">Badges</button>
+					<div class="well well-lg">
+						<p class="lead">Start a new game either with a group or play one-on-one</p>
+						<!-- Button trigger modal -->
+						<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#gameModal" id="btn-success">
+						  NEW GAME
+						</button>
 
+						<!-- Modal -->
+						<div class="modal fade" id="gameModal" tabindex="-1" role="dialog" aria-labelledby="gameModalLabel" aria-hidden="true">
+						  <div class="modal-dialog" id="gmModal-Dialog">
+						    <div class="modal-content">
+						      <div class="modal-header">
+						        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						        
+						      </div>
+						      <div class="modal-body row">
+							      <div id="placetitle" class="qtitle"></div>
+								      <div id="place" class="question">
+								      	<h4>Are you playing</h4>
+								      	<button type="button" class="btn btn-primary btn-lg select" id="placetitle">Online</button>
+								      	<h4>Or</h4>
+								      	<button type="button" class="btn btn-primary btn-lg select" id="placetitle">Live</button>
+								      </div>
+							      
+							      <div id="peopletitle" class="qtitle"></div>
+								      <div id="people" class="question" style="display:none;">
+									      <h4>Are you playing with a</h4>
+									      <button type="button" class="btn btn-primary btn-lg select" id="peopletitle">Group</button>
+									      <h4>Or</h4>
+									      <button type="button" class="btn btn-primary btn-lg select" id="peopletitle">One-on-One</button>
+								      </div>
+							      
+							      <div class="friendSelector" style="display:none;">
+	      						    <input class="form-control input-lg" type="text" name="q" id="query" placeholder="Search Friends"/> 
+							      	<div id="mfs"></div>
+							      </div>
+						      </div>
+						      <div class="modal-footer">
+						       <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						        <button type="button" class="btn btn-primary">Save changes</button> -->
+						      </div>
+						    </div>
+						  </div>
+						</div>
+
+					</div>
+					<section id="main"></section>
 				</section>
-			</div>
-
-			<div class="col-md-8">
-				<section id="game">
 				<div class="loggedoff">
 					<div id="fblogin" class="jumbotron">
 						<h1>Best Game Eva!</h1>
@@ -94,29 +124,9 @@
 						<fb:login-button show-faces="true" width="200" max-rows="1" id="login"></fb:login-button>
 					</div>
 				</div>
-				</section>
-				
-				<div class="row">
-					<div class="col-md-10 col-md-offset-1" id="footer">
-						<div class="col-md-2" id="fb_btn">
-							<div class="fb-send" data-href="https://apps.facebook.com/madfibs" data-width="1000px" data-show-faces="true" data-send="true"></div>
-						</div>
-						<div class="col-md-2 col-md-offset-1" id="fb_btn">
-							<div class="fb-like" data-href="https://apps.facebook.com/madfibs" data-width="1000px" data-layout="button" data-action="like" data-show-faces="true" data-share="false"></div>
-						</div>
-						<div class="col-md-2 col-md-offset-1">
-						<a href="/facebook/#contact/" id="contact">Contact</a>
-						</div>
-						<div class="col-md-3 col-md-offset-1">
-							<section id="share">
-							</section>
-						</div>
-					</div>
-				</div>
 			</div>
-		
-		</div>
-	
+				
+		</div>	
 
 	</div>
 </body>

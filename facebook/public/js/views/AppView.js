@@ -25,12 +25,17 @@ var app = app || {};
 			app.AppView.vent.on('removeGame', this.removeGame, this);
 			app.AppView.vent.on('updatePoints', this.updatePoints, this);
 			app.AppView.vent.on('newGameRequest', this.processResponse, this);
+			app.AppView.vent.on('inviteFriends', this.requestDialog, this);
+			//app.AppView.vent.on('liveGame', this.live, this);
+			//app.AppView.vent.on('onlineGame', this.online, this);
 
 			this.userName = this.$('#userName');
 			this.main = this.$('#main');	
 			this.home = this.$('#home');
 			this.share = this.$('#share');
 			this.game = this.$('#game');
+			this.play = this.$('#play');
+			this.mfs = this.$('#mfs');
 		},
 
 		//------Two events, when a user logs in to FB and when they invite friends to join
@@ -39,6 +44,22 @@ var app = app || {};
 			"click #btn-success": "requestDialog",
 			"click #home": "homeView",
 			"click #contact" : "contact"
+
+		},
+
+		/*live: function(){
+			var lg = new app.liveGame();
+			this.play.html(lg.render().el);
+		},
+
+		online: function(){
+			var og = new app.onlineGame();
+			this.play.html(og.render().el);
+		},*/
+
+		version: function(){
+			var vv = new app.versionView();
+			this.play.html(vv.render().el);
 		},
 
 		contact: function(){
@@ -48,7 +69,7 @@ var app = app || {};
 		},
 
 		getLocation: function(playerid){
-			this.showPlayer(playerid);
+			//this.showPlayer(playerid);
 			var url = location.hash.slice(10).split('/');
 			var g = "";
 			function games( element, index, array ){       
@@ -62,12 +83,12 @@ var app = app || {};
 				var game = url[2];
 				this.play(game);
 			} else {
-				this.homeView(playerid);
+				this.showPlayer(playerid);
 			}
 
 		},
 
-		homeView: function(player){
+/*		homeView: function(player){
 			if (player == undefined){
 				var player = location.hash.slice(9);
 				var playermodel = this.collection.get(player);
@@ -86,7 +107,7 @@ var app = app || {};
 			var ShareView = new app.shareView({model: playermodel});
 			this.share.html(ShareView.render().el);		
 		},
-
+*/
 		voteView: function(){
 		//Creating the code to loop through the collection, randomly pull out a model 
 		//and then send that model to the voteView, every 30 seconds.
@@ -150,7 +171,7 @@ var app = app || {};
 			var playerView = new app.PlayersView({model: playermodel});
             this.main.html(playerView.render().el);
             
-			this.home.html('<a type="button" class="btn btn-default btn-lg" id="home" href="/facebook/#players/'+ playermodel.id + '"><span class="glyphicon glyphicon-home"></span></a>');
+			//this.home.html('<a type="button" class="btn btn-default btn-lg" id="home" href="/facebook/#players/'+ playermodel.id + '"><span class="glyphicon glyphicon-home"></span></a>');
 
 		},
 
@@ -160,14 +181,14 @@ var app = app || {};
 			var game_model = this.gameCollection.findWhere({_id: game});
 			if (game_model.attributes.player1 == Number(currentUser)){
 				var gameview = new app.GamesView({model: game_model});
-				this.game.html(gameview.render().el);
-				var ShareView = new app.shareView({model: game_model});
-				this.share.html(ShareView.render().el);
+				this.play.html(gameview.render().el);
+				//var ShareView = new app.shareView({model: game_model});
+				//this.share.html(ShareView.render().el);
 			} else {
 				var gameview2 = new app.GamesView2({model: game_model});
-				this.game.html(gameview2.render().el);	
-				var ShareView = new app.shareView({model: game_model});
-				this.share.html(ShareView.render().el);			
+				this.play.html(gameview2.render().el);	
+				//var ShareView = new app.shareView({model: game_model});
+				//this.share.html(ShareView.render().el);			
 			}
 		},
 
@@ -184,16 +205,162 @@ var app = app || {};
 
 //------FB api used to invite friends to play game.
 		requestDialog: function(){
-			FB.ui({method: 'apprequests',
+
+			function sendRequest() {
+			// Get the list of selected friends
+				var sendUIDs = '';
+				var mfsForm = document.getElementById('mfsForm');
+				for(var i = 0; i < mfsForm.friends.length; i++) {
+					if(mfsForm.friends[i].checked) {
+						 sendUIDs += mfsForm.friends[i].value + ',';
+					}
+				}
+
+				// Use FB.ui to send the Request(s)
+				FB.ui({method: 'apprequests',
+					to: sendUIDs,
+					title: 'Play MadFibs with me!',
+					message: 'Check out this Awesome Game!',
+				}, callback);
+			};
+
+			function callback(response) {
+				console.log(response);
+			};
+
+			//Building a custom multi-friend selector
+			 function renderMFS() {
+
+			 // First get the list of friends for this user with the Graph API
+				FB.api('/me/friends?fields=name,picture', function(response) {
+					var container = document.getElementById('mfs');
+					var mfsForm = document.createElement('form');
+					mfsForm.id = 'mfsForm';
+
+					// Iterate through the array of friends object and create a checkbox for each one.
+					for(var i = 0; i < Math.min(response.data.length); i++) {
+					 var friendItem = document.createElement('div');
+					 var k = response.data[i].name.replace(' ', '_');
+					 friendItem.id = k;
+					 friendItem.className = "media col-md-12";
+					 friendItem.innerHTML = '<input type="checkbox" name="friends" value="'	
+					 + response.data[i].id + '" />' 
+					 + '<a id="fb_pic" href="#"><img class="media-object" src="' + response.data[i].picture.data.url +  '"></a>'
+					 + response.data[i].name;
+					 mfsForm.appendChild(friendItem);
+
+					 }
+					 container.appendChild(mfsForm);
+
+			 			var divs = $( "#mfsForm > div" ).get();
+						divs = jQuery.unique( divs );
+						var str = $('#mfsForm > div')    .map(function() { return $(this).text(); }).get().join();
+						var temp = new Array();
+						temp = str.split(",");
+						var options, a;
+						jQuery(function(){
+							a = $('#query').autocomplete({
+								noCache: true,
+								onSelect: function(value, data){ 
+									var sq = $('#query').val().replace(' ', '_');
+									$('#mfs').animate({
+								        scrollTop: $('#' + sq).offset().top
+								    }, 2000);
+								    $('#' + sq).css({'background-color':'yellow'});
+									
+
+								},
+								lookup: temp
+							});
+						});
+
+
+					 // Create a button to send the Request(s)
+					 var sendButton = document.createElement('input');
+					 sendButton.type = 'button';
+					 sendButton.value = 'Send Request';
+					 sendButton.onclick = sendRequest;
+					 mfsForm.appendChild(sendButton);
+
+					});
+				};
+
+				//once a button is selected, hide the div
+				$('.select').each(function(){
+					$(this).click(function(){
+				        var id = $(this).attr('id');
+				        var txt = $(this).text();
+						console.log('id: ' + id + ' and text : ' + txt);
+				        $('div#' + id).html('<h4>' + txt + '</h4>');
+				        $(this).parent().hide();
+				        if( $(this).parent().next().text().trim().length == 0  ){
+					        $(this).parent().nextAll('.question').show();
+				        } else {
+				        	$(this).parent().nextAll('.friendSelector').show();
+				        }
+					});
+				});
+				//This only hides or shows the next div after .qtitle
+				$( '.qtitle' ).each(function(){
+					$(this).click(function() {
+						var divId = $(this).attr('id');
+						var did = divId.substr(0,4);
+						if( $('div#' + divId).next().is(':hidden') ) {
+							$('div#' + divId).next().show();
+							$('div.modal-body row').not('div[id*=' + did +']').hide();
+						} else {
+							$('div#' + divId).next().hide();
+						}
+
+						/*var divId = $(this).attr('id');
+						var did = divId.substr(0,4);
+						if ( $( 'div[id*=' + did +'].question').is( ":hidden" ) ) {
+							console.log($( 'div[id*=' + did +'].question'));
+							$("div").filter("#" + divId).show( "slow" );
+							$("div.qtitle").not('div[id*=' + did +']').hide();
+						} else {
+							$( 'div[id*=' + did +'].question').slideUp();
+							$("div#" + divId).next().show();
+						}*/
+					});	
+				});
+			
+			renderMFS();
+
+			//this.mfs.perfectScrollbar();
+			
+/*			FB.ui({method: 'apprequests',
 		     message: 'Play MadFib with me!' 
 		    }, requestCallback);
 			var that = this;
 		    function requestCallback(response){
 		    	that.processResponse(response);
 		    };
-
+*/
 		},
 
+/*		startGroup: function (){
+			FB.ui({method: 'apprequests',
+		     message: 'Play MadFib with me!' 
+		    }, requestCallback);
+			var that = this;
+			var group = 'group';
+		    function requestCallback(response){
+		    	that.processResponse(response , game);
+		    };
+		},	
+
+		startOne: function(){
+			FB.ui({method: 'apprequests',
+		     message: 'Play MadFib with me!' 
+		    }, requestCallback);
+			var that = this;
+			var one = 'one';
+		    function requestCallback(response){
+		    	that.processResponse(response, one);
+		    };
+		},
+*/
 		processResponse: function(response){
 
 	//	}
@@ -204,7 +371,7 @@ var app = app || {};
 			this.gameCollection.fetch({reset:true});
 			var that = this;
 			var pcollection = this.collection;
-
+	
 		  //	function requestCallback (response){
 		  		
 		  		if (response.to !== undefined) {
@@ -247,7 +414,7 @@ var app = app || {};
 								console.log('This game already exists.');
 								app.AppRouter.navigate('/players/' + x + '/games/' + match.attributes.id, true);
 							} else {
-													
+							
 								var gameinfo = {
 									player2to: Number(to),
 									p2name: info.name,

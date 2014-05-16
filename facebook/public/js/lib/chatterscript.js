@@ -21,10 +21,6 @@ jQuery(document).ready(function () {
 		} 
 	};
 
-	var pic = function(data){
-		jQuery('#image').
-	};
-
 	/*var notify_turn = function(turn){
 
 		var select_game = li.href.slice(41);

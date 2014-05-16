@@ -4,21 +4,32 @@ ObjectId = Schema.ObjectId;
 
 var gameSchema = new Schema({
 	game_id: Number,
-	p1url: String,
-	p2url: String,
-	sentence: String,
 	complete: Boolean,
-	turn: Number,
 	active: Boolean,
-	player1: Number,
-	player1_name: String,
-	player2: Number,
-	player2_name: String,
-	p1points: Number,
-	p2points: Number,
-	points: Number,
-	votes: Number,
-	share: Boolean
+	turn: String,
+	turn_fb_id: Number,
+	online: Boolean,
+	live: Boolean,
+	controller: String,
+	last_round_completed: Number,
+	one_one_card: Number,
+	one_two_card: Number,
+	one_three_card: Number,
+	two_one_card: Number,
+	two_two_card: Number,
+	three_card: Number,
+	one_one_story: String,
+	one_two_story: String,
+	one_three_story: String,
+	two_one_story: String,
+	two_two_story: String,
+	three_story: String,
+	players: [{
+		name: String,
+		fb_id: Number,
+		game_points: Number
+	}]
+
 });
 
 module.exports = db.model('Game', gameSchema);

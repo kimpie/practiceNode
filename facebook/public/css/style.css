@@ -1,22 +1,62 @@
-/* Small devices (tablets, 768px and up) */
+/* Small devices (tablets, 768px and up) 
 @media screen and (max-width: 768px) { 
 
 	body{background-image: url(https://imgur.com/HrxWGs1);}
 
 }
 
-/* Medium devices (desktops, 992px and up) */
+/* Medium devices (desktops, 992px and up) 
 @media screen and (min-width: 900px) and (max-width: 1199px){ 
 
 	body{background-image: url(https://i.imgur.com/cyFwgpL.png);}
 }
 
-/* Large devices (large desktops, 1200px and up) */
+/* Large devices (large desktops, 1200px and up) 
 @media screen and (min-width: 1200px) { 
 
 	body{background-image: url(https://i.imgur.com/gH28NXx.png);}
+} */
+
+.qtitle{
+	text-align: left;
+	color: #808080;
 }
 
+.question{
+	text-align: center;
+	color: black;
+}
+
+a#fb_pic{
+	border-style: solid;
+	border-color: black;
+	border: 2px;
+
+}
+
+div.media{
+	overflow: hidden;
+    white-space: nowrap;
+    margin-left: 2px;
+    display: inline-block;
+}
+
+.modal .modal-body {
+    max-height: 420px;
+    max-width: 600px;
+    overflow-y: auto;
+}
+
+div#mfs{ 
+	text-align: left;
+	columns:100px 2;
+	-webkit-columns:100px 2; /* Safari and Chrome */
+	-moz-columns:100px 2; /* Firefox */
+}
+
+div#progress_bar{
+	margin-bottom: 10px;
+}
 
 div#play{
 	padding-top: 70px;
@@ -164,7 +204,7 @@ li#player_name{
 	padding-top: 3px;
 }
 
-div#top_btn{
+#top_btn{
 	margin-bottom: 10px;
 }
 
