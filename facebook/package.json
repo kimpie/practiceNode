@@ -1,6 +1,6 @@
 {
   "name": "chat_room",
-  "version": "0.0.1-2206",
+  "version": "0.0.1-2287",
   "private": true,
   "scripts": {
     "start": "node server"
