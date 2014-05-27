@@ -13,7 +13,7 @@ var app = app || {};
 	    _.bindAll(this, 'setPlayerData', 'createPlayer', 'loginPlayer', 'renderPlayer', 'savegame');
 	  	app.AppView.vent.on('gameSaved', this.savegame, this);
 	  	app.AppView.vent.on('playersTurn', this.turn, this);
-	  	},
+	   	},
 
 	  	turn: function(turn, game){
 	  		console.log('turn triggered in players collection');
@@ -64,7 +64,7 @@ var app = app || {};
 					that.createPlayer();
 				} else {
 					var thisplayer = this.get(player);
-					//this.renderPlayer(thisplayer);
+					this.renderPlayer(thisplayer);
 					var pcGames = thisplayer.attributes.games;
 					app.AppView.vent.trigger('launchFetch', thisplayer, pcGames);
 			  		//this.trigger('loggedin', player);
@@ -75,14 +75,15 @@ var app = app || {};
 
 	  	renderPlayer: function (player){
 	  		console.log('renderPlayer triggered with player id: ' + player.id);
-	  		app.AppView.vent.trigger('loggedin', player);
-            //app.AppRouter.navigate('/players/' + player.id, true);
+	  		//app.AppView.vent.trigger('loggedin', player);
+            app.AppRouter.navigate('/players/' + player.id);
 	  		//this.vent.trigger("player:loggedin", player);
 	  	},
 
-	  	savegame: function(game, player1, player2){
-	  		console.log('SaveGame player1 is ' + player1 + ' and player2 is : ' + player2);
-	  		if (player2 !== "" && player2 !== undefined){
+	  	savegame: function(game){
+	  		console.log('SaveGame players');
+	  		console.log(game.attributes.players);
+	  	/*	if (player2 !== "" && player2 !== undefined){
 			//Scenario 1 : Both players exist in DB.	
 				console.log('SAVEGAME BOTH on players collection received info: ');
 		  		console.log(game);
@@ -106,7 +107,7 @@ var app = app || {};
 		  		console.log('and player2 info: ');
 		  		console.log(player2model);
 		  		player2model.setGameData2(game, player2model);
-	  		}
+	  		}*/
 	  	}
 
 	});

@@ -1,30 +1,94 @@
-/* Small devices (tablets, 768px and up) 
+/* Small devices (tablets, 768px and up) */
 @media screen and (max-width: 768px) { 
+	div#mfs{ 
+		max-height:200px; 
+		position: relative;
+		text-align: left;
+	}
 
-	body{background-image: url(https://imgur.com/HrxWGs1);}
+	div#mfsContainer{
+		max-height:200px; 
+		max-width:800px; 
+		overflow: auto;
+		position: relative;
+	}
 
 }
 
-/* Medium devices (desktops, 992px and up) 
+/* Medium devices (desktops, 992px and up) */
 @media screen and (min-width: 900px) and (max-width: 1199px){ 
+	div#mfs{ 
+		position: relative;
+		margin: 10px 10px 10px 10px;
+		text-align: left;
+		columns:100px 2;
+		-webkit-columns:100px 2; /* Safari and Chrome */
+		-moz-columns:100px 2; /* Firefox */
+	}
 
-	body{background-image: url(https://i.imgur.com/cyFwgpL.png);}
+	div#mfsContainer{
+		max-height:200px; 
+		max-width:800px; 
+		overflow: auto;
+		position: relative;
+	}
+
 }
 
-/* Large devices (large desktops, 1200px and up) 
+/* Large devices (large desktops, 1200px and up) */
 @media screen and (min-width: 1200px) { 
+	div#mfs{ 
+		position: relative;
+		margin: 10px 10px 10px 10px;
+		text-align: left;
+		columns:100px 2;
+		-webkit-columns:100px 2; /* Safari and Chrome */
+		-moz-columns:100px 2; /* Firefox */
+	}
 
-	body{background-image: url(https://i.imgur.com/gH28NXx.png);}
-} */
+	div#mfsContainer{
+		max-height:200px; 
+		max-width:800px; 
+		overflow: auto;
+		position: relative;
+	}
 
+} 
 
-hr{ 
-	-moz-border-top-colors: #7e7e7e;
+#home{
+	cursor: pointer;
+}
+
+#username{
+	text-align: center;
 }
 
 
 #query{
 	margin-bottom: 10px;
+}
+
+.cards{
+	border-style: solid black;
+	background-color: yellow;
+	border: 3px;
+	margin: 5px;
+	height: 140px;
+	cursor: pointer;
+}
+
+#players{
+	display: inline;
+	margin: 7px;
+	list-style: none;
+}
+
+#addPlayer{
+	cursor: pointer;
+}
+
+.top_gv{
+	text-align: center;
 }
 
 .select{
@@ -57,21 +121,6 @@ div.media{
     margin-left: 2px;
 }
 
-div#mfs{ 
-	position: relative;
-	margin: 10px 10px 10px 10px;
-	text-align: left;
-	columns:100px 2;
-	-webkit-columns:100px 2; /* Safari and Chrome */
-	-moz-columns:100px 2; /* Firefox */
-}
-
-div#mfsContainer{
-	max-height:200px; 
-	max-width:800px; 
-	overflow: auto;
-	position: relative;
-}
 
 div#progress_bar{
 	margin-bottom: 10px;

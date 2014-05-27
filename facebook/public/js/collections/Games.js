@@ -7,8 +7,8 @@ var app = app || {};
 		model: app.gameModel,
 		
 		initialize: function(options){
-			console.log('Game Collection initialized with options id: ');
-			console.log(options);
+			//console.log('Game Collection initialized with options id: ');
+			//console.log(options);
 		    _.bindAll(this, 'rotateModel','checkGames','setGameData','createGame','renderGame', 'triggerURL', 'url');
 		    app.AppView.vent.on('checkForGames', this.checkGames, this);
 		    app.AppView.vent.on('startTimer', this.rotateModel, this);
@@ -261,31 +261,146 @@ var app = app || {};
 
 		},
 
-		setGameData: function(info){
-			return{
-				player1: Number(currentUser),
-				player1_name: name,
-				player2: info.player2to,
-				player2_name: info.p2name,
-				complete: false,
-				active: true,
-				turn: Number(currentUser),
-				p1url: info.p1url,
-				p2url: info.p2url
+		setGameData: function(info, response){
+			console.log('all info coming in from createGame');
+			console.log(info);
+			console.log(response);
+			var modelPlayers = [];
+			var to = response.to;
+			var place = info[1];
+			function setPlayerData(data){
+				console.log('iterating through setPlayerData on ' + data.name);
+				var x = data.name,
+				    y = data.id;
+				    playerInfo = {
+				        'name': x, 
+				        'fb_id': y,
+				        'points': 0
+				    }; 
+				    modelPlayers.push(playerInfo);
 			};
+			for ( var i = 0; i < to.length; i++){
+			    FB.api(to[i], function (data){
+					setPlayerData(data);
+				});
+				console.log('mp from inside for loop');
+				console.log(modelPlayers);
+			};
+			console.log('modelPlayers outside');
+			console.log(modelPlayers);
+				if (modelPlayers.length > 0){
+					console.log('modelPlayers length ' + modelPlayers.length)
+					return{
+						complete: false,
+						active: true,
+						turn: '',
+						place: place,
+						players: modelPlayers
+					};
+				} else {
+					console.log('modelPlayers is empty');
+				}
 		},
 
-		createGame: function(info){
-			console.log('Games collection on createGame with ');
+		check: function(friend, info){
+			console.log('going through check inside Games collection');
+			var to = friend
+			var info = info;
+			var match = {};
+			//function findMatch(to){
+				var t = this.findWhere({player1: Number(to), player2: Number(currentUser), active: true});
+				var s = this.findWhere({player1: Number(currentUser), player2: Number(to), active: true}); 
+				if (t){
+					var match = t;
+					var active = true;
+				} else if (s) {
+					var match = s;
+					var active = true;
+				} else {
+					var match = undefined;
+					var active = false;
+				}
+				console.log('ifActive inside check is ' + active);
+				return active;
+			//};
+		},//End of checkGame fn() 
+
+		startGameProcess: function(response, info){
+			console.log('startGameProcess with info:');
+			var response = response;
+			var info = info;
+			console.log(response);
 			console.log(info);
-		    this.create(this.setGameData(info),
-		    	{
-	    			success: function(game, info){
-	    				console.log('Successfully saved game data for id: ' + game.id);
-	    				app.AppView.vent.trigger('gameSaved', game, info.p1url, info.p2url);   				
-	    			}
-	    		}
-    		);
+			var people = info[1];
+			var that = this;
+  			//if (response.to.length > 1){ //If more than one friend requested
+  				if (people == "One-on-One"){ //If more than one friend req and games are one-on-one
+					console.log('games are one one one');
+					var friends = response.to;
+	  				for (var i = 0; i < friends.length; i++){
+	  					var ifActive = that.check(friends[i], info);	
+	  					console.log('ifActive in startGameProcess is ' + ifActive);
+						if (ifActive) {
+							console.log('This game already exists.');
+							app.AppRouter.navigate('/players/' + x + '/games/' + match.attributes.id, true);
+						} else {
+							that.createGame(response, info);
+						}
+	  				}	
+  				} else if (people == "Group"){  //If more than one friend req but game is for group
+					console.log('more than one friend requested for the group game');
+					//logic needed: FB.api needs to loop through the list and assignGameData for each
+					//	Don't need to check if any games already exist with these people
+					//GameInfo will be a little different
+					that.createGame(response, info);
+  				} /// end of if/else if people		  				
+  			//} else {
+  			//	console.log('one friend requested, game will be one-on-one');
+  			//	that.createGame(response, info);
+  			//}//End of response.to length if/else 
+		},
+
+		createGame: function(response, info){
+			var to = response.to,
+				info = info;
+			var place = info[1];
+			var modelPlayers = [{
+				'name': name,
+				'fb_id' : Number(currentUser),
+				'points' : Number('0'),
+				'controller' : true
+			}];
+			var that = this;
+			function setData(data){
+				var playerInfo = {
+					'name': data.name,
+					'fb_id' : Number(data.id),
+					'points': Number('0')
+				};
+				modelPlayers.push(playerInfo);
+				console.log(modelPlayers);
+				if (modelPlayers.length == (to.length + 1) ){
+					that.create({
+						'place': place,
+				    	'turn': modelPlayers[1].name,
+				    	'complete': false,
+				    	'active' : true,
+				    	'players' : modelPlayers
+					},{
+						success: function (game){
+					    		console.log(game);
+					    		app.AppView.vent.trigger('playGame', game.id);
+					    		app.AppView.vent.trigger('gameSaved', game);
+					    	}
+					})
+				}
+			};
+			for ( var i = 0; i < to.length; i++){
+		    	console.log('iterating through ' + to[i]);
+			    FB.api(to[i], function (data){
+			    	setData(data);
+				});
+			};
 		},
 
 		renderGame: function(){

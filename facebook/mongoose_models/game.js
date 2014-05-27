@@ -3,31 +3,21 @@ var Schema = mongoose.Schema;
 ObjectId = Schema.ObjectId;
 
 var gameSchema = new Schema({
-	game_id: Number,
+	game_id: String,
 	complete: Boolean,
 	active: Boolean,
 	turn: String,
-	turn_fb_id: Number,
-	online: Boolean,
-	live: Boolean,
-	controller: String,
-	last_round_completed: Number,
-	one_one_card: Number,
-	one_two_card: Number,
-	one_three_card: Number,
-	two_one_card: Number,
-	two_two_card: Number,
-	three_card: Number,
-	one_one_story: String,
-	one_two_story: String,
-	one_three_story: String,
-	two_one_story: String,
-	two_two_story: String,
-	three_story: String,
+	place: String,
+	round_result: [{
+		story: String,
+		card: Number
+	}],
 	players: [{
+		uid: Number,
 		name: String,
 		fb_id: Number,
-		game_points: Number
+		game_points: Number,
+		controller: Boolean
 	}]
 
 });

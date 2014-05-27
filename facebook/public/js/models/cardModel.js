@@ -5,12 +5,19 @@ var app = app || {};
 
 
 	app.cardModel = Backbone.Model.extend({
-		urlRoot: '/facebook/cards',
 		defaults: {
 			level: '',
 			direction: '',
 			rule: '',
 			timer: ''
+		},
+
+		initialize: function(options){
+			console.log(options);
+		},
+
+		url: function(){
+			return '/facebook/players/' + 'x' + '/games/' + game.id + '/cards';
 		}
 	
 	});

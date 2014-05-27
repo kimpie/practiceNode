@@ -171,6 +171,8 @@ var app = app || {};
 		),
 
 	initialize: function  (options) {
+		console.log('GamesView triggered with options: ');
+		console.log(options);
 		this.model = options.model;
 		this.model.bind("change", this.render, this);
 		this.model.bind("reset", this.render);

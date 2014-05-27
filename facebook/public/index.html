@@ -25,14 +25,12 @@
 	<script type="text/javascript" src="js/collections/Games.js"></script>
 	<script type="text/javascript" src="js/collections/contactCollection.js"></script>
 	<script type="text/javascript" src="js/views/PlayersView.js"></script>
-	<script type="text/javascript" src="js/views/GamesView.js"></script>
-	<script type="text/javascript" src="js/views/GamesView2.js"></script>
-	<script type="text/javascript" src="js/views/VoteView.js"></script>
+	<script type="text/javascript" src="js/views/gameView.js"></script>
 	<script type="text/javascript" src="js/views/homeView.js"></script>
 	<script type="text/javascript" src="js/views/AppView.js"></script>
 	<script type="text/javascript" src="js/views/shareView.js"></script>
 	<script type="text/javascript" src="js/views/contactView.js"></script>
-	<script type="text/javascript" src="js/views/newGameView.js"></script>
+	<script type="text/javascript" src="js/views/newGameSetup.js"></script>
 	<script type="text/javascript" src="js/views/versionView.js"></script>
 	<script type="text/javascript" src="js/routers/router.js"></script>
 	<script type="text/javascript" src="js/app.js"></script>	
@@ -57,28 +55,17 @@
 	  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=611324685593536";
 	  fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'facebook-jssdk'));</script>
-	<div class="container" id="app">
+	<div class="container-fluid" id="app">
 		<div id="header">
 			<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-				<a class="navbar-brand navbar-center brand" href="/facebook">MadFibs</a>
+				<a class="navbar-brand navbar-center brand" id="home">MadFibs</a>
 			</nav>
 		</div>
 
 		<div class="row">
 
-			<div class="col-md-8 col-md-offset-2" id="play">
-				<section id="userName" class="loggedin">
-					<button type="button" class="btn btn-default btn-block" id="top_btn">Badges</button>
-					<div class="well well-lg">
-						<p class="lead">Start a new game either with a group or play one-on-one</p>
-						<!-- Button trigger modal -->
-						<button class="btn btn-primary btn-lg" id="btn-success">
-						  NEW GAME
-						</button>
+			<div class="col-md-8 col-md-offset-2" id="play" class="loggedin">
 
-					</div>
-					<section id="main"></section>
-				</section>
 				<div class="loggedoff">
 					<div id="fblogin" class="jumbotron">
 						<h1>Best Game Eva!</h1>

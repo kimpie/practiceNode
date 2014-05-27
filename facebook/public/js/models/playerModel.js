@@ -4,7 +4,7 @@ var app = app || {};
         'use strict';
 
 	app.playerModel = Backbone.Model.extend({
-		//urlRoot: '/facebook/players',
+	    urlRoot: '/facebook/players',
 		defaults: {
 			fb_id: "",
 			first_name: "",

@@ -5,41 +5,39 @@ var app = app || {};
  
 	app.gameModel = Backbone.Model.extend({
 
-		defaults: {
-			game_id: "",
-			p1url: "",
-			p2url: "",
-			sentence: "",
+		defaults: {						
+			game_id: '',
 			complete: false,
 			active: true,
-			turn: "",
-			player1: "",
-			player1_name: "",
-			player2: "",
-			player2_name: "",
-			points: "",
-			votes: "",
-			share: "",
-			p1points: "",
-			p2points: ""
+			turn: '',
+			place: '',
+			round_result: [{
+				story: '',
+				card: ''
+			}],
+			players: []
 		},
 
 		idAttribute: '_id',
 		
 		initialize: function(options){
-
+			/*Use this code for a unique gameid:
+				function generateUIDNotMoreThan1million() {
+				    return ("0000" + (Math.random()*Math.pow(36,4) << 0).toString(36)).slice(-4)
+				}
+			*/
 			_.bindAll(this,'endGame', 'saveData', 'addWord', 'triggerURL', 'url', 'renderGame');
-			console.log(options);
+			//console.log(options);
 			
 			if (options != undefined){
 				if (options.player1 == Number(currentUser)){
-					console.log('gameModel initialized with options id: ');
-					console.log(options._id);
+					//console.log('gameModel initialized with options id: ');
+					//console.log(options._id);
 					this.y = options.p1url;
 					this.x = options._id;
 				} else if (options.player2 == Number(currentUser)){
-					console.log('gameModel initialized with options id: ');
-					console.log(options._id);
+					//console.log('gameModel initialized with options id: ');
+					//console.log(options._id);
 					if (options.p2url == ""){
 						var m = location.hash;
 						var t = m.slice(9);
@@ -57,9 +55,11 @@ var app = app || {};
 			app.AppView.vent.on('updateGameInfo', this.updateGameInfo, this);
 			app.AppView.vent.on('removeGame', this.changeActive, this);
 			app.AppView.vent.on('requestNewGame', this.rng, this);
+		  	app.AppView.vent.on('loadPlayers', this.addPlayers, this);
 
 
-			console.log('GameModel initialized with player: ' + this.y + 'and game: ' + this.x);
+
+			//console.log('GameModel initialized with player: ' + this.y + 'and game: ' + this.x);
 
 			var sentence = $('#display_word');
 
@@ -75,8 +75,25 @@ var app = app || {};
 
 		},
 
-		rng: function(p2name, player, gid){
-
+		addPlayers: function(game, to){
+			var thisgame = game,
+				to = to;
+			console.log(to);
+			console.log(game);
+			var modelPlayers = thisgame.attributes.players;
+			var playerInfo = {};
+			for ( var i = 0; i < to.length; i++){
+			    FB.api(to[i], function (info){
+			        var x = info.name,
+					    y = info.id,
+					    playerInfo = {
+					        'name': x, 
+					        'fb_id': y,
+					        'points': 0
+					    }; 
+				});
+			    modelPlayers.push(playerInfo);
+			}
 		},
 
 		changeActive: function(model, player){

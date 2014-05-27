@@ -113,20 +113,12 @@ exports.getGame = function (req, res){
 exports.postGame = function (req, res){
 	    var game = new Game({
 			game_id: req.body.game_id,
-			p1url: req.body.p1url,
-			p2url: req.body.p2url,
-			sentence: req.body.sentence,
 			complete: req.body.complete,
 			active: req.body.active,
 			turn: req.body.turn, 
-			player1: req.body.player1,
-			player1_name: req.body.player1_name,
-			player2: req.body.player2,
-			player2_name: req.body.player2_name,
-			points: req.body.points,
-			votes: req.body.votes,
-			p1points: req.body.p1points,
-			p2points: req.body.p2points
+			place: req.body.place,
+			round_result: req.body.round_result,
+			players: req.body.players
 		});
 		game.save( function (err){				
 			if (err) return handleError (err);			
@@ -156,16 +148,13 @@ exports.postGame = function (req, res){
 exports.updateGame = function (req, res){
 	console.log( 'Updating game ' + req.body.game );
     return Game.findById( req.params.id, function( err, game ) {
-    	game.sentence = req.body.sentence; 
-		game.turn = req.body.turn;
+		game.game_id = req.body.game_id;
 		game.complete = req.body.complete;
 		game.active = req.body.active;
-		game.points = req.body.points;
-		game.p2url = req.body.p2url;
-		game.votes = req.body.votes;
-		game.share = req.body.share;
-		game.p1points = req.body.p1points;
-		game.p2points = req.body.p2points;
+		game.turn = req.body.turn;
+		game.place = req.body.place;
+		game.round_result = req.body.round_result;
+		game.players = req.body.players;
 
 	    return game.save( function( err ) {
 	        if( !err ) {
