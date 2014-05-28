@@ -6,11 +6,12 @@ var app = app || {};
 		model: app.cardModel,
 
 		initialize: function(options){
+			console.log('cardCollection initialized');
 			console.log(options);
-			app.AppView.vent.on('getCard', this.randomCard, this);
 		},
 
 		randomCard: function(level){
+			console.log('cardCollection on randomCard');
 			var level = level;
 			var gid = this.where({level: level});
 			var that = this;
@@ -20,8 +21,8 @@ var app = app || {};
 			};	
 			
 			var card = grabCard(gid);
+			console.log(card);
 			app.AppView.vent.trigger('showCard', card);
-
 		},
 
 		url: function(){

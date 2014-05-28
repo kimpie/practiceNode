@@ -9,6 +9,7 @@ var app = app || {};
                         "players/:id": "playerOn",
                         "players/:id/games" : "setup",
                         "players/:id/games/:game": "inGame",
+                        "players/:id/games/:game/cards/:card" : "showCard", 
                         "contact/" : "contact"
                 },
 
@@ -31,6 +32,10 @@ var app = app || {};
                     var game = game;
                     console.log('ROUTER on inGame page: ' + game);
                     this.trigger('inGame', game);
+                },
+
+                showCard: function(id, game, card){
+                    console.log('router has card: ' + card);
                 },
 
                 contact: function(){

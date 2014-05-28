@@ -13,6 +13,8 @@ var app = app || {};
 			
 			this.gameCollection = new app.Games();
 			this.cc = new app.Contact();
+			this.cardCollection = new app.Card();
+			this.cardCollection.fetch({reset:true});
 
 			this.listenTo(app.AppRouter, 'playerOn', this.getLocation);
 			this.listenTo(app.AppRouter, 'inGame', this.play);
@@ -24,7 +26,7 @@ var app = app || {};
 			app.AppView.vent.on('requestGame', this.requestDialog, this);
 			app.AppView.vent.on('home', this.homeView, this);
 			app.AppView.vent.on('playGame', this.play, this);
-			app.AppView.vent.on('showCard', this.cards, this);
+			app.AppView.vent.on('getCard', this.cards, this);
 
 			app.AppView.vent.on('launchFetch', this.go, this);
 			app.AppView.vent.on('removeGame', this.removeGame, this);
@@ -39,7 +41,6 @@ var app = app || {};
 			this.game = this.$('#game');
 			this.play = this.$('#play');
 			this.mfs = this.$('#mfs');
-			this.board = this.$('#board');
 		},
 
 		//------Two events, when a user logs in to FB and when they invite friends to join
@@ -49,16 +50,6 @@ var app = app || {};
 			"click #contact" : "contact"
 
 		},
-
-		/*live: function(){
-			var lg = new app.liveGame();
-			this.play.html(lg.render().el);
-		},
-
-		online: function(){
-			var og = new app.onlineGame();
-			this.play.html(og.render().el);
-		},*/
 
 		version: function(){
 			var vv = new app.versionView();
@@ -86,11 +77,7 @@ var app = app || {};
 			if (g){ 
 				var game = url[2];
 				this.play(game);
-			} /*else {
-				console.log('player from getLocation');
-				console.log(player);
-				this.homeView(player);
-			} */
+			} 
 
 		},
 
@@ -98,6 +85,7 @@ var app = app || {};
 			console.log('player received in homeView');
 			console.log(player);
 			var playermodel = this.collection.findWhere({fb_id: Number(currentUser)});
+			app.AppRouter.navigate('#/players/' + playermodel.id)
 			var hv = new app.homeView({model: playermodel});
 			this.play.html(hv.render().el);	
 		},
@@ -120,6 +108,7 @@ var app = app || {};
 		},
 
 		go: function(player, pcGames){
+			console.log('go in AppView');
 			var player = player;
 			var pcGames = pcGames;
 			var that = this;
@@ -145,26 +134,7 @@ var app = app || {};
 //------Upon login, showPlayer receives the player model and initializes the PlayersView
 		showPlayer: function(player) {
 			console.log('showPlayer in AppView triggered');
-		/*	console.log(player);
-			if (player == undefined){
-				var player = location.hash.slice(9);
-				var playermodel = this.collection.get(player);
-			} else if (typeof player == "object"){
-				var playermodel = player;
-			} else if (typeof player == "string"){
-				if (player.length > 27){
-					var player = location.hash.slice(9);
-				} else {
-					var player = player;
-				}
-				var playermodel = this.collection.get(player);
-			}
 
-			var playerView = new app.PlayersView({model: playermodel});
-            this.main.html(playerView.render().el);
-            
-			//this.home.html('<a type="button" class="btn btn-default btn-lg" id="home" href="/facebook/#players/'+ playermodel.id + '"><span class="glyphicon glyphicon-home"></span></a>');
-*/
 		},
 
 //------Upon friend invite to start game, play receives game model and pass it to games view
@@ -176,33 +146,22 @@ var app = app || {};
 			var game_model = this.gameCollection.findWhere({_id: game});
 			var gameview = new app.gameView({model: game_model});
 			this.play.html(gameview.render().el);
-			app.AppRouter.navigate('/players/' + player.id + '/games/' + game);
-		/*	if (game_model.attributes.player1 == Number(currentUser)){
-				var gameview = new app.GamesView({model: game_model});
-				this.play.html(gameview.render().el);
-				//var ShareView = new app.shareView({model: game_model});
-				//this.share.html(ShareView.render().el);
-			} else {
-				var gameview2 = new app.GamesView2({model: game_model});
-				this.play.html(gameview2.render().el);	
-				//var ShareView = new app.shareView({model: game_model});
-				//this.share.html(ShareView.render().el);			
-			}*/
+			app.AppRouter.navigate('#/players/' + player.id + '/games/' + game);
 		},
 
-		cards: function(card){
-			var card = card;
-			console.log(card);
-			var cv = new app.cardView({el: $('#board')},{model: card});
-			this.board.html(cv.render().el);
+		cards: function(info, game){
+			var player = this.collection.findWhere({fb_id: Number(currentUser)});
+			app.AppRouter.navigate('#/players/' + player.id + '/games/' + game.id + '/cards');
+			this.cardCollection.randomCard(info);
 		},
 
 //------Once FB registers the player has logged in, they trigger the click on loginPlayer
 //------for our database to find or register the player.
 		loginPlayer: function (){
-			var that = this;
+			console.log('loginPlayer');
 			this.collection.fetch({reset:true, 
 				success: function(collection){ 
+					console.log('about to loginPlayer');
 					collection.loginPlayer();
 				}
 			});

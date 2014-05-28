@@ -53,15 +53,15 @@ var app = app || {};
 	  	},
 
 	  	loginPlayer: function(){
+	  		console.log('inside loginPlayer');
 			if (currentUser) {
 				console.log(this);
 				var player = this.findWhere({fb_id: Number(currentUser)});
 				console.log(player);
 				console.log('loginPlayer has been invoked');
-				var that = this;
 				if (player == undefined){
 					console.log('New Player is about to be posted.');
-					that.createPlayer();
+					this.createPlayer();
 				} else {
 					var thisplayer = this.get(player);
 					this.renderPlayer(thisplayer);
@@ -83,32 +83,31 @@ var app = app || {};
 	  	savegame: function(game){
 	  		console.log('SaveGame players');
 	  		console.log(game.attributes.players);
-	  	/*	if (player2 !== "" && player2 !== undefined){
-			//Scenario 1 : Both players exist in DB.	
-				console.log('SAVEGAME BOTH on players collection received info: ');
-		  		console.log(game);
-		  		var playermodel = this.get(player1);
-		  		var player2model = this.get(player2);
-		  		playermodel.setGameData(game, playermodel);
-		  		player2model.setGameData2(game, player2model);	
-	  		} else if (game.attributes.player1 == Number(currentUser) ) {
-			//Scenario 2: Player1 is the currentUser who creates the game by inviting a new user.	
-				console.log('SAVEGAME ONE on players collection received game info: ');
-		  		console.log(game);
-		  		var playermodel = this.findWhere({fb_id: Number(currentUser)});
-		  		console.log('and player1 info: ');
-		  		console.log(playermodel);
-		  		playermodel.setGameData(game, playermodel);
-	  		} else if (game.attributes.player2 == Number(currentUser) ) {
-	  		//Scenario 3 : Player2 is logging in and the game is getting saved to their model.	
-	  			console.log('SAVEGAME ONE on players collection received game info: ');
-		  		console.log(game);
-		  		var player2model = this.findWhere({fb_id: Number(currentUser)});
-		  		console.log('and player2 info: ');
-		  		console.log(player2model);
-		  		player2model.setGameData2(game, player2model);
-	  		}*/
-	  	}
+	  		var game = game;
+	  		var gp = game.attributes.players;
+	  		var that = this;
+	  		for (var i=0; i < gp.length; i++){
+	  			//for each player, first check if they're in the database
+	  			// if not save them to db, then send game to model to be saved to player
+	  			var player = that.findWhere({fb_id: Number(gp[i].fb_id)});
+	  			console.log('saveGame iterating through: ' + gp[i].fb_id);
+	  			if (player !== undefined && player !== ""){
+	  				console.log('player in DB already');
+	  				player.setGameData(game, player);
+	  			} else {
+	  				console.log('saivng player to db');
+	  				/*that.create({
+	  					name: gp[i].name,
+	  					fb_id: gp[i].fb_id
+	  				},{
+	  					success: function(player){
+	  						console.log('successfully created player');
+	  						player.setGameData(game, player);
+	  					}
+	  				});*/
+	  			}
+	  		};
+	  	} 
 
 	});
 

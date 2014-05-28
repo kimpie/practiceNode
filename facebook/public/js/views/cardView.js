@@ -16,6 +16,8 @@ var app = app || {};
 
 		initialize: function  (options) {
 			this.model = options.model;
+			console.log('card view initialized with ');
+			console.log(this.model);
 		},
 
 		render: function () {

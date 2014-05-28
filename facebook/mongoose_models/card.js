@@ -3,10 +3,10 @@ var Schema = mongoose.Schema;
 ObjectId = Schema.ObjectId;
 
 var cardSchema = new Schema ({
-	level: Number,
+	level: String,
 	direction: String,
 	rule: String,
-	timer: Number
+	timer: Boolean
 });
 
 module.exports = db.model('Card', cardSchema);

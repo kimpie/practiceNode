@@ -1,6 +1,7 @@
 var Player = require('../mongoose_models/player.js');
 var Game = require('../mongoose_models/game.js');
 var Contact = require('../mongoose_models/contact.js');
+var Card = require('../mongoose_models/card.js');
 
 //------------------------------------------Player logic------------------------------------ 
 //Find all players
@@ -179,4 +180,23 @@ exports.postContact = function (req, res){
 			if (err) return handleError (err);			
 		});
 		return res.send(contact);	 	
+};
+
+// Find all cards
+exports.getCards = function (req, res){
+	Card.find(function(err, cards){
+    res.send(cards);
+  });
+};
+
+//Find the game once selected
+exports.getCard = function (req, res){
+	return Card.findById( req.params.id, function( err, card) {
+        if( !err ) {
+            return res.send( card );
+        } else {
+            return console.log( err );
+        }
+    });
+   
 };

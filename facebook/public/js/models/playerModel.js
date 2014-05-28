@@ -22,7 +22,7 @@ var app = app || {};
 		idAttribute: '_id',
 
 		initialize: function(){
-            _.bindAll(this, 'updatePlayer', 'removeGame' ,'login', 'renderPlayer', 'setGameData', 'setGameData2', 'gameArray', 'gameArray2');
+            _.bindAll(this, 'updateTurn', 'noturn', 'turn','updatePlayer', 'removeGame' ,'login', 'renderPlayer', 'setGameData','gameArray');
 			console.log('The playerModel has been initialized.');
             app.AppView.vent.on('modelRemove', this.removeGame, this);
             app.AppView.vent.once('updatePlayer', this.updatePlayer, this);
@@ -196,48 +196,29 @@ var app = app || {};
             app.AppView.vent.trigger('loggedin', player);
         },
 
-        setGameData: function(game, playermodel){
-        	var thismodel = playermodel;
-        	console.log('Displaying the current player model: '); 
-        	console.log(thismodel);
-        	thismodel.save(this.gameArray(game, playermodel), {
-        		success: function(game, playermodel){
-		        	console.log('Saving game id ' + game.id + ' to the player ' + playermodel.id);
+        setGameData: function(game, player){
+        	var model = player;
+        	console.log('Displaying the player model: '); 
+        	console.log(model);
+            console.log('and the game info inside setGameData');
+            console.log(game);
+        	model.save(this.gameArray(game, model), {
+        		success: function(game, model){
+		        	console.log('Saving game id ' + game.id + ' to the player ' + player.id);
         		}
         	});       	
-        },
-
-        setGameData2: function(game, player2model){
-            var othermodel = player2model;
-            othermodel.save(this.gameArray2(game, player2model), {
-                success: function(game,player2model){
-                    console.log('Saving game id ' + game.id + ' to the player2 ' + player2model.id);            
-                }
-            });
-        
         },
 
         gameArray: function(game, player){
         	var x = {
                 id: game.id, 
-                player2_name: game.attributes.player2_name,
+                players: game.attributes.players,
                 url: String('#/players/' + player.id + '/games/' + game.id),
-                turn: true
+                turn: game.attributes.turn,
                 };
         	var games = player.attributes.games;
         	console.log('gameArray found ' + games.length + ' game(s).');
         	games.push(x);
-        },
-
-        gameArray2: function(game, player2model){
-        	var x = {
-                id: game.id, 
-                player2_name: game.attributes.player1_name,
-                url: String('#/players/' + player2model.id + '/games/' + game.id),
-                turn: false
-                };
-        	var games2 = player2model.attributes.games;
-        	games2.push(x);
         }
 
     });
