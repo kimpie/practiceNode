@@ -3,7 +3,7 @@ jQuery(document).ready(function () {
 		var li = jQuery('<li />').text(message);
 		li.css({'display': 'inline'});
 		//jQuery('#chat_log').append(li);
-		jQuery('#show').append(li);
+		jQuery('#storyText').append(li);
 	};
 
 	var end = function(data){

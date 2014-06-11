@@ -26,7 +26,7 @@ var app = app || {};
 			app.AppView.vent.on('requestGame', this.requestDialog, this);
 			app.AppView.vent.on('home', this.homeView, this);
 			app.AppView.vent.on('playGame', this.play, this);
-			app.AppView.vent.on('getCard', this.cards, this);
+			//app.AppView.vent.on('getCard', this.cards, this);
 
 			app.AppView.vent.on('launchFetch', this.go, this);
 			app.AppView.vent.on('removeGame', this.removeGame, this);
@@ -41,6 +41,7 @@ var app = app || {};
 			this.game = this.$('#game');
 			this.play = this.$('#play');
 			this.mfs = this.$('#mfs');
+			this.board = this.$('#board');
 		},
 
 		//------Two events, when a user logs in to FB and when they invite friends to join
@@ -86,6 +87,7 @@ var app = app || {};
 			console.log(player);
 			var playermodel = this.collection.findWhere({fb_id: Number(currentUser)});
 			app.AppRouter.navigate('#/players/' + playermodel.id)
+			this.board.hide();
 			var hv = new app.homeView({model: playermodel});
 			this.play.html(hv.render().el);	
 		},
@@ -143,17 +145,35 @@ var app = app || {};
 			console.log('play triggered from AppView with game: ');
 			console.log(game);
 			var player = this.collection.findWhere({fb_id: Number(currentUser)});
-			var game_model = this.gameCollection.findWhere({_id: game});
-			var gameview = new app.gameView({model: game_model});
-			this.play.html(gameview.render().el);
-			app.AppRouter.navigate('#/players/' + player.id + '/games/' + game);
+			if(typeof game == "string"){
+				var game_model = this.gameCollection.findWhere({_id: game});
+			} else if (typeof game == "object"){
+				var game_model = game;
+			}
+			var level = game_model.checkRounds();
+			this.board.show();
+			if(level != undefined){
+				var gameview = new app.gameView({model: game_model});
+				this.play.html(gameview.render().el);
+		        var rv = new app.roundView({model: game_model.attributes.round[level]});
+		        this.board.html(rv.render().el);
+				app.AppRouter.navigate('#/players/' + player.id + '/games/' + game + '/round/' + level);
+			} else {
+				var gameview = new app.gameView({model: game_model});
+				this.play.html(gameview.render().el);
+				var bv = new app.boardView({model: game_model});
+		        this.board.html(bv.render().el);
+				app.AppRouter.navigate('#/players/' + player.id + '/games/' + game);
+			}
 		},
 
-		cards: function(info, game){
+		/*cards: function(info, game){
+			console.log('cards in AppView has card info: ' + info + ' and game info:');
+			console.log(game);
 			var player = this.collection.findWhere({fb_id: Number(currentUser)});
-			app.AppRouter.navigate('#/players/' + player.id + '/games/' + game.id + '/cards');
+			app.AppRouter.navigate('#/players/' + player.id + '/games/' + game.id + '/round/' + info +'/cards');
 			this.cardCollection.randomCard(info);
-		},
+		},*/
 
 //------Once FB registers the player has logged in, they trigger the click on loginPlayer
 //------for our database to find or register the player.
@@ -173,7 +193,7 @@ var app = app || {};
 			var that = this;
 			var ngv = new app.newGameSetup({collection: that.gameCollection});
 			this.play.html(ngv.render().el);
-			app.AppRouter.navigate('/players/' + player.id + '/games');
+			app.AppRouter.navigate('#/players/' + player.id + '/games');
 		},
 
 		processResponse: function(response, ginfo){

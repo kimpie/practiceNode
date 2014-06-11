@@ -14,9 +14,9 @@ var playerSchema = new Schema ({
     last_login: String,
 	games: [{ 
 		id: [{type: Schema.Types.ObjectId, ref: 'Game'}], 
-		player2_name: String,
+		players: [],
 		url: String,
-		turn: Boolean
+		turn: String
 	}]
 });
 

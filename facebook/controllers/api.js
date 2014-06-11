@@ -73,8 +73,7 @@ exports.updatePlayer = function (req, res){
 	    player.last_login = req.body.last_login;
         player.games = req.body.games;
         player.points = req.body.points;
-        //player.games.player2_name = req.body.player2_name;
-
+        
 	    return player.save( function( err ) {
 	        if( !err ) {
 	            console.log( 'player updated' );
@@ -116,9 +115,10 @@ exports.postGame = function (req, res){
 			game_id: req.body.game_id,
 			complete: req.body.complete,
 			active: req.body.active,
-			turn: req.body.turn, 
+			round_turn: req.body.round_turn, 
+			word_turn: req.body.word_turn,
 			place: req.body.place,
-			round_result: req.body.round_result,
+			round: req.body.round,
 			players: req.body.players
 		});
 		game.save( function (err){				
@@ -130,31 +130,16 @@ exports.postGame = function (req, res){
 	 	
 };
 
-
-/*exports.deleteGame = function( req, res ) {
-    console.log( 'Deleting book with id: ' + req.params.id );
-    return Game.findById( req.params.id, function( err, game ) {
-        return game.remove( function( err ) {
-            if( !err ) {
-                console.log( 'Game removed' );
-                return res.send( '' );
-            } else {
-                console.log( err );
-            }
-        });
-    });
-};*/
-
-
 exports.updateGame = function (req, res){
 	console.log( 'Updating game ' + req.body.game );
     return Game.findById( req.params.id, function( err, game ) {
 		game.game_id = req.body.game_id;
 		game.complete = req.body.complete;
 		game.active = req.body.active;
-		game.turn = req.body.turn;
+		game.round_turn = req.body.round_turn;
+		game.word_turn = req.body.word_turn;
 		game.place = req.body.place;
-		game.round_result = req.body.round_result;
+		game.round = req.body.round;
 		game.players = req.body.players;
 
 	    return game.save( function( err ) {
@@ -189,11 +174,11 @@ exports.getCards = function (req, res){
   });
 };
 
-//Find the game once selected
+//Find the card once selected
 exports.getCard = function (req, res){
-	return Card.findById( req.params.id, function( err, card) {
+	return Card.findById( req.params.id, function( err, cards) {
         if( !err ) {
-            return res.send( card );
+            return res.send( cards );
         } else {
             return console.log( err );
         }

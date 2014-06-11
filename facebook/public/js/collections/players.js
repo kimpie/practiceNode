@@ -17,9 +17,12 @@ var app = app || {};
 
 	  	turn: function(turn, game){
 	  		console.log('turn triggered in players collection');
-	  		var player = this.findWhere({fb_id: Number(game.attributes.player1)});
-	  		var player2 = this.findWhere({fb_id: Number(game.attributes.player2)});
-	  		app.AppView.vent.trigger('updateTurn', player, player2, game);
+	  		for (var i = 0; i < game.attributes.players; i++){
+		  		var player = this.findWhere({fb_id: Number(game.attributes.players.fb_id)});
+	  			console.log('turn iterating through player:');
+	  			console.log(player[i]);
+	  		}
+	  		//app.AppView.vent.trigger('updateTurn', player, player2, game);
 	  	},
 
 		setPlayerData: function (){

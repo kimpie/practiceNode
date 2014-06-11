@@ -12,6 +12,7 @@ var app = app || {};
 		    _.bindAll(this, 'rotateModel','checkGames','setGameData','createGame','renderGame', 'triggerURL', 'url');
 		    app.AppView.vent.on('checkForGames', this.checkGames, this);
 		    app.AppView.vent.on('startTimer', this.rotateModel, this);
+		    //app.AppView.vent.on('roundInfo', this.getGame, this);
 		    //app.AppView.vent.on('requestNewGame', this.rng, this);
 			this.listenTo(this, 'add', this.triggerURL);
 			
@@ -25,6 +26,12 @@ var app = app || {};
 					this.y = undefined;
 			}
 
+		},
+
+		getGame: function(game, path){
+			console.log('getGame in Games Collection has game ' + game + ' and path ' + path);
+			var model = this.findWhere({_id: game});
+			model.getRound(path);
 		},
 
 		rng: function(p2name, player, gid){
@@ -362,15 +369,15 @@ var app = app || {};
 
 		createGame: function(response, info){
 			var to = response.to,
-				info = info;
-			var place = info[1];
+				info = info,
+				place = info[0],
+				that = this;
 			var modelPlayers = [{
 				'name': name,
 				'fb_id' : Number(currentUser),
 				'points' : Number('0'),
 				'controller' : true
 			}];
-			var that = this;
 			function setData(data){
 				var playerInfo = {
 					'name': data.name,
@@ -382,7 +389,8 @@ var app = app || {};
 				if (modelPlayers.length == (to.length + 1) ){
 					that.create({
 						'place': place,
-				    	'turn': modelPlayers[1].name,
+				    	'round_turn': modelPlayers[1].name,
+				    	'word_turn': modelPlayers[1].name,
 				    	'complete': false,
 				    	'active' : true,
 				    	'players' : modelPlayers

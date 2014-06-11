@@ -8,8 +8,8 @@ var app = app || {};
                 routes: {
                         "players/:id": "playerOn",
                         "players/:id/games" : "setup",
-                        "players/:id/games/:game": "inGame",
-                        "players/:id/games/:game/cards/:card" : "showCard", 
+                        "players/:id/games/:game": "gameBoard",
+                        "players/:id/games/:game/*path" : "inGame",
                         "contact/" : "contact"
                 },
 
@@ -27,15 +27,16 @@ var app = app || {};
                     console.log('Router on setup page');
                 },
 
-                inGame: function(id, game){
+                gameBoard: function(id, game){
                     var playerid = id;
                     var game = game;
                     console.log('ROUTER on inGame page: ' + game);
                     this.trigger('inGame', game);
                 },
 
-                showCard: function(id, game, card){
-                    console.log('router has card: ' + card);
+                inGame: function(id, game, path){
+                    console.log('router has game id: ' + game + ' and path: ' + path);
+                    app.AppView.vent.trigger('roundInfo', game, path);
                 },
 
                 contact: function(){

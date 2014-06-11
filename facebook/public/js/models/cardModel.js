@@ -8,25 +8,23 @@ var app = app || {};
 		defaults: {
 			level: '',
 			direction: '',
-			rule: '',
-			timer: ''
+			rule: ''
 		},
 
 		idAttribute: '_id',
 
 		initialize: function(options){
 			console.log(options);
-			this.c = options._id;
-		},
-
-		url: function(){
-			if (this.c != undefined){
-				return '/facebook/players/' + 'x' + '/games/' + 'y'+ '/cards' + this.c;
+			console.log(this.id);
+			var hash = location.hash.split('/');
+			console.log('cardModel hash' + hash);
+			if (hash[4] == undefined){
+				this.url = '/facebook/players/' + 'y' + '/games/' + 'x' + '/round/z'+'/cards';
 			} else {
-				return '/facebook/players/' + 'x' + '/games/' + 'y'+ '/cards';
+				this.url = '/facebook/players/' + hash[2] + '/games/' + hash[4] + '/round/' + hash[6] + '/cards';
 			}
 		}
-	
+
 	});
 
 })();

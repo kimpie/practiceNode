@@ -6,11 +6,19 @@ var gameSchema = new Schema({
 	game_id: String,
 	complete: Boolean,
 	active: Boolean,
-	turn: String,
+	round_turn: String,
+	word_turn: String,
 	place: String,
-	round_result: [{
+	round: [{
+		number: Number,
 		story: String,
-		card: Number
+		card: String,
+		in_progress: Boolean,
+		complete: Boolean,
+		url: String,
+		level_one: Boolean,
+		level_two: Boolean,
+		level_three: Boolean
 	}],
 	players: [{
 		uid: Number,

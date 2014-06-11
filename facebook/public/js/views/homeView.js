@@ -19,7 +19,7 @@ var app = app || {};
 								'<ul id="gamelist">' +
 								'{{#each games}}' +
 								'{{#if turn}}' +
-								'<li id="player_name"><a class="btn btn-default btn-lg btn-block" id="indGame" href="{{url}}">Fib with {{player2_name}}</a></li>' +
+								'<li id="player_name"><a class="btn btn-default btn-lg btn-block" id="indGame" href="{{url}}">Fib with {{players.name}}</a></li>' +
 								'{{/if}}' +
 								'{{/each}}' +
 								'</ul>' +
@@ -31,7 +31,7 @@ var app = app || {};
 								'<ul id="gamelist">' +
 								'{{#each games}}' +
 								'{{#unless turn}}' +
-								'<li id="player_name"><a class="btn btn-default btn-lg btn-block" id="indGame" href="{{url}}">Fib with {{player2_name}}</a></li>' +
+								'<li id="player_name"><a class="btn btn-default btn-lg btn-block" id="indGame" href="{{url}}">Fib with {{#each players}}{{name }} {{/each}}</a></li>' +
 								'{{/unless}}' +
 								'{{/each}}' +
 								'</ul>' +

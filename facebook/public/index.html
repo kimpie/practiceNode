@@ -5,11 +5,12 @@
 	<link rel="stylesheet" type="text/css" href="css/style.css" />	
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css" />
-	<link rel="stylesheet" type="text/css" href="css/TimeCircles.css">
-	<link rel="stylesheet" type="text/css" href="js/lib/jQuery-Autocomplete/content/styles.css">	
+	<link rel="stylesheet" type="text/css" href="css/smoothness/jquery-ui-1.10.4.custom.min.css" />
+	<link rel="stylesheet" type="text/css" href="js/lib/jQuery-Autocomplete/content/styles.css">
 
 	<script type="text/javascript" src="/facebook/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="js/lib/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="js/lib/jquery-ui-1.10.4.custom.min.js"></script>
 	<script type="text/javascript" src="js/lib/jQuery-Autocomplete/dist/jquery.autocomplete.js"></script>
 	<script type="text/javascript" src="js/lib/fbscript.js"></script>
 	<script type="text/javascript" src="js/lib/chatterscript.js"></script>
@@ -22,6 +23,7 @@
 	<script type="text/javascript" src="js/models/contactModel.js"></script>
 	<script type="text/javascript" src="js/models/gameModel.js"></script>
 	<script type="text/javascript" src="js/models/cardModel.js"></script>
+	<script type="text/javascript" src="js/models/round.js"></script>
 	<script type="text/javascript" src="js/collections/players.js"></script>
 	<script type="text/javascript" src="js/collections/Games.js"></script>
 	<script type="text/javascript" src="js/collections/contactCollection.js"></script>
@@ -35,6 +37,8 @@
 	<script type="text/javascript" src="js/views/newGameSetup.js"></script>
 	<script type="text/javascript" src="js/views/versionView.js"></script>
 	<script type="text/javascript" src="js/views/cardView.js"></script>
+	<script type="text/javascript" src="js/views/roundView.js"></script>
+	<script type="text/javascript" src="js/views/boardView.js"></script>
 	<script type="text/javascript" src="js/routers/router.js"></script>
 	<script type="text/javascript" src="js/app.js"></script>	
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
@@ -78,6 +82,7 @@
 					</div>
 				</div>
 			</div>
+			<div class="col-md-8 col-md-offset-2" id="board"></div>
 				
 		</div>	
 
