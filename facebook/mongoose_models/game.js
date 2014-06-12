@@ -16,6 +16,7 @@ var gameSchema = new Schema({
 		in_progress: Boolean,
 		complete: Boolean,
 		url: String,
+		word_turn: String,
 		level_one: Boolean,
 		level_two: Boolean,
 		level_three: Boolean

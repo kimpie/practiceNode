@@ -2,6 +2,10 @@ var app = app || {};
 
 (function ($) {
 
+	Handlebars.registerHelper('firstName', function(name) {
+	  return name.split(' ')[0];
+	}),
+
 	app.gameView = Backbone.View.extend({
 
 		template: Handlebars.compile(
@@ -9,33 +13,18 @@ var app = app || {};
 				'<div class="col-md-8 col-md-offset-2" id="playerList">'+
 					'<ul>'+
 					'{{#each players}}' +
-					'<li id="players">{{name}}</li>'+
+					'<li id="players" class="{{firstName name}}">{{name}}</li>'+
 					'{{/each}}'+
 					'<li id="players"><a id="addPlayer"><span class="glyphicon glyphicon-plus"></span></a></li>' +
 					'</ul>'+ 
 				'</div>'+
 				'<div class="row">' +
 					'<div class="col-md-12" id="playerTurn">'+
-						'<h3>{{round_turn}}\'s Turn</h3>' +
+						'<h3>{{round_turn}}\'s Round</h3>' +
 					'</div>'+
 					'<div class="col-md-8 col-md-offset-2" id="action"></div>'+
 				'</div>' +
 			'</div>'
-			/*'<div id="board" class="row">'+
-				'<ul id="cardList">'+
-					'{{#each round}}'+
-						'{{#if level_one}}'+
-							'<li id="one" class="col-xs-3 col-md-2 cards"><a href="{{url}}">Level 1</a></li>'+
-						'{{/if}}'+
-						'{{#if level_two}}'+
-							'<li id="two" class="col-xs-3 col-md-2 cards"><a href="{{url}}">Level 2</a></li>'+
-						'{{/if}}'+
-						'{{#if level_three}}'+
-							'<li id="three" class="col-xs-3 col-md-2 cards"><a href="{{url}}">Level 3</a></li>'+
-						'{{/if}}'+
-					'{{/each}}'+
-				'</ul>'+
-			'</div>'*/
 		),
 
 	initialize: function  (options) {
@@ -47,6 +36,7 @@ var app = app || {};
 		this.model.bind("change", this.render, this);
 		this.model.bind("reset", this.render);
 		app.AppView.vent.on('showCard', this.showCard, this);
+		app.AppView.vent.on('startBtn', this.showbtn, this);
 		app.AppView.vent.on('sendWord', this.submitWord, this);
 		app.AppView.vent.on('saveNewSentence', this.sNs, this);
 		//app.AppView.vent.on('round', this.level, this);
@@ -61,9 +51,19 @@ var app = app || {};
 			this.live = false;
 		}
 
-		if (this.model.attributes.word_turn !== name){
-			$('#input').html('<input type="text" id="disabledTextInput" class="form-control" placeholder="Waiting for the next fib" disabled>');
+		if (this.model.attributes.word_turn == name){
+			$('#input').html('<input class="form-control" id="enter" type="text" name="enter_word" placeholder="Your turn to Fib!"></>');
 		}
+		var p = this.model.attributes.players;
+		var that = this;
+		function findTurn(element, index, array){
+			if (that.model.attributes.word_turn == element.name){
+				var n = element.name.split(' ')[0];
+				console.log($('.' + n));
+				$('.' + n).css({'background-color' : 'yellow'});
+			}
+		}
+		p.forEach(findTurn);
 	},
 
 	events: {
@@ -73,6 +73,10 @@ var app = app || {};
 		//'keypress #enter': 'submitWord',
 		'click #share': 'share',
 		'click #like': 'like'
+	},
+
+	showbtn: function(){
+		$('#action').html('<button class="btn btn-success btn-block" id="startRound">Start</button>');
 	},
 
 	inRound: function(level){
@@ -105,7 +109,7 @@ var app = app || {};
 	},*/
 
 	showCard: function(card){
-			console.log(card);
+			/*console.log(card);
 			this.card = card;
 			var cv = new app.cardView({model: card});
 			this.board.html(cv.render().el);
@@ -116,13 +120,13 @@ var app = app || {};
 			    	story = element.story;
 			    }
 			}
-			arr.forEach(getCard);*/
+			arr.forEach(getCard);
 			if(this.model.attributes.round.story != ''){
 				console.log('story not started yet')
 				$('#action').html('<button class="btn btn-success btn-block" id="startRound">Start</button>');
 			} else {
 				console.log('story started');
-			}
+			}*/
 	},
 
 	saveRound: function(){
@@ -144,18 +148,17 @@ var app = app || {};
 	},
 
 	startRound: function(){
-		this.level();
+		var that = this,
+			pid = location.hash.slice(10).split('/')[0],
+			k = location.hash.substr(location.hash.length - 1, location.hash.length);
+		app.AppView.vent.trigger('startRound', that.model.attributes.round[k]);
 		if (this.live){
 			this.count = 60;
 		} else {
 			this.count = 30;
 		}
-		var pid = location.hash.slice(10).split('/')[0],
-			counter = setInterval(timer, 1000),
-			that = this;
+		var counter = setInterval(timer, 1000);
 		$('#playerTurn, #action').empty();
-		$('#story, div#cardTitle').show();
-		$('div#card').hide();
 		function timer() {
 			that.count=that.count-1;
 			if (that.count <= 0) {
@@ -168,8 +171,7 @@ var app = app || {};
 				max: 60,
 				value: that.count
 			});
-		}
-
+		}		
 	},
 
 	endOfTimer: function(){
@@ -214,34 +216,34 @@ var app = app || {};
 		}
 	},
 
-	submitWord: function(event){
-		var word = jQuery('#enter').val();
-		if (event.which == 32 || event.which == 13) {
-			this.count = 0;
-			var that = this;
-			if (that.live){
-				console.log('game is live, not saving until end of round');
-			} else {
-				var	level = location.hash.slice(10).split('/')[4],
-					k = that.model.attributes.round[level].story,
-					pid = location.hash.slice(10).split('/')[0];
-				var turn = that.model.rotateTurn({round_turn: false});
-				console.log('submitWord received new turn for: ' + turn);
-				console.log(turn != undefined && turn != '');
-				if (turn != undefined && turn != ''){
-					console.log('ready for socket emit');
-					socket.emit('chat', {
-						level: level,
-						room: that.room,
-						word: word,
-						story: String(k + " " + word),
-						playerId: pid,
-						word_turn: turn,
-						round_turn: that.model.attributes.round_turn,
-						in_progress: true
-					});
-					$('#input').html('<input type="text" id="disabledTextInput" class="form-control" placeholder="Waiting for the next fib" disabled>');
-				}
+	submitWord: function(info){
+		console.log('submitWord called with info:');
+		console.log(info);
+		var word = info;
+		this.count = 0;
+		var that = this;
+		if (that.live){
+			console.log('game is live, not saving until end of round');
+		} else {
+			var	level = location.hash.slice(10).split('/')[4],
+				k = that.model.attributes.round[level].story,
+				pid = location.hash.slice(10).split('/')[0];
+			var turn = that.model.rotateTurn({round_turn: false});
+			console.log('submitWord received new turn for: ' + turn);
+			console.log(turn != undefined && turn != '');
+			if (turn != undefined && turn != ''){
+				console.log('ready for socket emit');
+				socket.emit('chat', {
+					level: level,
+					room: that.room,
+					word: word,
+					story: String(k + " " + word),
+					playerId: pid,
+					word_turn: turn,
+					round_turn: that.model.attributes.round_turn,
+					in_progress: true
+				});
+				$('#input').html('<input type="text" id="disabledTextInput" class="form-control" placeholder="Waiting for the next fib" disabled>');
 			}
 		}
 
@@ -256,6 +258,7 @@ var app = app || {};
 			model.saveData(info, {url: location.hash.slice(0, -6)},{
 				success:function(){
 					app.AppRouter.navigate(location.hash + '/round/' + info.level);
+					app.AppView.vent.trigger('update');
 					that.level(info.level);
 				}
 			});

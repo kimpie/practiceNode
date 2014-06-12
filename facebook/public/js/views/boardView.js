@@ -10,13 +10,13 @@ var app = app || {};
 				'<ul id="cardList">'+
 					'{{#each round}}'+
 						'{{#if level_one}}'+
-							'<li id="one" class="col-xs-3 col-md-2 cards"><a href="{{url}}">Level 1</a></li>'+
+							'<li id="1" class="col-xs-3 col-md-2 cards"><a href="{{url}}">Level 1</a></li>'+
 						'{{/if}}'+
 						'{{#if level_two}}'+
-							'<li id="two" class="col-xs-3 col-md-2 cards"><a href="{{url}}">Level 2</a></li>'+
+							'<li id="2" class="col-xs-3 col-md-2 cards"><a href="{{url}}">Level 2</a></li>'+
 						'{{/if}}'+
 						'{{#if level_three}}'+
-							'<li id="three" class="col-xs-3 col-md-2 cards"><a href="{{url}}">Level 3</a></li>'+
+							'<li id="3" class="col-xs-3 col-md-2 cards"><a href="{{url}}">Level 3</a></li>'+
 						'{{/if}}'+
 					'{{/each}}'+
 				'</ul>'+
@@ -35,6 +35,12 @@ var app = app || {};
 		},
 
 		events: {
+			'click .cards': 'showCard'
+		},
+
+		showCard: function(info){
+			console.log(info.currentTarget);
+			app.AppView.vent.trigger('getCard', info.currentTarget.id);
 		},
 
 		render: function () {

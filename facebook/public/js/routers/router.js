@@ -36,7 +36,8 @@ var app = app || {};
 
                 inGame: function(id, game, path){
                     console.log('router has game id: ' + game + ' and path: ' + path);
-                    app.AppView.vent.trigger('roundInfo', game, path);
+                    //app.AppView.vent.trigger('roundInfo', game, path);
+                    this.trigger('round', game, path);
                 },
 
                 contact: function(){

@@ -5,12 +5,10 @@ var app = app || {};
 
 	app.cardView = Backbone.View.extend({
 
-		el: '#board',
-
 		template: Handlebars.compile(
 			'<div class="row">'+
 				'<div class="col-md-8 col-md-offset-2" id="cardTitle" style="display:none; text-align:center;"><h4>Round Rules</h4></div>' +
-				'<div class="col-md-8 col-md-offset-2" id="card">'+
+				'<div class="col-md-8 col-md-offset-2" id="cardBody">'+
 				'<em style="text-align:center;">Make sure everyone reads this card, then hit the START button above.</em>'+
 					'<div class="row">'+
 						'<div class="col-md-8 col-md-offset-2" style="text-align:left;"><h4>Direction:</h4></div>' + 
@@ -35,10 +33,10 @@ var app = app || {};
 		},
 
 		showHide: function(){
-			if( $('div#card').is(':hidden') ) {
-				$('div#card').show();
+			if( $('div#cardBody').is(':hidden') ) {
+				$('div#cardBody').show();
 			} else {
-				$('div#card').hide();
+				$('div#cardBody').hide();
 			}
 		},
 

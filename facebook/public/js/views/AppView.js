@@ -26,7 +26,8 @@ var app = app || {};
 			app.AppView.vent.on('requestGame', this.requestDialog, this);
 			app.AppView.vent.on('home', this.homeView, this);
 			app.AppView.vent.on('playGame', this.play, this);
-			//app.AppView.vent.on('getCard', this.cards, this);
+			app.AppView.vent.on('showCard', this.card, this);
+			app.AppView.vent.on('startRound', this.round, this);
 
 			app.AppView.vent.on('launchFetch', this.go, this);
 			app.AppView.vent.on('removeGame', this.removeGame, this);
@@ -42,6 +43,7 @@ var app = app || {};
 			this.play = this.$('#play');
 			this.mfs = this.$('#mfs');
 			this.board = this.$('#board');
+			this.card = this.$('#card');
 		},
 
 		//------Two events, when a user logs in to FB and when they invite friends to join
@@ -88,6 +90,7 @@ var app = app || {};
 			var playermodel = this.collection.findWhere({fb_id: Number(currentUser)});
 			app.AppRouter.navigate('#/players/' + playermodel.id)
 			this.board.hide();
+			this.card.hide();
 			var hv = new app.homeView({model: playermodel});
 			this.play.html(hv.render().el);	
 		},
@@ -167,13 +170,65 @@ var app = app || {};
 			}
 		},
 
-		/*cards: function(info, game){
-			console.log('cards in AppView has card info: ' + info + ' and game info:');
-			console.log(game);
-			var player = this.collection.findWhere({fb_id: Number(currentUser)});
-			app.AppRouter.navigate('#/players/' + player.id + '/games/' + game.id + '/round/' + info +'/cards');
-			this.cardCollection.randomCard(info);
-		},*/
+		round: function(round){
+			console.log('round started with');
+			console.log(round);
+			this.board.show();
+			this.card.show();
+			$('#cardTitle').show();
+			$('#cardBody').hide();
+	        var rv = new app.roundView({model: round});
+	        this.board.html(rv.render().el);
+
+		/*	this.board.show();
+			if(typeof game == "string"){
+				var game_model = this.gameCollection.findWhere({_id: game});
+			} else if (typeof game == "object"){
+				var game_model = game;
+			}
+			var k = path.substr(path.length - 1, path.length );
+			console.log('play received path level: ' + k);
+			if (path != undefined){
+				if(game_model.attributes.round[k].complete){
+					var gameview = new app.gameView({model: game_model});
+					this.play.html(gameview.render().el);
+					var rrv = new app.roundResultView({model: game_model.attributes.round[k]});
+					this.board.html(rrv.render().el);
+				} else if (game_model.attributes.round[k].in_progress){
+					var gameview = new app.gameView({model: game_model});
+					this.play.html(gameview.render().el);
+			        var rv = new app.roundView({model: game_model.attributes.round[k]});
+			        this.board.html(rv.render().el);
+				} else {
+					app.AppView.vent.trigger('getCard');
+				}
+			}*/
+		},
+
+		card: function(info){
+			console.log('cards in AppView has card info: ');
+			console.log(info);
+			this.board.hide();
+			this.card.show();
+
+			var g = location.hash.split('/')[4];
+			var gm = this.gcollection.findWhere({_id: g});
+			gm.saveData({
+				room: g,
+				playerId: location.hash.split('/')[2],
+				level: location.hash.split('/')[6],
+				in_progress: true,
+				round_turn: this.model.attributes.round_turn,
+				word_turn: this.model.attributes.word_turn,
+				card: info.id
+			});
+
+			app.AppView.vent.trigger('startBtn');
+			var cv = new app.cardView({model: info});
+			this.card.html(cv.render().el);
+			//var player = this.collection.findWhere({fb_id: Number(currentUser)});
+			//app.AppRouter.navigate(location.hash + '/cards');
+		},
 
 //------Once FB registers the player has logged in, they trigger the click on loginPlayer
 //------for our database to find or register the player.

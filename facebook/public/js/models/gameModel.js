@@ -122,6 +122,7 @@ var app = app || {};
 		},
 
 		saveRound: function(){
+			this.x = this.id;
 			if(this.attributes.round.length == 0){
 				this.save(this.addRounds(),
 					{
@@ -270,6 +271,10 @@ var app = app || {};
                                enumerable : true,
                                configurable : true});
 			Object.defineProperty(roundx, "in_progress", {value : info.in_progress,
+                               writable : true,
+                               enumerable : true,
+                               configurable : true});
+			Object.defineProperty(roundx, "word_turn", {value : info.word_turn,
                                writable : true,
                                enumerable : true,
                                configurable : true});

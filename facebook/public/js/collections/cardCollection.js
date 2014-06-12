@@ -18,7 +18,7 @@ var app = app || {};
 
 		randomCard: function(level){
 			console.log('cardCollection on randomCard');
-			var level = '';
+			var level = Number(level);
 			if (level < 3){
 				level = 'one';
 			} else if (level > 3 || level < 5){
