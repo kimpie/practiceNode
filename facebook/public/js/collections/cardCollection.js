@@ -18,13 +18,7 @@ var app = app || {};
 
 		randomCard: function(level){
 			console.log('cardCollection on randomCard');
-			var level = Number(level);
-			if (level < 3){
-				level = 'one';
-			} else if (level > 3 || level < 5){
-				level = 'two';
-			} else{ level = 'three'; }
-			var gid = this.where({level: level});
+			var gid = this.where({level: Number(level)});
 			var that = this;
 			function grabCard(collection){
 				var model = that.get(collection[Math.floor(Math.random() * collection.length)]);

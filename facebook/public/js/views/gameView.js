@@ -13,14 +13,14 @@ var app = app || {};
 				'<div class="col-md-8 col-md-offset-2" id="playerList">'+
 					'<ul>'+
 					'{{#each players}}' +
-					'<li id="players" class="{{firstName name}}">{{name}}</li>'+
+						'<li id="players" class="{{firstName name}}">{{name}}</li>'+
 					'{{/each}}'+
 					'<li id="players"><a id="addPlayer"><span class="glyphicon glyphicon-plus"></span></a></li>' +
 					'</ul>'+ 
 				'</div>'+
 				'<div class="row">' +
 					'<div class="col-md-12" id="playerTurn">'+
-						'<h3>{{round_turn}}\'s Round</h3>' +
+						'<h3>{{round_turn}} starts this Fib</h3>' +
 					'</div>'+
 					'<div class="col-md-8 col-md-offset-2" id="action"></div>'+
 				'</div>' +
@@ -39,12 +39,11 @@ var app = app || {};
 		app.AppView.vent.on('startBtn', this.showbtn, this);
 		app.AppView.vent.on('sendWord', this.submitWord, this);
 		app.AppView.vent.on('saveNewSentence', this.sNs, this);
-		//app.AppView.vent.on('round', this.level, this);
+		app.AppView.vent.on('startTimer', this.startTimer, this);
 		//Socket information
 		var socket = io.connect('https://completethesentence.com/', {secure: true , resource:'facebook/socket.io'});
 		socket.emit('room', {room: this.room});
 
-//		this.board = this.$('#board');
 		if (this.model.attributes.place == "live"){
 			this.live = true;
 		} else {
@@ -68,15 +67,15 @@ var app = app || {};
 
 	events: {
 		'click #addPlayer' : 'addPlayer',
-		//'click .cards': 'level',
 		'click #startRound': 'startRound',
-		//'keypress #enter': 'submitWord',
 		'click #share': 'share',
 		'click #like': 'like'
 	},
 
 	showbtn: function(){
-		$('#action').html('<button class="btn btn-success btn-block" id="startRound">Start</button>');
+		if (this.model.attributes.round_turn == name){
+			$('#action').html('<button class="btn btn-success btn-block" id="startRound">Start</button>');
+		} 
 	},
 
 	inRound: function(level){
@@ -96,62 +95,13 @@ var app = app || {};
 		console.log('Add Another Player to this Game');
 	},
 
-/*	level: function(info){
-		console.log('level called with ' + info);
-		var level;
-		if (info == undefined){
-			level = location.hash.split('/')[6];
-		} else {
-			level = info;
-		}
-        var rv = new app.roundView({model: this.model.attributes.round[level]});
-        this.board.html(rv.render().el);
-	},*/
-
-	showCard: function(card){
-			/*console.log(card);
-			this.card = card;
-			var cv = new app.cardView({model: card});
-			this.board.html(cv.render().el);
-			/*var story,
-				arr = this.model.attributes.round;
-			function getCard(element,index,array){
-			    if (element.card == this.card.id){
-			    	story = element.story;
-			    }
-			}
-			arr.forEach(getCard);
-			if(this.model.attributes.round.story != ''){
-				console.log('story not started yet')
-				$('#action').html('<button class="btn btn-success btn-block" id="startRound">Start</button>');
-			} else {
-				console.log('story started');
-			}*/
-	},
-
-	saveRound: function(){
-		console.log(this.card);
-		var that = this;
-		this.model.save({
-			round: {
-				card: this.card.id
-				}
-			}, {
-				success:function(response){
-					console.log('successfully saved round info:');
-					console.log(response);
-					var rid = response.attributes.round[0]._id;
-					app.AppRouter.navigate(location.hash.slice(0,-5) + 'round/' + rid);
-				}
-		});
-
-	},
-
 	startRound: function(){
-		var that = this,
-			pid = location.hash.slice(10).split('/')[0],
-			k = location.hash.substr(location.hash.length - 1, location.hash.length);
-		app.AppView.vent.trigger('startRound', that.model.attributes.round[k]);
+		console.log('startRound inside GAMEvIEW');
+		app.AppView.vent.trigger('showTimerInfo');
+	},
+
+	startTimer: function(){
+		console.log('startTimer inside GAMEvIEW');
 		if (this.live){
 			this.count = 60;
 		} else {
@@ -159,6 +109,7 @@ var app = app || {};
 		}
 		var counter = setInterval(timer, 1000);
 		$('#playerTurn, #action').empty();
+		var that = this;
 		function timer() {
 			that.count=that.count-1;
 			if (that.count <= 0) {
@@ -171,7 +122,7 @@ var app = app || {};
 				max: 60,
 				value: that.count
 			});
-		}		
+		}	
 	},
 
 	endOfTimer: function(){
@@ -218,54 +169,56 @@ var app = app || {};
 
 	submitWord: function(info){
 		console.log('submitWord called with info:');
-		console.log(info);
-		var word = info;
-		this.count = 0;
-		var that = this;
-		if (that.live){
-			console.log('game is live, not saving until end of round');
-		} else {
-			var	level = location.hash.slice(10).split('/')[4],
-				k = that.model.attributes.round[level].story,
-				pid = location.hash.slice(10).split('/')[0];
-			var turn = that.model.rotateTurn({round_turn: false});
-			console.log('submitWord received new turn for: ' + turn);
-			console.log(turn != undefined && turn != '');
-			if (turn != undefined && turn != ''){
-				console.log('ready for socket emit');
-				socket.emit('chat', {
-					level: level,
-					room: that.room,
-					word: word,
-					story: String(k + " " + word),
-					playerId: pid,
-					word_turn: turn,
-					round_turn: that.model.attributes.round_turn,
-					in_progress: true
-				});
-				$('#input').html('<input type="text" id="disabledTextInput" class="form-control" placeholder="Waiting for the next fib" disabled>');
+		console.log(info.word + ' ' + info.room);
+		console.log('On player ' + location.hash.slice(10).split('/')[0] + ' in room ' + this.room);
+		if (info.room == this.room){
+			var word = info.word;
+			this.count = 0;
+			var that = this;
+			if (that.live){
+				console.log('game is live, not saving until end of round');
+			} else {
+				var	level = location.hash.slice(10).split('/')[4],
+					k = that.model.attributes.round[level].story,
+					pid = location.hash.slice(10).split('/')[0];
+				console.log(k);
+				if (k != undefined && k != ''){
+					story = String(k + ' ' + word);
+				} else {
+					story = word;
+				}
+				var turn = that.model.rotateTurn({round_turn: false});
+				console.log('submitWord received new turn for: ' + turn);
+				console.log(turn != undefined && turn != '');
+				if (turn != undefined && turn != ''){
+					console.log('ready for socket emit');
+					socket.emit('chat', {
+						level: level,
+						room: that.room,
+						word: word,
+						story: story,
+						playerId: pid,
+						word_turn: turn,
+						round_turn: that.model.attributes.round_turn,
+						in_progress: true
+					});
+					//$('#input').html('<input type="text" id="disabledTextInput" class="form-control" placeholder="Waiting for the next fib" disabled>');
+				}
 			}
+		} else {
+			console.log(info.room + ' doesn\'t match this.room: ' + this.room);
 		}
-
+		
 	},
 
 	sNs: function (info){
 		console.log(info);	
 		var notify = info.notify;
+		console.log('GAMEvIEW: socket sent info for room ' + info.room + ' to ' + this.room);
 		if (info.room == this.room){
 			var model = this.model;
 			var that = this;
-			model.saveData(info, {url: location.hash.slice(0, -6)},{
-				success:function(){
-					app.AppRouter.navigate(location.hash + '/round/' + info.level);
-					app.AppView.vent.trigger('update');
-					that.level(info.level);
-				}
-			});
-			if(model.attributes.word_turn == name){
-				$('#input').html('<input class="form-control" id="enter" type="text" name="enter_word" placeholder="Your turn to Fib!"></>')
-			}
-			//app.AppView.vent.trigger('playersTurn', info.turn, model);
+			model.saveData(info, {url: location.hash.slice(0, -6)});
 			var temp = "It\'s your turn to Fib!";
 			/*FB.api('/' + info.turn + '/notifications',
 		        'post',

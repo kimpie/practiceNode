@@ -22,7 +22,7 @@ var app = app || {};
 		idAttribute: '_id',
 
 		initialize: function(){
-            _.bindAll(this, 'updateTurn', 'noturn', 'turn','updatePlayer', 'removeGame' ,'login', 'renderPlayer', 'setGameData','gameArray');
+            _.bindAll(this, 'updateTurn', 'turn','updatePlayer', 'removeGame' ,'login', 'renderPlayer', 'setGameData','gameArray');
 			console.log('The playerModel has been initialized.');
             app.AppView.vent.on('modelRemove', this.removeGame, this);
             app.AppView.vent.once('updatePlayer', this.updatePlayer, this);
@@ -30,39 +30,17 @@ var app = app || {};
 
 		},
 
-        updateTurn: function(player, player2, game){ 
+        updateTurn: function(player, game){ 
             console.log('updateTurn called on PlayersModel');
-            var player1 = player;
-            var player2 = player2;
-
-            if (Number(game.attributes.turn) == Number(player1.attributes.fb_id)){
-                console.log('its player1 turn');
-                player1.save(this.turn(player1, game),{
-                    success: function(){
-                        console.log('successfully updated turn on player model ' + player1.id);
-                    }
-                });
-                player2.save(this.noturn(player2, game),{
-                    success: function(){
-                        console.log('successfully updated noturn on player model ' + player2.id);
-                    }
-                });
-
-            } else {
-                console.log('its player2 turn');
-                player2.save(this.turn(player2, game),{
-                    success: function(){
-                        console.log('successfully updated turn on player model ' + player2.id);
-                    }
-                    
-                });
-                player1.save(this.noturn(player1, game),{
-                    success: function(){
-                        console.log('successfully updated noturn on player model ' + player1.id);
-                    }
-                });
-            }       
-            
+            console.log(player);
+            console.log(game);
+            player.save(this.turn(player, game),{
+                success: function(){
+                    console.log('successfully updated player: ');
+                    console.log(player);
+                    app.AppView.vent.trigger('updatehv');
+                }
+            });
         },
 
         turn: function(player, game){
@@ -76,7 +54,7 @@ var app = app || {};
             };
             i.forEach(getId);
 
-            var obje = Object.defineProperty(k, "turn", {value:true,
+            var obje = Object.defineProperty(k, "turn", {value:game.attributes.word_turn,
                                 writable : true,
                                enumerable : true,
                                configurable : true
@@ -84,37 +62,16 @@ var app = app || {};
             console.log('setting turn to TRUE with this object');
             console.log(obje);
         },
-        noturn: function(player, game){
-            var k = {};//k represents the game _id inside the players game object
-            var gid = game.id;
-            var i = player.attributes.games;
-            function getId( element, index, array ){       
-                 if (element.id == gid){ 
-                      k = element;  
-                 }
-            };
-            i.forEach(getId);
-
-            var obje = Object.defineProperty(k, "turn", {value:false,
-                                writable : true,
-                               enumerable : true,
-                               configurable : true
-                           });
-            console.log('setting turn to FALSE with this object');
-            console.log(obje);
-        },
 
         updatePlayer: function(player, points){
-            var total = Number(points) + Number(player.attributes.points);
-            console.log('saving player ' + player.id + ' points totalling: ' + total);
-            player.save({
+            /*player.save({
                 points: total
             }, {
                 success: function(player){
                     console.log('successfully saved '+ player.attributes.name +'\'s new points: ' + player.attributes.points);
                 }
             });
-            //this.renderPlayer(model);
+            //this.renderPlayer(model);*/
         },
 
         removeGame: function(gameModel, player){
@@ -203,8 +160,8 @@ var app = app || {};
             console.log('and the game info inside setGameData');
             console.log(game);
         	model.save(this.gameArray(game, model), {
-        		success: function(game, model){
-		        	console.log('Saving game id ' + game.id + ' to the player ' + player.id);
+        		success: function(model){
+		        	console.log('Saving game id ' + model.attributes.games.id + ' to the player ' + model.id);
         		}
         	});       	
         },
@@ -214,7 +171,7 @@ var app = app || {};
                 id: game.id, 
                 players: game.attributes.players,
                 url: String('#/players/' + player.id + '/games/' + game.id),
-                turn: game.attributes.turn,
+                turn: game.attributes.word_turn,
                 };
         	var games = player.attributes.games;
         	console.log('gameArray found ' + games.length + ' game(s).');

@@ -389,8 +389,8 @@ var app = app || {};
 				if (modelPlayers.length == (to.length + 1) ){
 					that.create({
 						'place': place,
-				    	'round_turn': modelPlayers[1].name,
-				    	'word_turn': modelPlayers[1].name,
+				    	'round_turn': modelPlayers[0].name,
+				    	'word_turn': modelPlayers[0].name,
 				    	'complete': false,
 				    	'active' : true,
 				    	'players' : modelPlayers

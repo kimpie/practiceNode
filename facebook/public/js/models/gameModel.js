@@ -235,6 +235,8 @@ var app = app || {};
 		},
 
 		rotateTurn: function(info){
+
+
 			if (info.round_turn){
 				//get new player for next ROUND turn
 				var pt = this.attributes.round_turn;
@@ -261,6 +263,8 @@ var app = app || {};
 		},
 
 		setData: function(info){
+			console.log(info);
+			console.log(info.level);
 			var roundx = this.attributes.round[info.level];
 			Object.defineProperty(roundx, "story", {value : info.story,
                                writable : true,
@@ -286,11 +290,21 @@ var app = app || {};
 		},
 
 		saveData: function(info){
+			console.log(info);
 			this.y = info.playerId;
 			this.x = info.room;
-			this.save(this.setData(info), {
+			var that = this;
+			this.save(this.setData(info),{
 				success: function(game){
-					console.log('success on saving sentence and turn');
+					app.AppView.vent.trigger('home');
+					var gp = game.attributes.players;
+					function update(element, index, array){
+						console.log(element.fb_id);
+						var playerID = element.fb_id;
+						console.log('update fn on player id: ' + playerID);
+					    app.AppView.vent.trigger('updatePlayer', playerID, game);
+					};
+					gp.forEach(update);
 				}
 			});
 		},

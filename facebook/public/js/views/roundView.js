@@ -35,7 +35,15 @@ var app = app || {};
 			this.model = options.model;
 			console.log('round view initialized with ');
 			console.log(this.model);
-			app.AppView.vent.on('update', this.render);
+			if (this.model.word_turn == name){
+				console.log('trigger startTimer');
+				app.AppView.vent.trigger('startTimer');
+			}
+			this.room = location.hash.split('/')[4];
+			var socket = io.connect('https://completethesentence.com/', {secure: true , resource:'facebook/socket.io'});
+			socket.emit('room', {room: this.room});
+
+			app.AppView.vent.on('update', this.render, this);
 			
 			//$('#storyTextt').append(this.model.story);
 		},
@@ -46,9 +54,14 @@ var app = app || {};
 
 		submitWord: function(event){
 			var word = jQuery('#enter').val();
-			console.log(word);
+			console.log(' ROUNDvIEW has word: ' + word + ' and room: ' + this.room);
+			var that = this;
 			if (event.which == 32 || event.which == 13) {
-				app.AppView.vent.trigger('sendWord', word);
+				var info = {
+					word: word,
+					room: that.room
+				};
+				app.AppView.vent.trigger('sendWord', info);
 			}
 		},
 

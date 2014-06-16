@@ -3,7 +3,8 @@ jQuery(document).ready(function () {
 		var li = jQuery('<li />').text(story);
 		li.css({'display': 'inline'});
 		//jQuery('#chat_log').append(li);
-		jQuery('#storyText').append(li);
+		//jQuery('#storyText').append(li);
+		console.log(story);
 	};
 
 	var end = function(data){
@@ -68,7 +69,7 @@ jQuery(document).ready(function () {
 	});
 
 	socket.on('chat', function (data) {
-		//log_chat_message(data.story, 'normal');
+		log_chat_message(data.story, 'normal');
 		//notify_turn(data.turn);
 		end(data);
 		app.AppView.vent.trigger('saveNewSentence', data);

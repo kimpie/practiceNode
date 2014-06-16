@@ -12,17 +12,15 @@ var app = app || {};
 	    console.log('The Players collection has been initialized.');
 	    _.bindAll(this, 'setPlayerData', 'createPlayer', 'loginPlayer', 'renderPlayer', 'savegame');
 	  	app.AppView.vent.on('gameSaved', this.savegame, this);
-	  	app.AppView.vent.on('playersTurn', this.turn, this);
+	  	app.AppView.vent.on('updatePlayer', this.turn, this);
 	   	},
 
-	  	turn: function(turn, game){
-	  		console.log('turn triggered in players collection');
-	  		for (var i = 0; i < game.attributes.players; i++){
-		  		var player = this.findWhere({fb_id: Number(game.attributes.players.fb_id)});
-	  			console.log('turn iterating through player:');
-	  			console.log(player[i]);
-	  		}
-	  		//app.AppView.vent.trigger('updateTurn', player, player2, game);
+	  	turn: function(playerID, game){
+	  		console.log('turn triggered in players collection ' + playerID);
+	  		console.log(game);
+	  		var player = this.findWhere({fb_id: playerID});
+	  		console.log(player);
+	  		app.AppView.vent.trigger('updateTurn', player, game);
 	  	},
 
 		setPlayerData: function (){
@@ -99,7 +97,7 @@ var app = app || {};
 	  				player.setGameData(game, player);
 	  			} else {
 	  				console.log('saivng player to db');
-	  				/*that.create({
+	  				that.create({
 	  					name: gp[i].name,
 	  					fb_id: gp[i].fb_id
 	  				},{
@@ -107,7 +105,7 @@ var app = app || {};
 	  						console.log('successfully created player');
 	  						player.setGameData(game, player);
 	  					}
-	  				});*/
+	  				});
 	  			}
 	  		};
 	  	} 
