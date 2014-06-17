@@ -18,7 +18,7 @@ var app = app || {};
 		template: Handlebars.compile(
 			'<section id="userName">' +
 				'<div class="well well-lg">' +
-					'<p class="lead">Start a new game either with a group or play one-on-one</p>' +
+					'<p class="lead">Play with a Group or One-on-One</p>' +
 					'<button class="btn btn-primary btn-lg" id="btn-success">NEW GAME</button>' +
 				'</div>' +
 				'<section id="main">' +

@@ -1,11 +1,4 @@
 jQuery(document).ready(function () {
-	var log_chat_message = function (story) {
-		var li = jQuery('<li />').text(story);
-		li.css({'display': 'inline'});
-		//jQuery('#chat_log').append(li);
-		//jQuery('#storyText').append(li);
-		console.log(story);
-	};
 
 	var end = function(data){
 		if (data.end){
@@ -69,14 +62,11 @@ jQuery(document).ready(function () {
 	});
 
 	socket.on('chat', function (data) {
-		log_chat_message(data.story, 'normal');
-		//notify_turn(data.turn);
 		end(data);
 		app.AppView.vent.trigger('saveNewSentence', data);
 	});
 
 	socket.on('newGameRequest', function (data) {
-//		log_chat_message(data.message, 'normal');
 		notify(data.pReqting);
 		app.AppView.vent.trigger('request', data);
 	});

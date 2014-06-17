@@ -15,11 +15,13 @@ var gameSchema = new Schema({
 		card: String,
 		in_progress: Boolean,
 		complete: Boolean,
+		review: Boolean,
 		url: String,
 		word_turn: String,
 		level_one: Boolean,
 		level_two: Boolean,
-		level_three: Boolean
+		level_three: Boolean,
+		word_countdown: Number
 	}],
 	players: [{
 		uid: Number,

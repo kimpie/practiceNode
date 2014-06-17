@@ -80,6 +80,8 @@
 	text-align: center;
 	border-radius: 4px;
 	background-color: purple;
+	height: 200px;
+	padding-top: 10px;
 }
 
 .turn{
@@ -99,6 +101,19 @@
 
 #story{
 	height: 100px;
+	border-radius: 4px;
+	background-color: purple;
+	text-align: center;
+	color: white;
+}
+
+#sharing{
+	display: none;
+	padding-top: 10px;
+}
+
+#result{
+	height: 200px;
 	border-radius: 4px;
 	background-color: purple;
 	text-align: center;

@@ -10,7 +10,11 @@ var app = app || {};
 
 		template: Handlebars.compile(
 			'<div class="row top_gv">' +
-				'<div class="col-md-8 col-md-offset-2" id="playerList">'+
+				'<div class="col-md-2 col-md-offset-2" id="word_countdown">' + 
+					'<h5>Words Remaining</h5>' +
+					'<h5>{{word_countdown}}</h5>' +
+				'</div>' +
+				'<div class="col-md-6" id="playerList">'+
 					'<ul>'+
 					'{{#each players}}' +
 						'<li id="players" class="{{firstName name}}">{{name}}</li>'+
@@ -40,6 +44,7 @@ var app = app || {};
 		app.AppView.vent.on('sendWord', this.submitWord, this);
 		app.AppView.vent.on('saveNewSentence', this.sNs, this);
 		app.AppView.vent.on('startTimer', this.startTimer, this);
+		app.AppView.vent.on('doneBtn', this.donebtn, this);
 		//Socket information
 		var socket = io.connect('https://completethesentence.com/', {secure: true , resource:'facebook/socket.io'});
 		socket.emit('room', {room: this.room});
@@ -68,8 +73,34 @@ var app = app || {};
 	events: {
 		'click #addPlayer' : 'addPlayer',
 		'click #startRound': 'startRound',
-		'click #share': 'share',
-		'click #like': 'like'
+		'click .closeRound' : 'closeRound',
+		'click #gameView' : 'gotogame'
+	},
+
+	gotogame: function(){
+		console.log('do we need to navigate somehwere?');
+	},
+
+	donebtn: function(){
+		if(this.model.attributes.round_turn == name){
+			$('#action').html('<button class="btn btn-success btn-block closeRound" id="gameView">Begin Next Round</button>');
+		} else {
+			$('#action').html('<button class="btn btn-success btn-block closeRound" id="home">Take me home, waiting for {{round_turn}} to begin next round</button>');
+		}
+	},
+
+	closeRound: function(){
+		var that = this;
+		var round = location.hash.slice(10).split('/')[4];
+		this.model.saveData({
+			review: false,
+			level: round,
+			playerId: location.hash.slice(10).split('/')[0],
+			room: that.room,
+			word_turn: that.model.attributes.round_turn,
+			story: that.model.attributes.round[round].story,
+			card: that.model.attributes.round[round].card
+		}, {url: location.hash.slice(0, -6)});
 	},
 
 	showbtn: function(){
@@ -118,10 +149,18 @@ var app = app || {};
 				that.endOfTimer();
 				return;
 			}
-			$('#action').progressbar({
-				max: 60,
-				value: that.count
-			});
+			if(that.live){
+				$('#action').progressbar({
+					max: 60,
+					value: that.count
+				});
+			} else {
+				$('#action').progressbar({
+					max: 30,
+					value: that.count
+				});
+			}
+
 		}	
 	},
 
@@ -150,16 +189,17 @@ var app = app || {};
 			if($('#enter').val() == ''){
 				console.log('word wasn\'t entered, you lose this turn');
 				var turn = that.model.rotateTurn({round_turn:false});
-
+				var	level = location.hash.slice(10).split('/')[4];
 				/*if (turn != undefined && turn != ''){*/
 					socket.emit('chat', {
-						leve: level,
+						level: level,
 						room: that.room,
 						playerId: pid,
 						word_turn: turn,
 						round_turn: that.model.attributes.round_turn,
 						card: that.card,
-						in_progress: true
+						in_progress: true,
+						story: that.model.attributes.story
 						});
 					$('#input').html('<input type="text" id="disabledTextInput" class="form-control" placeholder="Waiting for the next fib" disabled>');
 				//}
@@ -187,6 +227,11 @@ var app = app || {};
 				} else {
 					story = word;
 				}
+				var wc = Number(that.model.attributes.round[level].word_countdown - 1);
+				if(wc == 0){
+					var rev == true;
+				} else { var rev == false; }
+				console.log('word_countdown is at ' + wc);
 				var turn = that.model.rotateTurn({round_turn: false});
 				console.log('submitWord received new turn for: ' + turn);
 				console.log(turn != undefined && turn != '');
@@ -198,9 +243,11 @@ var app = app || {};
 						word: word,
 						story: story,
 						playerId: pid,
+						word_countdown: wc,
 						word_turn: turn,
 						round_turn: that.model.attributes.round_turn,
-						in_progress: true
+						in_progress: true,
+						review: rev
 					});
 					//$('#input').html('<input type="text" id="disabledTextInput" class="form-control" placeholder="Waiting for the next fib" disabled>');
 				}

@@ -15,12 +15,12 @@ var app = app || {};
 	  	app.AppView.vent.on('updatePlayer', this.turn, this);
 	   	},
 
-	  	turn: function(playerID, game){
+	  	turn: function(playerID, game, round){
 	  		console.log('turn triggered in players collection ' + playerID);
 	  		console.log(game);
 	  		var player = this.findWhere({fb_id: playerID});
 	  		console.log(player);
-	  		app.AppView.vent.trigger('updateTurn', player, game);
+	  		app.AppView.vent.trigger('updateTurn', player, game, round);
 	  	},
 
 		setPlayerData: function (){

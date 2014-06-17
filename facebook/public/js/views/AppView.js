@@ -36,6 +36,7 @@ var app = app || {};
 			this.mfs = this.$('#mfs');
 			this.board = this.$('#board');
 			this.card = this.$('#card');
+			this.sharing = this.$('#sharing');
 		},
 
 		//------Two events, when a user logs in to FB and when they invite friends to join
@@ -99,11 +100,18 @@ var app = app || {};
 			var level = game_model.checkRounds();
 			this.board.show();
 			if(level != undefined){
-				var gameview = new app.gameView({model: game_model});
-				this.play.html(gameview.render().el);
-		        var rv = new app.roundView({model: game_model.attributes.round[level]});
-		        this.board.html(rv.render().el);
-				app.AppRouter.navigate('#/players/' + player.id + '/games/' + game + '/round/' + level);
+				if(game_model.attributes.round[level].review){
+					app.AppRouter.navigate('#/players/' + player.id + '/games/' + game + '/round/' + level);
+					var gameview = new app.gameView({model: game_model});
+					this.play.html(gameview.render().el);
+					app.AppView.vent.trigger('doneBtn');
+					var rrv = new app.roundResultView({model: game_model.attributes.round[level]});
+					this.board.html(rrv.render().el);
+					this.sharing.show();
+				} else {
+					app.AppRouter.navigate('#/players/' + player.id + '/games/' + game + '/round/' + level);
+					this.timer();
+				}
 			} else {
 				var gameview = new app.gameView({model: game_model});
 				this.play.html(gameview.render().el);
@@ -125,6 +133,7 @@ var app = app || {};
 				var r = round;
 			} else {
 				var r = gm.attributes.round[rd];
+				console.log(r);
 			}
 			var gameview = new app.gameView({model: gm});
 			this.play.html(gameview.render().el);
@@ -141,6 +150,8 @@ var app = app || {};
 			console.log(info);
 			this.board.hide();
 			this.card.show();
+			var level = location.hash.split('/')[6];
+			round_cards =[{round: level, card: info.id}]; 
 			app.AppView.vent.trigger('startBtn');
 			var cv = new app.cardView({model: info});
 			this.card.html(cv.render().el);
@@ -156,14 +167,26 @@ var app = app || {};
 			var p = location.hash.split('/')[2];
 			var rd = location.hash.split('/')[6];
 			var gm = this.gameCollection.findWhere({_id: g});
-			gm.saveData({
-				playerId: p,
-				room: g,
-				level: rd,
-				word_turn: gm.attributes.word_turn,
-				round_turn: gm.attributes.round_turn,
-				in_progress: true
-			});
+			var story = gm.attributes.round[rd].story;
+			var z;
+			function cid(element, index, array){
+			    if(rd == element.round){
+				    z = element.card;
+			    }
+			};
+			round_cards.forEach(cid);
+			if (story == undefined || story == ''){
+				gm.saveData({
+					playerId: p,
+					room: g,
+					level: rd,
+					word_turn: gm.attributes.word_turn,
+					round_turn: gm.attributes.round_turn,
+					in_progress: true,
+					card: z,
+					word_count: 15
+				});
+			}
 		},
 
 //------Once FB registers the player has logged in, they trigger the click on loginPlayer

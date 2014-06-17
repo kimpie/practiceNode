@@ -30,11 +30,11 @@ var app = app || {};
 
 		},
 
-        updateTurn: function(player, game){ 
+        updateTurn: function(player, game, round){ 
             console.log('updateTurn called on PlayersModel');
             console.log(player);
             console.log(game);
-            player.save(this.turn(player, game),{
+            player.save(this.turn(player, game, round),{
                 success: function(){
                     console.log('successfully updated player: ');
                     console.log(player);
@@ -43,7 +43,7 @@ var app = app || {};
             });
         },
 
-        turn: function(player, game){
+        turn: function(player, game, round){
             var k = {};//k represents the game _id inside the players game object
             var gid = game.id;
             var i = player.attributes.games;
@@ -53,13 +53,22 @@ var app = app || {};
                  }
             };
             i.forEach(getId);
-
-            var obje = Object.defineProperty(k, "turn", {value:game.attributes.word_turn,
-                                writable : true,
-                               enumerable : true,
-                               configurable : true
-                           });
-            console.log('setting turn to TRUE with this object');
+            var obje = {};
+            if(game.attributes.round[round].complete){
+                obje = Object.defineProperty(k, "turn", {value:name,
+                    writable : true,
+                   enumerable : true,
+                   configurable : true
+                });
+                console.log('setting turn to ' +  name + ' with this object');
+            } else {
+                obje = Object.defineProperty(k, "turn", {value:game.attributes.word_turn,
+                    writable : true,
+                   enumerable : true,
+                   configurable : true
+                });
+                console.log('setting turn to ' +  game.attributes.word_turn + ' with this object');
+            }
             console.log(obje);
         },
 

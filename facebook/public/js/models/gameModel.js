@@ -266,6 +266,18 @@ var app = app || {};
 			console.log(info);
 			console.log(info.level);
 			var roundx = this.attributes.round[info.level];
+
+			if(info.word_countdown == 0){
+				Object.defineProperty(roundx, "in_progress", {value : false,
+                               writable : true,
+                               enumerable : true,
+                               configurable : true});
+				Object.defineProperty(roundx, "complete", {value : true,
+	                               writable : true,
+	                               enumerable : true,
+	                               configurable : true});
+			}
+
 			Object.defineProperty(roundx, "story", {value : info.story,
                                writable : true,
                                enumerable : true,
@@ -282,6 +294,15 @@ var app = app || {};
                                writable : true,
                                enumerable : true,
                                configurable : true});
+			Object.defineProperty(roundx, "word_countdown", {value : info.word_countdown,
+                               writable : true,
+                               enumerable : true,
+                               configurable : true});
+			Object.defineProperty(roundx, "review", {value : info.review,
+                               writable : true,
+                               enumerable : true,
+                               configurable : true});
+
 			console.log(roundx);
 			return{
 				word_turn:info.word_turn,
@@ -296,13 +317,18 @@ var app = app || {};
 			var that = this;
 			this.save(this.setData(info),{
 				success: function(game){
-					app.AppView.vent.trigger('home');
+					if(game.attributes.round[info.level].complete == true){
+						app.AppView.vent.trigger('playGame', game);
+					} else {
+						app.AppView.vent.trigger('home');
+					}
 					var gp = game.attributes.players;
 					function update(element, index, array){
 						console.log(element.fb_id);
+						console.log(info.level);
 						var playerID = element.fb_id;
 						console.log('update fn on player id: ' + playerID);
-					    app.AppView.vent.trigger('updatePlayer', playerID, game);
+					    app.AppView.vent.trigger('updatePlayer', playerID, game, info.level);
 					};
 					gp.forEach(update);
 				}

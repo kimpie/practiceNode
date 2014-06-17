@@ -23,7 +23,6 @@ var app = app || {};
 		initialize: function  (options) {
 			this.model = options.model;
 			console.log('card view initialized with ');
-			console.log(this.model);
 			var hash = location.hash.split('/');
 			//app.AppRouter.navigate('#/players' + hash[2] + '/games/' + hash[4] + '/cards/' + this.model.id);
 		},
