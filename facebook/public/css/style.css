@@ -112,6 +112,11 @@
 	padding-top: 10px;
 }
 
+.complete{
+	background-color: gray;
+	text-decoration: yellow;
+}
+
 #result{
 	height: 200px;
 	border-radius: 4px;

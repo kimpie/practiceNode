@@ -119,7 +119,8 @@ exports.postGame = function (req, res){
 			word_turn: req.body.word_turn,
 			place: req.body.place,
 			round: req.body.round,
-			players: req.body.players
+			players: req.body.players,
+			word_countdown: req.body.word_countdown
 		});
 		game.save( function (err){				
 			if (err) return handleError (err);			
@@ -141,6 +142,7 @@ exports.updateGame = function (req, res){
 		game.place = req.body.place;
 		game.round = req.body.round;
 		game.players = req.body.players;
+		game.word_countdown = req.body.word_countdown;
 
 	    return game.save( function( err ) {
 	        if( !err ) {

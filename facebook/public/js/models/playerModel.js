@@ -34,6 +34,7 @@ var app = app || {};
             console.log('updateTurn called on PlayersModel');
             console.log(player);
             console.log(game);
+            console.log(round);
             player.save(this.turn(player, game, round),{
                 success: function(){
                     console.log('successfully updated player: ');
@@ -172,7 +173,7 @@ var app = app || {};
         		success: function(model){
 		        	console.log('Saving game id ' + model.attributes.games.id + ' to the player ' + model.id);
         		}
-        	});       	
+        	});      	
         },
 
         gameArray: function(game, player){

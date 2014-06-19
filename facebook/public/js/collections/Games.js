@@ -393,6 +393,7 @@ var app = app || {};
 				    	'word_turn': modelPlayers[0].name,
 				    	'complete': false,
 				    	'active' : true,
+				    	'word_countdown' : 10,
 				    	'players' : modelPlayers
 					},{
 						success: function (game){

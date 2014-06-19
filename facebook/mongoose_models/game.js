@@ -9,6 +9,7 @@ var gameSchema = new Schema({
 	round_turn: String,
 	word_turn: String,
 	place: String,
+	word_countdown: Number,
 	round: [{
 		number: Number,
 		story: String,
@@ -20,8 +21,7 @@ var gameSchema = new Schema({
 		word_turn: String,
 		level_one: Boolean,
 		level_two: Boolean,
-		level_three: Boolean,
-		word_countdown: Number
+		level_three: Boolean
 	}],
 	players: [{
 		uid: Number,

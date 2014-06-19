@@ -21,11 +21,11 @@ var app = app || {};
 				'<div class="col-md-8 col-md-offset-2" id="story">'+
 					'<div id="storyText"><h3>{{story}}</h3></div>' +
 					'<div id="input">' +
-						'{{#ifWT word_turn}}'+
+						/*'{{#ifWT word_turn}}'+
 							'<input class="form-control" id="enter" type="text" name="enter_word" placeholder="Your turn to Fib!"></>' +
 						'{{else}}'+
 							'<input type="text" id="disabledTextInput" class="form-control" placeholder="Waiting for the next fib" disabled></>' +
-						'{{/ifWT}}' +
+						'{{/ifWT}}' +*/
 					'</div>' +
 				'</div>' +
 			'</div>'
@@ -35,21 +35,27 @@ var app = app || {};
 			this.model = options.model;
 			console.log('round view initialized with ');
 			console.log(this.model);
-			if (this.model.word_turn == name){
-				console.log('trigger startTimer');
-				app.AppView.vent.trigger('startTimer');
-			}
 			this.room = location.hash.split('/')[4];
 			var socket = io.connect('https://completethesentence.com/', {secure: true , resource:'facebook/socket.io'});
 			socket.emit('room', {room: this.room});
 
 			app.AppView.vent.on('update', this.render, this);
+			app.AppView.vent.on('wordTurn', this.wt, this);
 			
 			//$('#storyTextt').append(this.model.story);
 		},
 
 		events: {
 			'keypress #enter': 'submitWord'
+		},
+
+		wt: function(wt){
+			if(wt == name){
+				app.AppView.vent.trigger('startTimer');
+				$('#input').html('<input class="form-control" id="enter" type="text" name="enter_word" placeholder="Your turn to Fib!"></>');
+			} else {
+				$('#input').html('<input type="text" id="disabledTextInput" class="form-control" placeholder="Waiting for the next fib" disabled></>');
+			}
 		},
 
 		submitWord: function(event){

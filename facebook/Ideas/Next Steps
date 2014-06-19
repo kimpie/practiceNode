@@ -1,0 +1,16 @@
+Next Steps
+
+Current state:
+- Online functionality near complete
+- Mozzila FF everything works fine - Opera & Chrome have issues
+- Mobile loading doesn't work
+
+ToDo:
+- Polish off the final touches for computing word count and saving all info at right time.
+- Add speech to text component
+- Make sure everything is small screen compatible
+- Complete any other live functionality?
+
+
+Promotion part:
+=   

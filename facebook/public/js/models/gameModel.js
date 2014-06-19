@@ -2,28 +2,6 @@ var app = app || {};
 
 (function () {
 
-/*	Backbone.Model.prototype.forward = function (attribute, subModel, options) {
-	  var self = this; // parent model
-		var property = (options && options.property) ?
-			options.property : attribute;
-		self[property] = subModel; // save the subModel in the specified property
-		subModel.set(self.get(attribute)); // add any existing data to the subModel
-		self.on("change:" + attribute, function(model, value, options){
-			subModel.set(value, options);
-		});
-
-		// Implement here all methods on the child that you need to trigger change
-		// events up in the rest of the model tree.
-		// 
-		// For example, here is how you could implement the "add" function for
-		// Backbone.Collection.
-		subModel.add = function (model, options) {
-			var collection = _.clone(self.get(attribute));
-			collection.push(model.attributes);
-			self.set(attribute, collection);
-		};
-	};*/
- 
 	app.gameModel = Backbone.Model.extend({
 
 		defaults: {						
@@ -47,8 +25,6 @@ var app = app || {};
 			*/
 			//iterate through the rounds, if level_one position 1 url is x 
 
-//			this.forward("round", new app.round());
-
 			_.bindAll(this, 'rotateTurn', 'saveData', 'getRound', 'checkRounds', 'addRounds', 'saveRound', 'setData', 'url');
 			console.log('gameModel received options:');
 			console.log(options);
@@ -66,14 +42,7 @@ var app = app || {};
 			} else {
 				this.y = undefined;
 			}	
-			/*if(location.hash.indexOf('games') !== -1){
-				var g = location.hash.indexOf('games') - 2;
-			} else {
-				var g = location.hash.length;
-			}
-			var insertUrl = location.hash.substr(1, g);
-			console.log(insertUrl);
-			this.url = '/facebook' + insertUrl + '/games/' + options.id;*/
+
 			app.AppView.vent.on('example', function (info){ console.log(info + ' from socket!'); });
 			app.AppView.vent.on('updateGameInfo', this.updateGameInfo, this);
 			app.AppView.vent.on('removeGame', this.changeActive, this);
@@ -81,17 +50,6 @@ var app = app || {};
 		  	app.AppView.vent.on('loadPlayers', this.addPlayers, this);
 			//console.log('GameModel initialized with player: ' + this.y + 'and game: ' + this.x);
 		},
-
-		/*url: function(){
-			if(location.hash.indexOf('games') !== -1){
-				var g = location.hash.indexOf('games') - 2;
-			} else {
-				var g = location.hash.length;
-			}
-			var insertUrl = location.hash.substr(1, g);
-			console.log(insertUrl);
-			return '/facebook' + insertUrl + '/games/' + this.id;
-		},*/
 
 		getRound: function(path){
 			var p = path.split('/'),
@@ -144,10 +102,10 @@ var app = app || {};
 			var n;
 			if(r.length == 0){
 			    console.log('round length 0');
-			    var addrounds = 6;
-			    for(var i=0;i<addrounds; i++){
+			    var addrounds = 4;
+			    for(var i=1;i<addrounds; i++){
 		
-					if(i < 3){
+					if(i < 2){
 			            console.log('in l1 ' + i);
 			            n = {
 			            	'number': i,
@@ -155,7 +113,7 @@ var app = app || {};
 							'url': gUrl + i
 						};
 						r.push(n);
-					} else if (i >= 3 && i < 5){
+					} else if (i < 3){
 			            console.log('in l2 ' + i);
 			            n = {
 			            	'number': i,
@@ -265,7 +223,10 @@ var app = app || {};
 		setData: function(info){
 			console.log(info);
 			console.log(info.level);
-			var roundx = this.attributes.round[info.level];
+			//Round index starts at 0, our levels start at 1.
+			//Need to subtract one from info.level to save to the correct indexed round.
+			var rIndex = info.level - 1;
+			var roundx = this.attributes.round[rIndex];
 
 			if(info.word_countdown == 0){
 				Object.defineProperty(roundx, "in_progress", {value : false,
@@ -282,10 +243,6 @@ var app = app || {};
                                writable : true,
                                enumerable : true,
                                configurable : true});
-			Object.defineProperty(roundx, "card", {value : info.card,
-                               writable : true,
-                               enumerable : true,
-                               configurable : true});
 			Object.defineProperty(roundx, "in_progress", {value : info.in_progress,
                                writable : true,
                                enumerable : true,
@@ -294,18 +251,35 @@ var app = app || {};
                                writable : true,
                                enumerable : true,
                                configurable : true});
-			Object.defineProperty(roundx, "word_countdown", {value : info.word_countdown,
+			Object.defineProperty(roundx, "review", {value : info.review,
                                writable : true,
                                enumerable : true,
                                configurable : true});
-			Object.defineProperty(roundx, "review", {value : info.review,
+			var z;
+			if(info.word_countdown == 9){
+				if (round_cards != undefined){
+					var rd = info.level;
+					function cid(element, index, array){
+					    console.log(element);
+					    if(rd == element.round){
+						    z = element.card;
+					    }
+					};
+					round_cards.forEach(cid);
+				}
+			}else {
+				z = this.attributes.round[rIndex].card;
+			}
+			console.log(z);
+			Object.defineProperty(roundx, "card", {value : z,
                                writable : true,
                                enumerable : true,
                                configurable : true});
 
 			console.log(roundx);
 			return{
-				word_turn:info.word_turn,
+				word_countdown: info.word_countdown,
+				word_turn: info.word_turn,
 				round_turn: info.round_turn
 			}
 		},
@@ -317,7 +291,7 @@ var app = app || {};
 			var that = this;
 			this.save(this.setData(info),{
 				success: function(game){
-					if(game.attributes.round[info.level].complete == true){
+					if(game.attributes.round[info.level - 1].complete == true){
 						app.AppView.vent.trigger('playGame', game);
 					} else {
 						app.AppView.vent.trigger('home');
@@ -325,10 +299,11 @@ var app = app || {};
 					var gp = game.attributes.players;
 					function update(element, index, array){
 						console.log(element.fb_id);
-						console.log(info.level);
+						var rIndex = info.level - 1;
+						console.log(rIndex);
 						var playerID = element.fb_id;
 						console.log('update fn on player id: ' + playerID);
-					    app.AppView.vent.trigger('updatePlayer', playerID, game, info.level);
+					    app.AppView.vent.trigger('updatePlayer', playerID, game, rIndex);
 					};
 					gp.forEach(update);
 				}

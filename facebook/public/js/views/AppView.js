@@ -121,28 +121,50 @@ var app = app || {};
 			}
 		},
 
-		round: function(round){
+		round: function(game, round){
+			var round = round;
+			var game = game;
 			console.log('round started with');
 			console.log(round);
-
-			var g = location.hash.split('/')[4];
-			var rd = location.hash.split('/')[6];
-			var gm = this.gameCollection.findWhere({_id: g});
-
-			if (round == typeof object){
-				var r = round;
+			console.log(game);
+			console.log(location);
+			if (game != undefined){
+				var g = game;
 			} else {
-				var r = gm.attributes.round[rd];
-				console.log(r);
+				var g = location.hash.split('/')[4];
 			}
+			var gm = this.gameCollection.findWhere({_id: g});
+			if (round != undefined){
+				var rindex = round - 1;
+				if (round == typeof object){
+					var r = round;
+				} else {
+					var r = gm.attributes.round[rindex];
+					console.log(r);
+				}
+			} else {
+				var rd = location.hash.split('/')[6];
+			}
+			console.log(gm);
 			var gameview = new app.gameView({model: gm});
 			this.play.html(gameview.render().el);
 			this.board.show();
 			this.card.show();
+			if(gm.attributes.word_countdown == 15){
+				var rc = round_cards[0].card;
+			} else {
+				var rc = r.card;
+			}
+			console.log(r);
+			console.log(rc);
+			var c = this.cardCollection.findWhere({_id: rc});
+			var cv = new app.cardView({model: c});
+			this.card.html(cv.render().el);
 			$('#cardTitle').show();
 			$('#cardBody').hide();
 	        var rv = new app.roundView({model: r});
 	        this.board.html(rv.render().el);
+	        app.AppView.vent.trigger('wordTurn', gm.attributes.word_turn);
 		},
 
 		card: function(info){
@@ -150,7 +172,7 @@ var app = app || {};
 			console.log(info);
 			this.board.hide();
 			this.card.show();
-			var level = location.hash.split('/')[6];
+			var level = info.attributes.level;
 			round_cards =[{round: level, card: info.id}]; 
 			app.AppView.vent.trigger('startBtn');
 			var cv = new app.cardView({model: info});
@@ -162,31 +184,6 @@ var app = app || {};
 			this.card.hide();
 			var tv = new app.timerInfo();
 			this.play.html(tv.render().el);
-
-			var g = location.hash.split('/')[4];
-			var p = location.hash.split('/')[2];
-			var rd = location.hash.split('/')[6];
-			var gm = this.gameCollection.findWhere({_id: g});
-			var story = gm.attributes.round[rd].story;
-			var z;
-			function cid(element, index, array){
-			    if(rd == element.round){
-				    z = element.card;
-			    }
-			};
-			round_cards.forEach(cid);
-			if (story == undefined || story == ''){
-				gm.saveData({
-					playerId: p,
-					room: g,
-					level: rd,
-					word_turn: gm.attributes.word_turn,
-					round_turn: gm.attributes.round_turn,
-					in_progress: true,
-					card: z,
-					word_count: 15
-				});
-			}
 		},
 
 //------Once FB registers the player has logged in, they trigger the click on loginPlayer

@@ -99,7 +99,9 @@ var app = app || {};
 			room: that.room,
 			word_turn: that.model.attributes.round_turn,
 			story: that.model.attributes.round[round].story,
-			card: that.model.attributes.round[round].card
+			card: that.model.attributes.round[round].card,
+			in_progress: false,
+			round_turn: that.model.attributes.round_turn
 		}, {url: location.hash.slice(0, -6)});
 	},
 
@@ -219,18 +221,20 @@ var app = app || {};
 				console.log('game is live, not saving until end of round');
 			} else {
 				var	level = location.hash.slice(10).split('/')[4],
-					k = that.model.attributes.round[level].story,
+					rIndex = level - 1,
+					k = that.model.attributes.round[rIndex].story,
 					pid = location.hash.slice(10).split('/')[0];
 				console.log(k);
 				if (k != undefined && k != ''){
-					story = String(k + ' ' + word);
+					var story = String(k + ' ' + word);
 				} else {
-					story = word;
+					var story = word;
 				}
-				var wc = Number(that.model.attributes.round[level].word_countdown - 1);
+				console.log('word_countdown is ' + that.model.attributes.word_countdown);
+				var wc = that.model.attributes.word_countdown - 1;
 				if(wc == 0){
-					var rev == true;
-				} else { var rev == false; }
+					var rev = true;
+				} else { var rev = false; }
 				console.log('word_countdown is at ' + wc);
 				var turn = that.model.rotateTurn({round_turn: false});
 				console.log('submitWord received new turn for: ' + turn);
