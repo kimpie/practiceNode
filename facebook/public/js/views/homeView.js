@@ -4,7 +4,6 @@ var app = app || {};
         'use strict';
 
 	Handlebars.registerHelper('ifMyTurn', function(turn, options) {
-		console.log(turn);
 	  if(turn == name) {
 	    return options.fn(this);
 	  } else {
@@ -42,9 +41,7 @@ var app = app || {};
 		},
 
 		initialize: function  (options) {
-			console.log(options);
 			this.model = options.model;
-			console.log('homeView has been initialized with ' + this.model.id);
 			this.model.bind('reset', this.render);			
 			this.listenTo(this.model, "change", this.render);
 			app.AppView.vent.on('updatehv', this.render, this);

@@ -23,10 +23,8 @@ var app = app || {};
 				count=count-1;
 				if (count <= 0) {
 					clearInterval(counter);
-					console.log('counter ended');
 					var round = location.hash.slice(10).split('/')[4];
 					var game = location.hash.slice(10).split('/')[2];
-					console.log(round + ' ' + game);
 					app.AppView.vent.trigger('startRound', game, round);
 					return;
 				}

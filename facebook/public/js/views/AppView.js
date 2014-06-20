@@ -27,6 +27,7 @@ var app = app || {};
 			app.AppView.vent.on('showCard', this.card, this);
 			app.AppView.vent.on('startRound', this.round, this);
 			app.AppView.vent.on('showTimerInfo', this.timer, this);
+			app.AppView.vent.on('updateP', this.up, this);
 
 			app.AppView.vent.on('launchFetch', this.go, this);
 			app.AppView.vent.on('removeGame', this.removeGame, this);
@@ -37,6 +38,7 @@ var app = app || {};
 			this.board = this.$('#board');
 			this.card = this.$('#card');
 			this.sharing = this.$('#sharing');
+			this.wc = this.$('#word_countdown');
 		},
 
 		//------Two events, when a user logs in to FB and when they invite friends to join
@@ -47,6 +49,10 @@ var app = app || {};
 
 		},
 
+		up: function(playerID, game, round){
+			var player = this.collection.findWhere({fb_id: playerID});
+			player.updateTurn(game, round);
+		},
 
 		contact: function(){
 			var cm = new app.contactModel();
@@ -58,7 +64,8 @@ var app = app || {};
 			console.log('player received in homeView');
 			console.log(player);
 			var playermodel = this.collection.findWhere({fb_id: Number(currentUser)});
-			app.AppRouter.navigate('#/players/' + playermodel.id)
+			app.AppRouter.navigate('#/players/' + playermodel.id);
+			this.sharing.hide();
 			this.board.hide();
 			this.card.hide();
 			var hv = new app.homeView({model: playermodel});
@@ -100,12 +107,12 @@ var app = app || {};
 			var level = game_model.checkRounds();
 			this.board.show();
 			if(level != undefined){
-				if(game_model.attributes.round[level].review){
+				if(game_model.attributes.round[level - 1].review){
 					app.AppRouter.navigate('#/players/' + player.id + '/games/' + game + '/round/' + level);
 					var gameview = new app.gameView({model: game_model});
 					this.play.html(gameview.render().el);
 					app.AppView.vent.trigger('doneBtn');
-					var rrv = new app.roundResultView({model: game_model.attributes.round[level]});
+					var rrv = new app.roundResultView({model: game_model.attributes.round[level - 1]});
 					this.board.html(rrv.render().el);
 					this.sharing.show();
 				} else {
@@ -113,6 +120,9 @@ var app = app || {};
 					this.timer();
 				}
 			} else {
+				this.sharing.hide();
+				this.card.hide();
+				this.wc.hide();
 				var gameview = new app.gameView({model: game_model});
 				this.play.html(gameview.render().el);
 				var bv = new app.boardView({model: game_model});
@@ -150,7 +160,8 @@ var app = app || {};
 			this.play.html(gameview.render().el);
 			this.board.show();
 			this.card.show();
-			if(gm.attributes.word_countdown == 15){
+			this.wc.show();
+			if(gm.attributes.word_countdown == 10){
 				var rc = round_cards[0].card;
 			} else {
 				var rc = r.card;
@@ -171,6 +182,7 @@ var app = app || {};
 			console.log('cards in AppView has card info: ');
 			console.log(info);
 			this.board.hide();
+			this.sharing.hide();
 			this.card.show();
 			var level = info.attributes.level;
 			round_cards =[{round: level, card: info.id}]; 

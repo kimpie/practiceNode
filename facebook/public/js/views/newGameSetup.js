@@ -93,21 +93,13 @@ var app = app || {};
 	},
 
 	select: function(info){
-
-		//once a button is selected, hide the div
-	//	$('.select').each(function(){
-	//		$(this).click
-	//	})
-		console.log(info);
         var id = info.currentTarget.id;
         var txt = info.currentTarget.innerHTML;
-		console.log('id: ' + id + ' and text : ' + txt);
         $('div#' + id).html('<h4>' + txt + '</h4>');
         $('button#' + id).parent().hide();
         if( $('button#' + id).parent().parent().next().children().text().trim().length == 0  ){
 	        $('button#' + id).parent().parent().next().next().children().show();
         } else {
-        	console.log( $('button#' + id).parent().parent().nextAll(':lt(2)') );
         	this.MFS();
         	$('button#' + id).parent().parent().nextAll(':lt(3)').show();
         }
@@ -123,7 +115,6 @@ var app = app || {};
 			$('div#' + divId).parent().next().children().show();
 			$('div.qtitle > div.question').not('div[id*=' + did +']').hide();
 		} else {
-			console.log('not hidden');
 			$('div#' + divId).parent().next().children().hide();
 		}
 	},

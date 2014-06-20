@@ -22,21 +22,18 @@ var app = app || {};
 		idAttribute: '_id',
 
 		initialize: function(){
-            _.bindAll(this, 'updateTurn', 'turn','updatePlayer', 'removeGame' ,'login', 'renderPlayer', 'setGameData','gameArray');
+            _.bindAll(this, 'updateTurn', 'turn', 'removeGame' ,'login', 'renderPlayer', 'setGameData','gameArray');
 			console.log('The playerModel has been initialized.');
             app.AppView.vent.on('modelRemove', this.removeGame, this);
-            app.AppView.vent.once('updatePlayer', this.updatePlayer, this);
-            app.AppView.vent.on('updateTurn', this.updateTurn, this);
-
+            //app.AppView.vent.on('updateTurn', this.updateTurn, this);
 		},
 
-        updateTurn: function(player, game, round){ 
-            console.log('updateTurn called on PlayersModel');
-            console.log(player);
+        updateTurn: function(game, round){ 
             console.log(game);
             console.log(round);
-            player.save(this.turn(player, game, round),{
-                success: function(){
+            var that = this;
+            this.save(this.turn(game, round),{
+                success: function(player){
                     console.log('successfully updated player: ');
                     console.log(player);
                     app.AppView.vent.trigger('updatehv');
@@ -44,10 +41,10 @@ var app = app || {};
             });
         },
 
-        turn: function(player, game, round){
+        turn: function(game, round){
             var k = {};//k represents the game _id inside the players game object
             var gid = game.id;
-            var i = player.attributes.games;
+            var i = this.attributes.games;
             function getId( element, index, array ){       
                  if (element.id == gid){ 
                       k = element;  
@@ -55,13 +52,14 @@ var app = app || {};
             };
             i.forEach(getId);
             var obje = {};
+            console.log(game.attributes.round[round]);
             if(game.attributes.round[round].complete){
-                obje = Object.defineProperty(k, "turn", {value:name,
+                obje = Object.defineProperty(k, "turn", {value: this.attributes.name,
                     writable : true,
                    enumerable : true,
                    configurable : true
                 });
-                console.log('setting turn to ' +  name + ' with this object');
+                console.log('setting turn to ' +  this.attributes.name + ' with this object');
             } else {
                 obje = Object.defineProperty(k, "turn", {value:game.attributes.word_turn,
                     writable : true,
@@ -71,17 +69,6 @@ var app = app || {};
                 console.log('setting turn to ' +  game.attributes.word_turn + ' with this object');
             }
             console.log(obje);
-        },
-
-        updatePlayer: function(player, points){
-            /*player.save({
-                points: total
-            }, {
-                success: function(player){
-                    console.log('successfully saved '+ player.attributes.name +'\'s new points: ' + player.attributes.points);
-                }
-            });
-            //this.renderPlayer(model);*/
         },
 
         removeGame: function(gameModel, player){

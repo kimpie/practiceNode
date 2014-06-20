@@ -4,7 +4,6 @@ var app = app || {};
         'use strict';
 
     Handlebars.registerHelper('ifComplete', function(complete, options) {
-		console.log(complete);
 	  if(complete) {
 	    return options.fn(this);
 	  } else {
@@ -51,11 +50,6 @@ var app = app || {};
 			this.model = options.model;
 			console.log('board view initialized with ');
 			console.log(this.model);
-			//if(this.model.story == undefined || this.model.story == ''){
-			//	app.AppView.vent.trigger('getCard', this.model.number);
-			//}
-			
-			//$('#storyTextt').append(this.model.story);
 		},
 
 		events: {
@@ -63,7 +57,6 @@ var app = app || {};
 		},
 
 		showCard: function(info){
-			console.log(info.currentTarget);
 			app.AppView.vent.trigger('getCard', info.currentTarget.id);
 		},
 

@@ -351,7 +351,8 @@ var app = app || {};
 							console.log('This game already exists.');
 							app.AppRouter.navigate('/players/' + x + '/games/' + match.attributes.id, true);
 						} else {
-							that.createGame(response, info);
+							console.log('sending to create Game playerID: ' + friends[i]);
+							that.createGame(friends[i], info);
 						}
 	  				}	
   				} else if (people == "Group"){  //If more than one friend req but game is for group
@@ -368,8 +369,7 @@ var app = app || {};
 		},
 
 		createGame: function(response, info){
-			var to = response.to,
-				info = info,
+			var info = info,
 				place = info[0],
 				that = this;
 			var modelPlayers = [{
@@ -386,7 +386,9 @@ var app = app || {};
 				};
 				modelPlayers.push(playerInfo);
 				console.log(modelPlayers);
-				if (modelPlayers.length == (to.length + 1) ){
+				if (modelPlayers != undefined){
+					console.log('about to create game with these players:');
+					console.log(modelPlayers);
 					that.create({
 						'place': place,
 				    	'round_turn': modelPlayers[0].name,
@@ -404,12 +406,22 @@ var app = app || {};
 					})
 				}
 			};
-			for ( var i = 0; i < to.length; i++){
-		    	console.log('iterating through ' + to[i]);
-			    FB.api(to[i], function (data){
+
+			if(typeof response !== 'object'){
+				var to = response;
+				console.log('create Game has to : ' + to + typeof to);
+				FB.api(to, function (data){
 			    	setData(data);
 				});
-			};
+			} else {
+				var to = response.to;
+				for ( var i = 0; i < to.length; i++){
+			    	console.log('iterating through ' + to[i]);
+				    FB.api(to[i], function (data){
+				    	setData(data);
+					});
+				};
+			}
 		},
 
 		renderGame: function(){

@@ -24,7 +24,6 @@ var app = app || {};
 			this.model = options.model;
 			console.log('card view initialized with ');
 			var hash = location.hash.split('/');
-			//app.AppRouter.navigate('#/players' + hash[2] + '/games/' + hash[4] + '/cards/' + this.model.id);
 		},
 
 		events: {

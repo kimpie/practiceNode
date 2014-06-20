@@ -12,15 +12,16 @@ var app = app || {};
 	    console.log('The Players collection has been initialized.');
 	    _.bindAll(this, 'setPlayerData', 'createPlayer', 'loginPlayer', 'renderPlayer', 'savegame');
 	  	app.AppView.vent.on('gameSaved', this.savegame, this);
-	  	app.AppView.vent.on('updatePlayer', this.turn, this);
+	  	//app.AppView.vent.on('updatePlayer', this.turn, this);
 	   	},
 
-	  	turn: function(playerID, game, round){
+	  	turn: function(playerID, game, round, gp){
 	  		console.log('turn triggered in players collection ' + playerID);
 	  		console.log(game);
-	  		var player = this.findWhere({fb_id: playerID});
+	  		var player = this.findWhere({_id: playerID});
 	  		console.log(player);
-	  		app.AppView.vent.trigger('updateTurn', player, game, round);
+	  		console.log(gp);
+	  		app.AppView.vent.trigger('updateTurn', player, game, round, gp);
 	  	},
 
 		setPlayerData: function (){
