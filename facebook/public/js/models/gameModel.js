@@ -237,6 +237,10 @@ var app = app || {};
 	                               writable : true,
 	                               enumerable : true,
 	                               configurable : true});
+				Object.defineProperty(roundx, "url", {value : roundx.url + '/complete',
+	                               writable : true,
+	                               enumerable : true,
+	                               configurable : true});
 			} else {
 				var wc = info.word_countdown;
 			}
@@ -279,6 +283,7 @@ var app = app || {};
                                configurable : true});
 
 			console.log(roundx);
+			console.log(wc);
 			return{
 				word_countdown: wc,
 				word_turn: info.word_turn,
@@ -301,15 +306,17 @@ var app = app || {};
 						} else {
 							app.AppView.vent.trigger('home');
 						}
-						var gp = game.attributes.players;
-						function update(element, index, array){
-							var rIndex = info.level - 1;
-							var playerID = element.fb_id;
-							console.log(that.y);
-						    app.AppView.vent.trigger('updateP', playerID, game, rIndex);
-						};
-						gp.forEach(update);
 					}
+					
+					var gp = game.attributes.players;
+					function update(element, index, array){
+						var rIndex = info.level - 1;
+						var playerID = element.fb_id;
+						console.log(that.y);
+					    app.AppView.vent.trigger('updateP', playerID, game, rIndex);
+					};
+					gp.forEach(update);
+	
 				}
 			});
 		},

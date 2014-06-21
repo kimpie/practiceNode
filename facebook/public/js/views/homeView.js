@@ -45,6 +45,17 @@ var app = app || {};
 			this.model.bind('reset', this.render);			
 			this.listenTo(this.model, "change", this.render);
 			app.AppView.vent.on('updatehv', this.render, this);
+			this.room = this.model.id;
+			var socket = io.connect('https://completethesentence.com/', {secure: true , resource:'facebook/socket.io'});
+			socket.emit('room', {room: this.room});
+			app.AppView.vent.on('updatePlayer', this.test, this);
+		},
+
+		test: function(data){
+			if(data.room == this.room){
+				console.log('homeview received data from socket ' + data.room);
+				this.render();
+			}
 		},
 
 		request: function(){
@@ -52,6 +63,7 @@ var app = app || {};
 		},
 
 		render: function () {
+			console.log('render called');
 			this.$el.html(this.template(this.model.attributes));
 			return this;
 		}

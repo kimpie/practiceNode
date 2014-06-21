@@ -61,6 +61,11 @@ jQuery(document).ready(function () {
 		log_chat_message(data.message, 'leave');
 	});
 
+	socket.on('update', function (data){
+		console.log('inside chatter on update with room: ' + data.room);
+		app.AppView.vent.trigger('updatePlayer', data);
+	});
+
 	socket.on('chat', function (data) {
 		end(data);
 		app.AppView.vent.trigger('saveNewSentence', data);

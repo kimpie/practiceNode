@@ -25,7 +25,6 @@ var app = app || {};
             _.bindAll(this, 'updateTurn', 'turn', 'removeGame' ,'login', 'renderPlayer', 'setGameData','gameArray');
 			console.log('The playerModel has been initialized.');
             app.AppView.vent.on('modelRemove', this.removeGame, this);
-            //app.AppView.vent.on('updateTurn', this.updateTurn, this);
 		},
 
         updateTurn: function(game, round){ 

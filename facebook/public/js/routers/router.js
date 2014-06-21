@@ -35,9 +35,15 @@ var app = app || {};
                 },
 
                 inGame: function(id, game, path){
-                    console.log('router has game id: ' + game + ' and path: ' + path);
-                    //app.AppView.vent.trigger('roundInfo', game, path);
-                    this.trigger('round', game, path);
+                    console.log('router has game id: ' + game + ' path ' + path);
+                    var z = location.hash.length;
+                    var a = z - 8;
+                    var p = location.hash.substr(a,z);
+                    var r = path.split('/')[1];
+                    console.log(p + ' ' + r);
+                    if(p == 'complete'){
+                        app.AppView.vent.trigger('review', game, r);
+                    }
                 },
 
                 contact: function(){

@@ -72,8 +72,12 @@ var app = app || {};
 	},
 
 	donebtn: function(){
+		$('#playerTurn').hide();
 		$('#word_countdown').hide();
-		if(this.model.attributes.round_turn == name){
+		var level = location.hash.split('/')[6];
+		if(!this.model.attributes.round[level - 1].review){
+			$('#action').html('<button class="btn btn-success btn-block" id="home">Home</button>');
+		} else if (this.model.attributes.round_turn == name){
 			$('#action').html('<button class="btn btn-success btn-block closeRound" id="gameView">Begin Next Round</button>');
 		} else {
 			$('#action').html('<button class="btn btn-success btn-block closeRound" id="home">Take me home, waiting for {{round_turn}} to begin next round</button>');
@@ -93,7 +97,8 @@ var app = app || {};
 			story: that.model.attributes.round[round-1].story,
 			card: that.model.attributes.round[round-1].card,
 			in_progress: false,
-			round_turn: that.model.attributes.round_turn
+			round_turn: that.model.attributes.round_turn,
+			word_countdown: 10
 		}, {url: location.hash.slice(0, -6)});
 	},
 
@@ -222,10 +227,11 @@ var app = app || {};
 					var rturn = that.model.attributes.round_turn;
 					var wturn = that.model.rotateTurn({round_turn: false});
 				}
-
+				console.log('word_countdown is ' + wc);
 				if (wturn != undefined && wturn != ''){
 					console.log('ready for socket emit');
-					socket.emit('chat', {
+					//socket.emit('chat', {
+					var info = {
 						level: level,
 						room: that.room,
 						word: word,
@@ -236,7 +242,9 @@ var app = app || {};
 						round_turn: rturn,
 						in_progress: true,
 						review: rev
-					});
+					};
+					this.sNs(info);
+					//});
 				}
 			}
 		} else {
@@ -250,6 +258,7 @@ var app = app || {};
 		if (info.room == this.room){
 			var model = this.model;
 			var that = this;
+			console.log('sns in gameview triggering model.saveData');
 			model.saveData(info, {url: location.hash.slice(0, -6)});
 			var temp = "It\'s your turn to Fib!";
 			/*FB.api('/' + info.turn + '/notifications',

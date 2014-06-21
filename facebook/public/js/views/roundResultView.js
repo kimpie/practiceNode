@@ -9,9 +9,8 @@ var app = app || {};
 			'<div class="row">' +
 				'<div class="col-md-8 col-md-offset-2" id="result">'+
 					'<div><h3>Great Fib! This round is complete.</h3></div>' +
-					'<div><em>Share this fib with friends.  When finished hit the complete button above.</em></div>'+
-					'<div><h4>Your Fib:</h4></div>' +
-					'<div id="storyText"><h3>"{{story}}"</h3></div>' +
+					'<div><h3>Share this fib with friends.</h3></div>'+
+					'<div id="storyText"><h2>"{{story}}"</h2></div>' +
 				'</div>' +
 			'</div>'
 		),
