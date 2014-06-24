@@ -7,6 +7,7 @@
 	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css" />
 	<link rel="stylesheet" type="text/css" href="css/smoothness/jquery-ui-1.10.4.custom.min.css" />
 	<link rel="stylesheet" type="text/css" href="js/lib/jQuery-Autocomplete/content/styles.css">
+	<link href='http://fonts.googleapis.com/css?family=Simonetta' rel='stylesheet' type='text/css'>
 
 	<script type="text/javascript" src="/facebook/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="js/lib/jquery-1.10.2.min.js"></script>
@@ -67,12 +68,14 @@
 	<script>
 		$(function(){
 			$('#like > div').attr("data-href", location.href);
+			$('#player_name:even').css( "background-color", "#658DF3");
+			$('#player_name:odd').css( "background-color", "#53F1F1");
 		});
 		</script>
 	<div class="container-fluid" id="app">
-		<nav class="navbar navbar-default" role="navigation">
-			<a class="navbar-brand" href="#">MadFibs</a>
-		</nav>
+		<div class="row" id="topnav">
+			<h3 class="logoFont" id="home" style="cursor: pointer;">fibs</h3>
+		</div>
 
 		<div class="row">
 

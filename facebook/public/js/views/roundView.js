@@ -22,8 +22,8 @@ var app = app || {};
 			console.log('round view initialized with ');
 			console.log(this.model);
 			this.room = location.hash.split('/')[4];
-			var socket = io.connect('https://completethesentence.com/', {secure: true , resource:'facebook/socket.io'});
-			socket.emit('room', {room: this.room});
+			//var socket = io.connect('https://completethesentence.com/', {secure: true , resource:'facebook/socket.io'});
+			//socket.emit('room', {room: this.room});
 
 			app.AppView.vent.on('update', this.render, this);
 			app.AppView.vent.on('wordTurn', this.wt, this);
@@ -37,7 +37,8 @@ var app = app || {};
 
 		wt: function(wt){
 			if(wt == name){
-				app.AppView.vent.trigger('startTimer');
+				var round = this.model.number;
+				app.AppView.vent.trigger('startTimer', round);
 				$('#input').html('<input x-webkit-speech class="form-control" id="enter" type="text" name="enter_word" placeholder="Your turn to Fib!"></>');
 			} else {
 				$('#input').html('<input type="text" id="disabledTextInput" class="form-control" placeholder="Waiting for the next fib" disabled></>');
@@ -50,9 +51,12 @@ var app = app || {};
 			if (event.which == 32 || event.which == 13) {
 				var info = {
 					word: word,
-					room: that.room
+					room: that.room,
+					level: that.model.number,
+					playerId: location.hash.slice(10).split('/')[0]
 				};
-				app.AppView.vent.trigger('sendWord', info);
+				console.log('sending word inside roundView');
+				app.AppView.vent.trigger('sendGameData', info);
 			}
 		},
 

@@ -7,7 +7,7 @@ var app = app || {};
 
 		template: Handlebars.compile(
 
-		'<div class="well" id="newGameSetup">' +
+		'<div id="newGameSetup">' +
 			'<div class="row">'+
 				'<div class="col-md-8 col-md-offset-2" style="text-align:center"id="title">' +
 					'<h3>Setup your Fib</h3>' +
@@ -20,22 +20,18 @@ var app = app || {};
 				'<div class="col-md-12 qtitle" id="placetitle"></div>' +
 			'</div>' +
 			'<div class="row">' +
-				'<div id="place" class="col-md-10 col-md-offset-1 question">' +
-				  	'<h4>Are you playing this Fib</h4>' +
-				   	'<button type="button" class="btn btn-primary btn-lg select" id="placetitle" style="display:inline;">Online</button>' +
-				  	'<h4 style="display:inline;">Or</h4>' +
-				   	'<button type="button" class="btn btn-primary btn-lg select" id="placetitle" style="display:inline;">Live</button>' +
+				'<div id="place" class="col-md-12 question">' +
+				   	'<section class="col-md-6 select" id="placetitle" style="background-color: #658DF3;"><h3>Play Online</h3></section>' +
+				   	'<section class="col-md-6 select" id="placetitle" style="background-color: #53F1F1;"><h3>Play Live</h3></section>' +
 				'</div>' +
 			'</div>' +
 			'<div class="row">' +
 				'<div id="peopletitle" class="col-md-12 qtitle"></div>' +
 			'</div>' +
 			'<div class="row">' +
-				'<div id="people" class="col-md-10 col-md-offset-1 question" style="display:none;">' +
-					'<h4>Fibbing with a</h4>' +
-					'<button type="button" style="display:inline;" class="btn btn-primary btn-lg select" id="peopletitle">Group</button>' +
-					'<h4 style="display:inline;">Or</h4>' +
-					'<button type="button" class="btn btn-primary btn-lg select" id="peopletitle" style="display:inline;">One-on-One</button>' +
+				'<div id="people" class="col-md-12 question" style="display:none;">' +
+					'<section class="col-md-6 select" id="peopletitle" style="background-color: #53F1F1;"><h3>In a Group</h3></section>'+
+					'<section class="col-md-6 select" id="peopletitle" style="background-color: #658DF3;"><h3>One-on-One</h3></section>'+
 				'</div>' +
 			'</div>' +
 			'<div class="row" style="display:none;">' +		      
@@ -94,14 +90,20 @@ var app = app || {};
 
 	select: function(info){
         var id = info.currentTarget.id;
+        var style = info.currentTarget.style;
         var txt = info.currentTarget.innerHTML;
-        $('div#' + id).html('<h4>' + txt + '</h4>');
-        $('button#' + id).parent().hide();
-        if( $('button#' + id).parent().parent().next().children().text().trim().length == 0  ){
-	        $('button#' + id).parent().parent().next().next().children().show();
+        console.log(info.currentTarget);
+        console.log('style is ' + style);
+        $('div#' + id).html('<h3>' + txt + '</h3>');
+        $('section#' + id).parent().hide();
+        console.log('section id parent to hide is ' + id);
+        console.log($('section#' + id).parent().parent().next().children().text().trim().length);
+        if( $('section#' + id).parent().parent().next().children().text().trim().length == 0  ){
+        	console.log('inside if and ready to show: ' + $('section#' + id).parent().parent().next().next().children().show());
+	        $('section#' + id).parent().parent().next().next().children().show();
         } else {
         	this.MFS();
-        	$('button#' + id).parent().parent().nextAll(':lt(3)').show();
+        	$('section#' + id).parent().parent().nextAll(':lt(3)').show();
         }
 
 	},

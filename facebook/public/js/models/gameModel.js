@@ -222,17 +222,47 @@ var app = app || {};
 
 		setData: function(info){
 			console.log(info);
-			console.log(info.level);
-			//Round index starts at 0, our levels start at 1.
-			//Need to subtract one from info.level to save to the correct indexed round.
 			var rIndex = info.level - 1,
 				roundx = this.attributes.round[rIndex];
-			if(info.word_countdown == 0){
-				var wc = 10;
-				Object.defineProperty(roundx, "in_progress", {value : false,
+			if (info.close != undefined){
+				var wc = 10,
+					story = this.attributes.round[rIndex].story,
+					ip = false,
+					rev = false,
+					rturn = this.attributes.round_turn,
+					wturn = rturn;					
+			} else {
+				var wc = this.attributes.word_countdown - 1;
+				var z;
+				if(wc == 9){
+					var story = info.word;
+					if (round_cards != undefined){
+						var rd = info.level;
+						function cid(element, index, array){
+						    console.log(element);
+						    if(rd == element.round){
+							    z = element.card;
+						    }
+						};
+						round_cards.forEach(cid);
+					}
+				}else {
+					var story = this.attributes.round[rIndex].story + ' ' + info.word;
+					z = this.attributes.round[rIndex].card;
+				}
+			}
+
+			console.log(z);
+			Object.defineProperty(roundx, "card", {value : z,
                                writable : true,
                                enumerable : true,
                                configurable : true});
+
+			if (wc == 0){
+				var rev = true;
+				var rturn = this.rotateTurn({round_turn: true});
+				var wturn = rturn;
+				var ip = false;
 				Object.defineProperty(roundx, "complete", {value : true,
 	                               writable : true,
 	                               enumerable : true,
@@ -242,52 +272,33 @@ var app = app || {};
 	                               enumerable : true,
 	                               configurable : true});
 			} else {
-				var wc = info.word_countdown;
+				var rev = false; 
+				var ip = true;
+				var rturn = this.attributes.round_turn;
+				var wturn = this.rotateTurn({round_turn: false});
 			}
+			//Round index starts at 0, our levels start at 1.
+			//Need to subtract one from info.level to save to the correct indexed round.
 
-			Object.defineProperty(roundx, "story", {value : info.story,
+			Object.defineProperty(roundx, "story", {value : story,
                                writable : true,
                                enumerable : true,
                                configurable : true});
-			Object.defineProperty(roundx, "in_progress", {value : info.in_progress,
+			Object.defineProperty(roundx, "in_progress", {value : ip,
                                writable : true,
                                enumerable : true,
                                configurable : true});
-			Object.defineProperty(roundx, "word_turn", {value : info.word_turn,
-                               writable : true,
-                               enumerable : true,
-                               configurable : true});
-			Object.defineProperty(roundx, "review", {value : info.review,
-                               writable : true,
-                               enumerable : true,
-                               configurable : true});
-			var z;
-			if(info.word_countdown == 9){
-				if (round_cards != undefined){
-					var rd = info.level;
-					function cid(element, index, array){
-					    console.log(element);
-					    if(rd == element.round){
-						    z = element.card;
-					    }
-					};
-					round_cards.forEach(cid);
-				}
-			}else {
-				z = this.attributes.round[rIndex].card;
-			}
-			console.log(z);
-			Object.defineProperty(roundx, "card", {value : z,
-                               writable : true,
-                               enumerable : true,
-                               configurable : true});
+			Object.defineProperty(roundx, "review", {value : rev,
+	                               writable : true,
+	                               enumerable : true,
+	                               configurable : true});
 
 			console.log(roundx);
-			console.log(wc);
+			console.log('word_countdown is ' + wc);
 			return{
 				word_countdown: wc,
-				word_turn: info.word_turn,
-				round_turn: info.round_turn
+				word_turn: wturn,
+				round_turn: rturn
 			}
 		},
 
@@ -299,7 +310,11 @@ var app = app || {};
 			this.save(this.setData(info),{
 				success: function(game){
 					if (info.close){
-						app.AppView.vent.trigger('playGame', game);
+						if(game.attributes.round_turn == name){
+							app.AppView.vent.trigger('playGame', game);
+						} else {
+							app.AppView.vent.trigger('home');
+						}
 					} else {
 						if(game.attributes.round[info.level - 1].complete == true){
 							app.AppView.vent.trigger('playGame', game);

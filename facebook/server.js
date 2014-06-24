@@ -19,7 +19,7 @@ var http = require('http'),
         });
 
 var allowCrossDomain = function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', 'http://completethesentence.com https://www.completethesentence.com/ https://completethesentence.com https://completethesentence.com/facebook/ https://www.completethesentence.com/facebook/socket.io/ https://completethesentence.com/facebook/socket.io/1/ https://www.completethesentence.com/facebook/socket.io/1/ http://completethesentence.com/socket.io https://facebook.com /facebook/socket.io/socket.io.js');
+    res.header('Access-Control-Allow-Origin', 'localhost:8080/ http://completethesentence.com https://www.completethesentence.com/ https://completethesentence.com https://completethesentence.com/facebook/ https://www.completethesentence.com/facebook/socket.io/ https://completethesentence.com/facebook/socket.io/1/ https://www.completethesentence.com/facebook/socket.io/1/ http://completethesentence.com/socket.io https://facebook.com /facebook/socket.io/socket.io.js');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
 
     next();
@@ -151,7 +151,7 @@ app.get('/*', function  (req, res) {
 });
 
 server.listen(
-//  8080, function (){
+// 8080, function (){
 //  console.log('Server listening on port 8080');
 //}
 );

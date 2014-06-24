@@ -29,6 +29,8 @@ var app = app || {};
 			app.AppView.vent.on('showTimerInfo', this.timer, this);
 			app.AppView.vent.on('updateP', this.up, this);
 			app.AppView.vent.on('review', this.review, this);
+			app.AppView.vent.on('sendGameData', this.sendGD, this);
+			app.AppView.vent.on('sgp', this.sgp, this);
 
 			app.AppView.vent.on('launchFetch', this.go, this);
 			app.AppView.vent.on('removeGame', this.removeGame, this);
@@ -52,13 +54,19 @@ var app = app || {};
 
 		},
 
+		sgp: function(response, info){
+			console.log(response);
+			console.log(info);
+			this.gameCollection.startGameProcess(response, info);
+		},
+
 		up: function(playerID, game, round){
 			var player = this.collection.findWhere({fb_id: playerID});
 			player.updateTurn(game, round);
-			console.log('should do socket emit next');
-			socket.emit('updateTurn',{
-				room: player.id
-			});
+			console.log('should do socket emit next to update player: ' + player.id);
+			//socket.emit('updateTurn',{
+			///	room: player.id
+			//});
 		},
 
 		contact: function(){
@@ -119,7 +127,7 @@ var app = app || {};
 					this.review(game_model, level);
 				} else {
 					app.AppRouter.navigate('#/players/' + player.id + '/games/' + game_model.id + '/round/' + level);
-					this.timer();
+					this.timer(level);
 				}
 			} else {
 				this.sharing.hide();
@@ -128,8 +136,11 @@ var app = app || {};
 				var gameview = new app.gameView({model: game_model});
 				this.play.html(gameview.render().el);
 				var bv = new app.boardView({model: game_model});
+				if(game_model.attributes.round[2].complete){
+					app.AppView.vent.trigger('newGameBtn');
+				}
 		        this.board.html(bv.render().el);
-				app.AppRouter.navigate('#/players/' + player.id + '/games/' + game);
+				app.AppRouter.navigate('#/players/' + player.id + '/games/' + game_model.id);
 			}
 		},
 
@@ -193,10 +204,10 @@ var app = app || {};
 			this.card.html(cv.render().el);
 		},
 
-		timer: function(){
+		timer: function(round){
 			this.board.hide();
 			this.card.hide();
-			var tv = new app.timerInfo();
+			var tv = new app.timerInfo({count: round});
 			this.play.html(tv.render().el);
 		},
 
@@ -212,7 +223,19 @@ var app = app || {};
 			this.board.show();
 			var rrv = new app.roundResultView({model: gm.attributes.round[level - 1]});
 			this.board.html(rrv.render().el);
+			this.card.show();
+			var cid = gm.attributes.round[level - 1].card;
+			var c = this.cardCollection.findWhere({_id: cid});
+			var cv = new app.cardView({model: c});
+			this.card.html(cv.render().el);
 			this.sharing.show();
+		},
+
+		sendGD: function (info){
+			console.log(info);
+			var room = info.room;
+			var gm = this.gameCollection.findWhere({_id: room});
+			gm.saveData(info, {url: location.hash.slice(0, -6)});
 		},
 
 //------Once FB registers the player has logged in, they trigger the click on loginPlayer

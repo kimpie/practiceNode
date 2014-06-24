@@ -1,5 +1,10 @@
 /* Small devices (tablets, 768px and up) */
-@media screen and (max-width: 768px) { 
+@media screen and (max-width: 990px) { 
+
+	#ng_words{
+		display: none;
+	}
+
 	div#mfs{ 
 		max-height:200px; 
 		position: relative;
@@ -28,6 +33,11 @@
 
 /* Medium devices (desktops, 992px and up) */
 @media screen and (min-width: 900px) and (max-width: 1199px){ 
+	#ng_words{
+		padding-top: 20px;
+		height: 150px;
+	}
+
 	div#mfs{ 
 		position: relative;
 		margin: 10px 10px 10px 10px;
@@ -42,6 +52,7 @@
 		max-width:800px; 
 		overflow: auto;
 		position: relative;
+		overflow: -moz-scrollbars-none;
 	}
 
 }
@@ -62,6 +73,7 @@
 		max-width:800px; 
 		overflow: auto;
 		position: relative;
+		overflow: -moz-scrollbars-none;
 	}
 
 	.cards{
@@ -75,6 +87,61 @@
 	}
 
 } 
+
+::-webkit-scrollbar { 
+    display: none; 
+}
+
+#ng_words{
+	background-color: #FFA358;
+	color: white;
+	text-align: center;
+	border-top: 1px solid white;
+    border-radius: 5px 70px 0 0;
+}
+
+#startbtn:hover {
+	color: white;
+}
+
+#startbtn{
+	text-align:center;
+	background-color: #FFC858;
+	color: #359999;
+	cursor: pointer;
+}
+
+#startFib{
+	background-color: #53F1F1;
+	color: #0447F1; 
+}
+
+.logoFont{
+	font-family: 'Simonetta', cursive;
+}
+
+#topnav{
+	background-color: white;
+	text-align: center;
+}
+
+#newGameSetup {
+	background-color: #FFA358;
+	color: white;
+	text-align: center;
+	border-top: 1px solid white;
+    border-radius: 5px 70px 0 0;
+}
+
+#onlinebtn{
+	background-color: #658DF3;
+	color: white;
+}
+
+#livebtn{
+	background-color: #53F1F1;
+	color: #0447F1;
+}
 
 #textArea{
 	background-color: gray;
@@ -157,12 +224,9 @@ input.transparent-input{
 	cursor: pointer;
 }
 
-#username{
-	text-align: center;
-}
-
-
 #query{
+	margin-left: 10px;
+	margin-right: 10px;
 	margin-bottom: 10px;
 }
 
@@ -180,19 +244,10 @@ input.transparent-input{
 	text-align: center;
 }
 
-.select{
-	margin: 10px;
-}
-
-.qtitle{
-	text-align: left;
-	color: #808080;
+.qtitle, .select{
+	padding: 0;
+	margin: 0;
 	cursor: pointer;
-}
-
-.question{
-	text-align: center;
-	color: black;
 }
 
 a#fb_pic{
@@ -215,10 +270,6 @@ div#progress_bar{
 	margin-bottom: 10px;
 }
 
-div#play{
-	padding-top: 20px;
-}
-
 div#fblogin{
 	padding-top: 80px;
 	text-align: center;
@@ -228,17 +279,14 @@ ul#gamelist{
 	padding-left: 0px;
 }
 
-div#games_yours{
-	border-width: 5px;
-	border: solid 1c5f60;
-	border-radius: 10px 10px 10px 10px;
-	margin-bottom: 10px;
+#games_yours{
+	background-color: #658DF3;
+	color: white;
 }
 
-div#games_theirs{
-	border: solid 1c5f60;
-	border-width: 5px;
-	border-radius: 10px 10px 10px 10px;
+#games_other{
+	background-color: #53F1F1;
+	color: #0447F1; 
 }
 
 div#points{
@@ -343,9 +391,30 @@ div#rules{
 	text-align: justify;
 }
 
-li#player_name{
+li#player_name:hover a { 
+	color: white; 
+	text-decoration: none;
+}
+a#indGame {
+  color: #034BF1;
+}
+
+li#player_name:nth-child(even){
+	cursor: pointer;
 	list-style-type: none;
-	margin-bottom: 5px;
+	text-align: center;
+	padding: 5px 0 5px 0;
+	background-color: #53F1F1;
+	color: #0447F1;
+}
+
+li#player_name:nth-child(odd){
+	cursor: pointer;
+	list-style-type: none;
+	text-align: center;
+	padding: 5px 0 5px 0;
+	background-color: #658DF3;
+	color: white;
 }
 
 .loggedoff {
