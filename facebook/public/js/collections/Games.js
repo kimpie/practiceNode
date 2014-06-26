@@ -400,7 +400,7 @@ var app = app || {};
 					},{
 						success: function (game){
 					    		console.log(game);
-					    		app.AppView.vent.trigger('playGame', game.id);
+					    		game.saveRound();
 					    		app.AppView.vent.trigger('gameSaved', game);
 					    	}
 					})

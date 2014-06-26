@@ -7,15 +7,14 @@ var app = app || {};
 
 		template: Handlebars.compile(
 			'<div class="row">'+
-				'<div class="col-md-8 col-md-offset-2" id="cardTitle" style="display:none; text-align:center;"><h4>Round Rules</h4></div>' +
-				'<div class="col-md-8 col-md-offset-2" id="cardBody">'+
-				'<em style="text-align:center;">Read the card, then hit the START button above.</em>'+
-					'<div class="row">'+
-						'<div class="col-md-8 col-md-offset-2" style="text-align:left;"><h4>Direction:</h4></div>' + 
-						'<div class="col-md-8 col-md-offset-2" style="text-align:center;"><p class="lead">{{direction}}</p></div>' +
-						'<div class="col-md-8 col-md-offset-2" style="text-align:left;"><h4>Rule:</h4></div>' + 
-						'<div class="col-md-8 col-md-offset-2" style="text-align:center;"><p class="lead">{{rule}}</p></div>' +
+				'<div class="col-md-4 col-md-offset-4" id="cardTitle" style="display:none; text-align:center;"><h4>Round Rules</h4></div>' +
+				'<div class="row" id="cardBody">'+
+					'<div class="col-md-4 col-md-offset-4 cb darkBlue" id="cbtop">' +
+						'<h4>{{direction}}</h4>' + 
 					'</div>' +
+					'<div class="col-md-4 col-md-offset-4 cb lightBlue" id="cbbottom">'+
+						'<h4>Rule:{{rule}}</h4>' +
+					'</div>' + 
 				'</div>' +
 			'</div>'
 		),
@@ -27,7 +26,8 @@ var app = app || {};
 		},
 
 		events: {
-			'click #cardTitle': 'showHide'
+			'click #cardTitle' : 'showHide',
+			'click .cb' : 'startGame'
 		},
 
 		showHide: function(){
@@ -36,6 +36,11 @@ var app = app || {};
 			} else {
 				$('div#cardBody').hide();
 			}
+		},
+
+		startGame: function(){
+			var round = location.hash.slice(10).split('/')[4];
+			app.AppView.vent.trigger('showTimerInfo', round);
 		},
 
 		render: function () {

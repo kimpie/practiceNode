@@ -7,9 +7,9 @@ var app = app || {};
 
 		template: Handlebars.compile(
 			'<div class="row">' +
-				'<div class="col-md-8 col-md-offset-2" id="timerInfo">'+
-					'<div id="timercounter"></div>'+
+				'<div class="col-md-6 col-md-offset-3 lightOrange" id="timerInfo">'+
 					'<h2>Get ready!</h2>'+
+					'<div id="timercounter"></div>'+
 					'<div id="countdown"></div>' +
 				'</div>' +
 			'</div>'
@@ -20,8 +20,8 @@ var app = app || {};
 			console.log(options);
 			var counter = setInterval(timer, 1000);
 			var count = 4;
-			$('#timercounter').html('<h2>You have ' + options.count + ' seconds to enter a word.</h2>');
 			function timer() {
+				$('#timercounter').html('<h2>You have ' + options.count + ' seconds to enter a word.</h2>');
 				count=count-1;
 				if (count <= 0) {
 					clearInterval(counter);

@@ -18,6 +18,7 @@ var app = app || {};
 
 			this.listenTo(app.AppRouter, 'inGame', this.play);
 			this.listenTo(app.AppRouter, 'contact', this.contact);
+			this.listenTo(app.AppRouter, 'playerOn', this.homeView);
 
 			this.listenTo(this.collection, 'reset', this.render);
 
@@ -79,7 +80,9 @@ var app = app || {};
 			console.log('player received in homeView');
 			console.log(player);
 			var playermodel = this.collection.findWhere({fb_id: Number(currentUser)});
-			app.AppRouter.navigate('#/players/' + playermodel.id);
+			if (location.hash != '#/players/' + playermodel.id){
+				app.AppRouter.navigate('#/players/' + playermodel.id);
+			}
 			this.sharing.hide();
 			this.board.hide();
 			this.card.hide();
@@ -113,16 +116,21 @@ var app = app || {};
 		play: function(game){
 			console.log('play triggered from AppView with game: ');
 			console.log(game);
+			
 			var player = this.collection.findWhere({fb_id: Number(currentUser)});
 			if(typeof game == "string"){
 				var game_model = this.gameCollection.findWhere({_id: game});
 			} else if (typeof game == "object"){
 				var game_model = game;
 			}
-			var level = game_model.checkRounds();
+			var level_complete = game_model.checkRounds('complete');
+			console.log('rounds complete are : ' + level_complete);
+			var level_ip = game_model.checkRounds('in_progress');
+			console.log('round in_progress are ' + level_ip);
 			this.board.show();
-			if(level != undefined){
-				if(game_model.attributes.round[level - 1].review){
+			if(level_ip.length != 0){
+				var level = level_ip[0];
+				if(game_model.attributes.round[level-1].review){
 					app.AppRouter.navigate('#/players/' + player.id + '/games/' + game_model.id + '/round/' + level);
 					this.review(game_model, level);
 				} else {
@@ -133,13 +141,14 @@ var app = app || {};
 				this.sharing.hide();
 				this.card.hide();
 				this.wc.hide();
-				var gameview = new app.gameView({model: game_model});
-				this.play.html(gameview.render().el);
-				var bv = new app.boardView({model: game_model});
+				//this.play.hide();
+				//var gameview = new app.gameView({model: game_model});
+				//this.play.html(gameview.render().el);
+				var bv = new app.boardView({model: game_model, complete: level_complete});
 				if(game_model.attributes.round[2].complete){
 					app.AppView.vent.trigger('newGameBtn');
 				}
-		        this.board.html(bv.render().el);
+		        this.play.html(bv.render().el);
 				app.AppRouter.navigate('#/players/' + player.id + '/games/' + game_model.id);
 			}
 		},
@@ -157,6 +166,7 @@ var app = app || {};
 				var g = location.hash.split('/')[4];
 			}
 			var gm = this.gameCollection.findWhere({_id: g});
+			var place = gm.attributes.place;
 			if (round != undefined){
 				var rindex = round - 1;
 				if (round == typeof object){
@@ -169,9 +179,9 @@ var app = app || {};
 				var rd = location.hash.split('/')[6];
 			}
 			console.log(gm);
-			var gameview = new app.gameView({model: gm});
-			this.play.html(gameview.render().el);
-			this.board.show();
+			//var gameview = new app.gameView({model: gm});
+			//this.play.html(gameview.render().el);
+			this.board.hide();
 			this.card.show();
 			this.wc.show();
 			if(gm.attributes.word_countdown == 10){
@@ -186,8 +196,8 @@ var app = app || {};
 			this.card.html(cv.render().el);
 			$('#cardTitle').show();
 			$('#cardBody').hide();
-	        var rv = new app.roundView({model: r});
-	        this.board.html(rv.render().el);
+	        var rv = new app.roundView({model: r, place: place});
+	        this.play.html(rv.render().el);
 	        app.AppView.vent.trigger('wordTurn', gm.attributes.word_turn);
 		},
 
@@ -197,6 +207,7 @@ var app = app || {};
 			this.board.hide();
 			this.sharing.hide();
 			this.card.show();
+			this.play.hide();
 			var level = info.attributes.level;
 			round_cards =[{round: level, card: info.id}]; 
 			app.AppView.vent.trigger('startBtn');
@@ -205,9 +216,16 @@ var app = app || {};
 		},
 
 		timer: function(round){
-			this.board.hide();
 			this.card.hide();
-			var tv = new app.timerInfo({count: round});
+			this.play.show();
+			if(round == '1'){
+				var count = 30;
+			} else if(round == '2'){
+				var count = 20;
+			} else if(round == '3'){
+				var count = 10;
+			}
+			var tv = new app.timerInfo({count: count});
 			this.play.html(tv.render().el);
 		},
 

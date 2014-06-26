@@ -68,8 +68,6 @@
 	<script>
 		$(function(){
 			$('#like > div').attr("data-href", location.href);
-			$('#player_name:even').css( "background-color", "#658DF3");
-			$('#player_name:odd').css( "background-color", "#53F1F1");
 		});
 		</script>
 	<div class="container-fluid" id="app">
@@ -82,7 +80,7 @@
 			<div class="col-md-8 col-md-offset-2" id="play" class="loggedin">
 
 				<div class="loggedoff">
-					<div id="fblogin" class="jumbotron">
+					<div id="fblogin" class="darkOrangeTop">
 						<h1>Best Game Eva!</h1>
 						<p lead> Welcome to the Sentence Game.  This game is currently only available through Facebook.  Enjoy!
 						<h3>To begin Login: </h3>
@@ -93,7 +91,7 @@
 			<div class="col-md-8 col-md-offset-2" id="board"></div>
 			<div class="col-md-8 col-md-offset-2" id="card"></div>
 			<div id="sharing">
-				<div class="col-md-4 col-md-offset-4" id="like">
+				<div class="col-md-3 col-md-offset-3" id="like">
 					<div class="fb-like" data-href="https://apps.facebook.com/madfibs/" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
 				</div>
 			</div>

@@ -18,11 +18,11 @@ var app = app || {};
 		template: Handlebars.compile(
 			'<section id="userName">' +
 				'<div class="row">' +
-					'<div class="col-md-12" id="ng_words">' +
+					'<div class="col-md-12 darkOrangeTop" id="ng_words">' +
 						'<h1>fib: <em>noun</em> a lie, typically an unimportant one.</h1>' +
 						'<h3>Don\'t tell fibs, play them!</h3>' +
 					'</div>'+
-					'<div class="col-xs-12 col-md-12" id="startbtn">'+
+					'<div class="col-xs-12 col-md-12 lightOrange" id="startbtn">'+
 						'<h2>Start Fib</h2>'+
 					'</div>'+
 				'</div>'+
@@ -33,7 +33,7 @@ var app = app || {};
 							'{{#ifMyTurn turn}}' +
 								'<li id="player_name"><a id="indGame" href="{{url}}"><h3 style="margin-top:0px; margin-bottom:0px;">Fib with {{#each players}}{{name }} {{/each}}</h3></a></li>' +
 							'{{else}}' +
-								'<li id="player_name"><a disabled="disabled" id="indGame" href="{{url}}"><h3 style="margin-top:0px; margin-bottom:0px;">Fib with {{#each players}}{{name }} {{/each}}</h3></a></li>' +
+								'<li id="notTurn"><h3 style="margin-top:0px; margin-bottom:0px;">Fib with {{#each players}}{{name }} {{/each}}</h3></li>' +
 							'{{/ifMyTurn}}' +
 							'{{/each}}' +
 						'</ul>' +

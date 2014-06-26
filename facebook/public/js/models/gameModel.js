@@ -64,15 +64,20 @@ var app = app || {};
 			}
 		},
 
-		checkRounds: function(){
-			console.log('inside checkRounds');
+		checkRounds: function(blank){
+			console.log('inside checkRounds, checking for ' + blank);
 			var rounds = this.attributes.round,
-				rnum;
+				rnum = [];
 			function findActive(element,index,array){
-				console.log('iterating through round: ' + element.number);
-			    if (element.in_progress){
-				    rnum = element.number;
-				    console.log('round in progress: ' + rnum);
+				if (blank == 'complete'){
+					var k = element.complete;
+				} else if (blank == 'in_progress'){
+					var k = element.in_progress;
+				}
+				console.log('iterating through round: ' + element.number +' ' + k);
+			    if (k){
+				    rnum.push(element.number);
+				    console.log('round ' + k + ' is : ' + rnum);
 			    }			    
 			};
 			rounds.forEach(findActive);
@@ -84,9 +89,10 @@ var app = app || {};
 			if(this.attributes.round.length == 0){
 				this.save(this.addRounds(),
 					{
-						success: function(info){
+						success: function(game){
 							console.log('successfully saved new rounds:');
-							console.log(info);
+							console.log(game);
+							app.AppView.vent.trigger('playGame', game.id);
 					}
 				});
 			} else {
@@ -110,7 +116,8 @@ var app = app || {};
 			            n = {
 			            	'number': i,
 							'level_one': true,
-							'url': gUrl + i
+							'url': gUrl + i,
+							'complete': false
 						};
 						r.push(n);
 					} else if (i < 3){
@@ -118,7 +125,8 @@ var app = app || {};
 			            n = {
 			            	'number': i,
 							'level_two': true,
-							'url': gUrl + i
+							'url': gUrl + i,
+							'complete': false
 						};
 						r.push(n);
 					} else {
@@ -126,7 +134,8 @@ var app = app || {};
 				        n = {
 				        	'number': i,
 							'level_three': true,
-							'url': gUrl + i
+							'url': gUrl + i,
+							'complete': false
 						};
 						r.push(n);
 					}
