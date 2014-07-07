@@ -82,17 +82,30 @@ var app = app || {};
 		checkGames: function(player, pcGames){
 
 			//Find all active games on the Game Collection for the currentUser.
-			var gc1 = this.where({    
-				player1: Number(currentUser),    
-				active: true    
-				})
-			var gc2 = this.where({
-				player2: Number(currentUser),    
-				active:true    
-				});
-			var gcGames = [];
-			var gcGames = gcGames.concat(gc1, gc2);
-			console.log(gcGames);
+			var p;
+			function getMatch(id, game){
+				var t;
+				function findCU(element,index,array){
+					if(element.fb_id == Number(id)){
+						t = true;
+					}
+					return t;
+				}
+				var gp = game.attributes.players;
+				gp.forEach(findCU);
+				if(t){
+					p = game;
+				}
+				return p;
+			}
+			var activeGames = this.where({active:true});
+			var gcGames = activeGames.map(
+				function(game){
+					return{
+						game: getMatch(currentUser, game)
+					}
+				}   
+			 );
 			//pcGames represent all the games saved to the Player Model.
 			var pcGames = pcGames;
 			
@@ -104,8 +117,12 @@ var app = app || {};
 			 
 			    var list = [];
 			    function getId(element, index, arr){
-				var k = element.id;
-				list.push(k);
+			    	if(element.game){
+			    		var k = element.game.id;
+			    	} else {
+			    		var k = element.id;
+			    	}
+					list.push(k);
 			    };
 			    arr.forEach(getId);
 				console.log(list);
@@ -123,33 +140,9 @@ var app = app || {};
 				return out;
 			};
 
-
-			/*function createIdArray(array){
-				var list = [];
-				console.log('list under createIdArray');
-				console.log(list);
-			    function getId(element, index, array){
-			        var k = element.id;
-			        list.push(k);
-			    };
-
-			    var x = list;
-				array.forEach(getId);
-			    return x;
-			};*/
 			//PCID & GCID are arrays of game id's only.
-			//var gcid = createIdArray(gcGames);
 			var gcid = eliminateDuplicates(gcGames);
-			//console.log(gcid);
-			//var gcid = gcid.toString();
-			//var gcid = gcid.split(",");
-			console.log('gcid');
-			console.log(gcid);
-
 			var pcid = eliminateDuplicates(pcGames);
-			console.log('pcid');
-			console.log(pcid);
-
 
 			//Compare to see if array lengths are equal
 			if (gcid.length == pcid.length){
@@ -181,20 +174,12 @@ var app = app || {};
 			    };
 			    
 			    array1.forEach(findMatch);
-			    console.log('showing matches');
-			    console.log(match);
 			    tbr.sort(function(a,b){return b - a});
 			    tbr.forEach(findMissing);
 			    
 			    return array1;
 			};
 
-		
-/*			//Compare to see if array lengths are equal
-			if (gcid.length == pcid.length){
-				console.log('gcGames & pcGames match up')
-			} else {
-*/
 			//Not equal so find out which one is longer to know which is missing the games.
 				function findB(a,b){    
 				    var x = Math.max(a.length,b.length);    
@@ -225,32 +210,14 @@ var app = app || {};
 			}				
 			
 
-			console.log('checkGames player id is ' + player.id);
-
 			if (mid != undefined && mid.length != 0){	
-				console.log('The missing id(s): ' + mid);
 				var that = this;
 				if (mid.length > 1){
 				  	var  allg = mid;
 				    function findp2(i){
-				      var game = that.findWhere({_id: i});
-				      console.log('Found game in checkForGames findp2 fn:')
-				      console.log(game);
-				      //if (Number(currentUser) == game.attributes.player1){
-  					  //    var found = game.attributes.p1url;
-				      //} else if (Number(currentUser) == game.attributes.player2){
-  					  //    var found = game.attributes.p2url;
-				      //}
-
-					     // if (found == ""){
-					      	//Tell the Players Collection to save the game information to the player model
-							app.AppView.vent.trigger('gameSaved updateGameInfo', game, player.id);
-							//Tell the game to save the player id to the game model
-							//app.AppView.vent.trigger('updateGameInfo', games, player.id);
-					     // } else {
-					     // 	app.AppView.vent.trigger('gameSaved', game, player.id);
-					     // 	console.log('Games Collection checkGames fn says game info is up to date');
-					     // }
+						var game = that.findWhere({_id: i});
+				      	//Tell the Players Collection to save the game information to the player model
+						app.AppView.vent.trigger('gameSaved updateGameInfo', game, player.id);
 				    };  				
 				    
 				    for (var i = 0; i < allg.length; i++){
@@ -258,9 +225,8 @@ var app = app || {};
 				    };
 				} else {
 					var game = that.findWhere({_id: mid[0]});
-						//Tell the Players Collection  & Game Collection to save the game information
-						app.AppView.vent.trigger('gameSaved updateGameInfo', game, player.id);
-
+					//Tell the Players Collection  & Game Collection to save the game information
+					app.AppView.vent.trigger('gameSaved updateGameInfo', game, player.id);
 				} 
 			} else {
 				console.log('All games up to date for ' + Number(currentUser));
@@ -371,18 +337,27 @@ var app = app || {};
 		createGame: function(response, info){
 			var info = info,
 				place = info[0],
+				stage = info[2],
 				that = this;
 			var modelPlayers = [{
 				'name': name,
 				'fb_id' : Number(currentUser),
 				'points' : Number('0'),
-				'controller' : true
+				'controller' : true,
+				'stage' : 'in_progress'
 			}];
 			function setData(data){
+				var currentStage;
+				if(stage != undefined){
+					currentStage = stage;
+				} else {
+					currentStage = 'in_progress';
+				}
 				var playerInfo = {
 					'name': data.name,
 					'fb_id' : Number(data.id),
-					'points': Number('0')
+					'points': Number('0'),
+					'stage' : currentStage
 				};
 				modelPlayers.push(playerInfo);
 				console.log(modelPlayers);

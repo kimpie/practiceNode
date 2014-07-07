@@ -69,7 +69,7 @@ var app = app || {};
 	  	renderPlayer: function (player){
 	  		console.log('renderPlayer triggered with player id: ' + player.id);
 	  		//app.AppView.vent.trigger('loggedin', player);
-            app.AppRouter.navigate('/players/' + player.id);
+            app.AppRouter.navigate('#/players/' + player.id);
 	  		//this.vent.trigger("player:loggedin", player);
 	  	},
 

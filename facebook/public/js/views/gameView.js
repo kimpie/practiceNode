@@ -23,28 +23,21 @@ var app = app || {};
 
 		template: Handlebars.compile(
 			'<div class="row top_gv darkOrangeTop">' +
-				'<div class="row">'+
-					'<div class="col-md-12" style="margin: 5px 0 5px 0;">'+
-						'{{#ifOnline place}}' +
-							'<div class=" col-xs-12 col-md-2 col-md-offset-2" id="word_countdown">' + 
-								'Words Remaining {{word_countdown}}' +
-							'</div>' +
-						'{{/ifOnline}}' +
-						'<div class="col-xs-12 col-md-8" id="playerList">'+
-							'<ul>'+
-							'{{#each players}}' +
-								'<li id="players" class="{{firstName name}}">{{name}}</li>'+
-							'{{/each}}'+
-							'{{#ifLive place}}' +
-								'<li id="players"><a id="addPlayer"><span class="glyphicon glyphicon-plus"></span></a></li>' +
-							'{{/ifLive}}'+
-							'</ul>'+ 
-						'</div>'+
-					'</div>' +
-				'</div>' +
-				'<div class="row" id="playerTurn" style="margin:12px 0px;">' +
-					'<div class="col-md-12">'+
-						'<h3>{{round_turn}} starts this Fib</h3>' +
+				'<div class="col-md-12" style="margin: 5px 0 5px 0;">'+
+					'{{#ifOnline place}}' +
+						'<div class=" col-xs-12 col-md-3 col-md-offset-2" id="word_countdown">' + 
+							'{{word_countdown}} Words Remaining' +
+						'</div>' +
+					'{{/ifOnline}}' +
+					'<div class="col-xs-12 col-md-7" id="playerList">'+
+						'<ul>'+
+						'{{#each players}}' +
+							'<li id="players" class="{{firstName name}}">{{name}}</li>'+
+						'{{/each}}'+
+						'{{#ifLive place}}' +
+							'<li id="players"><a id="addPlayer"><span class="glyphicon glyphicon-plus"></span></a></li>' +
+						'{{/ifLive}}'+
+						'</ul>'+ 
 					'</div>'+
 				'</div>' +
 			'</div>'
@@ -62,7 +55,6 @@ var app = app || {};
 		app.AppView.vent.on('startBtn', this.showbtn, this);
 		app.AppView.vent.once('sendWord', this.endOfTimer, this);
 		//app.AppView.vent.on('saveNewSentence', this.sNs, this);
-		app.AppView.vent.on('startTimer', this.startTimer, this);
 		app.AppView.vent.on('doneBtn', this.donebtn, this);
 		app.AppView.vent.on('newGameBtn', this.ngb, this);
 		//Socket information

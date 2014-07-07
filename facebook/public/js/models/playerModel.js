@@ -25,22 +25,34 @@ var app = app || {};
             _.bindAll(this, 'updateTurn', 'turn', 'removeGame' ,'login', 'renderPlayer', 'setGameData','gameArray');
 			console.log('The playerModel has been initialized.');
             app.AppView.vent.on('modelRemove', this.removeGame, this);
+            this.room = this.id;
+            var socket = io.connect('https://completethesentence.com/', {secure: true , resource:'facebook/socket.io'});
+            socket.emit('room', {room: this.room});
 		},
 
         updateTurn: function(game, round){ 
+            var game = game;
+            var round = round;
             console.log(game);
             console.log(round);
             var that = this;
-            this.save(this.turn(game, round),{
-                success: function(player){
-                    console.log('successfully updated player: ');
-                    console.log(player);
-                    app.AppView.vent.trigger('updatehv');
-                }
-            });
+            if(round != undefined){
+                this.save(this.turn(game, round),{
+                    success: function(player){
+                        console.log('successfully updated player: ');
+                        console.log(player);
+                        app.AppView.vent.trigger('updateHv');
+                    }
+                });
+            }
+            
         },
 
         turn: function(game, round){
+            var game = game;
+            var round = round;
+            console.log(game);
+            console.log(round);
             var k = {};//k represents the game _id inside the players game object
             var gid = game.id;
             var i = this.attributes.games;
@@ -52,7 +64,7 @@ var app = app || {};
             i.forEach(getId);
             var obje = {};
             console.log(game.attributes.round[round]);
-            if(game.attributes.round[round].complete){
+            if(game.attributes.round[round].review){
                 obje = Object.defineProperty(k, "turn", {value: this.attributes.name,
                     writable : true,
                    enumerable : true,
@@ -76,19 +88,6 @@ var app = app || {};
             var g = player.attributes.games;
             console.log(g);
 
-            //Return the id that the player model gave to the game, separate from the game model id saved with it.
-            /*function findIndex(player, id){
-                var g = player.attributes.games;
-                var gid = id;
-                function getId( element, index, array ){    
-                    if (element.id == gid){ 
-                        return true;    
-                    }
-                };
-                var k = g.find(getId);
-                return k._id;
-
-            };*/
             var k = {};
             function getModel( element, index, array ){       
                  if (element.id == gid){ 
@@ -129,7 +128,6 @@ var app = app || {};
                 }, {
                     success: function(player){
                         console.log('Success on updating the players games');
-                        app.AppView.vent.trigger('requestNewGame', p2name, player, gid)
                         that.renderPlayer(player);
                     }
                 });
@@ -145,8 +143,8 @@ var app = app || {};
 		},
 
 		renderPlayer: function(player){
-            app.AppRouter.navigate('/players/' + player.id, true);
-            app.AppView.vent.trigger('loggedin', player);
+            app.AppRouter.navigate('#/players/' + player.id);
+            //app.AppView.vent.trigger('loggedin', player);
         },
 
         setGameData: function(game, player){

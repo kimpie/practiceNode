@@ -64,6 +64,21 @@ var app = app || {};
 			}
 		},
 
+		checkStage: function(){
+			var gp = this.attributes.players;
+			var stage;
+			function getPlayer(element, index, array){
+			  if (currentUser == element.fb_id){
+			    console.log('found matching player: ' + element.name + ' ' + currentUser);
+				stage = element.stage;
+			  }
+
+			};
+			gp.forEach(getPlayer);
+
+			return stage;
+		},
+
 		checkRounds: function(blank){
 			console.log('inside checkRounds, checking for ' + blank);
 			var rounds = this.attributes.round,
@@ -162,7 +177,7 @@ var app = app || {};
 			}
 		},
 
-		changeActive: function(model, player){
+		changeActive: function(model){
   			model.save({
   				active: false
   			},{
@@ -231,83 +246,142 @@ var app = app || {};
 
 		setData: function(info){
 			console.log(info);
-			var rIndex = info.level - 1,
+			var gp = this.attributes.players,
+				that = this;
+			var w_c = this.attributes.word_countdown,
+				rIndex = info.level - 1,
 				roundx = this.attributes.round[rIndex];
-			if (info.close != undefined){
-				var wc = 10,
-					story = this.attributes.round[rIndex].story,
-					ip = false,
-					rev = false,
-					rturn = this.attributes.round_turn,
-					wturn = rturn;					
-			} else {
-				var wc = this.attributes.word_countdown - 1;
-				var z;
-				if(wc == 9){
-					var story = info.word;
-					if (round_cards != undefined){
-						var rd = info.level;
-						function cid(element, index, array){
-						    console.log(element);
-						    if(rd == element.round){
-							    z = element.card;
-						    }
-						};
-						round_cards.forEach(cid);
-					}
-				}else {
-					var story = this.attributes.round[rIndex].story + ' ' + info.word;
-					z = this.attributes.round[rIndex].card;
+
+			if(info.ng_request != '' && info.ng_request != undefined){
+			//new game is requested
+				return{
+					ng_request: info.ng_request,
+					complete:true
 				}
-			}
-
-			console.log(z);
-			Object.defineProperty(roundx, "card", {value : z,
-                               writable : true,
-                               enumerable : true,
-                               configurable : true});
-
-			if (wc == 0){
-				var rev = true;
-				var rturn = this.rotateTurn({round_turn: true});
-				var wturn = rturn;
-				var ip = false;
-				Object.defineProperty(roundx, "complete", {value : true,
-	                               writable : true,
-	                               enumerable : true,
-	                               configurable : true});
-				Object.defineProperty(roundx, "url", {value : roundx.url + '/complete',
-	                               writable : true,
-	                               enumerable : true,
-	                               configurable : true});
 			} else {
-				var rev = false; 
-				var ip = true;
-				var rturn = this.attributes.round_turn;
-				var wturn = this.rotateTurn({round_turn: false});
-			}
-			//Round index starts at 0, our levels start at 1.
-			//Need to subtract one from info.level to save to the correct indexed round.
+				if(w_c > 1){
+					var wc = w_c - 1,
+						stage = 'in_progress',
+						rev = false, 
+						ip = true,
+						rturn = this.attributes.round_turn,
+						wturn = this.rotateTurn({round_turn: false}),
+						z;
+					//On first save, save the card info, all other times refer back to round card.
+					if(wc == 9){
+						if(info.word != undefined && info.word != ''){
+							var story = info.word;
+						} else {
+							var story = '';
+						}
+						if (round_cards != undefined){
+							var rd = info.level;
+							function cid(element, index, array){
+							    console.log(element);
+							    if(rd == element.round){
+								    z = element.card;
+							    }
+							};
+							round_cards.forEach(cid);
+						}
+					}else {
+						//Not first save, add the word to the story and save existing card.
+						//make sure a word was entered.
+						if(info.word != undefined && info.word != ''){
+							var story = this.attributes.round[rIndex].story + ' ' + info.word;
+						} else {
+							var story = this.attributes.round[rIndex].story;
+						}
+						z = this.attributes.round[rIndex].card;
+					}
 
-			Object.defineProperty(roundx, "story", {value : story,
-                               writable : true,
-                               enumerable : true,
-                               configurable : true});
-			Object.defineProperty(roundx, "in_progress", {value : ip,
-                               writable : true,
-                               enumerable : true,
-                               configurable : true});
-			Object.defineProperty(roundx, "review", {value : rev,
+				} else if(w_c == 1) {  
+					//word_countdown will now be 0
+					// Setup for roundReview
+					var wc = w_c - 1,
+						rev = true,
+						rturn = this.rotateTurn({round_turn: true}),
+						wturn = rturn,
+						ip = true,
+						stage = 'review';
+					Object.defineProperty(roundx, "complete", {value : true,
+		                               writable : true,
+		                               enumerable : true,
+		                               configurable : true});
+					Object.defineProperty(roundx, "url", {value : roundx.url + '/complete',
+		                               writable : true,
+		                               enumerable : true,
+		                               configurable : true});
+				}else if(w_c == 0){
+					if (info.close != undefined){//done with round review
+						console.log('setting review to false, setting up new round');
+						if(rIndex !== 2 && !this.attributes.round[rIndex + 1].in_progress){
+							var wc = 10,
+								story = this.attributes.round[rIndex].story,
+								ip = false,
+								rev = false,
+								rturn = this.attributes.round_turn,
+								wturn = this.attributes.round_turn;	
+						} else {
+							if(rIndex == 2){
+								var stage = 'complete';
+							}
+							var wc = this.attributes.round[rIndex].word_countdown,
+								story = this.attributes.round[rIndex].story,
+								ip = this.attributes.round[rIndex].in_progress,
+								rev = this.attributes.round[rIndex].review,
+								rturn = this.attributes.round_turn,
+								wturn = this.attributes.word_turn;
+						}
+					}
+				}//end of w_c conditional
+				console.log(z);
+				Object.defineProperty(roundx, "card", {value : z,
 	                               writable : true,
 	                               enumerable : true,
 	                               configurable : true});
 
-			console.log(roundx);
-			console.log('word_countdown is ' + wc);
-			return{
-				word_countdown: wc,
-				word_turn: wturn,
-				round_turn: rturn
+				Object.defineProperty(roundx, "story", {value : story,
+	                               writable : true,
+	                               enumerable : true,
+	                               configurable : true});
+				Object.defineProperty(roundx, "in_progress", {value : ip,
+	                               writable : true,
+	                               enumerable : true,
+	                               configurable : true});
+				Object.defineProperty(roundx, "review", {value : rev,
+		                               writable : true,
+		                               enumerable : true,
+		                               configurable : true});
+
+				console.log(roundx);
+				console.log('word_countdown is ' + wc);
+				return{
+					word_countdown: wc,
+					word_turn: wturn,
+					round_turn: rturn
+				}
+				function setStage(element, index, array){
+						console.log('inside setStage');
+						if(stage == 'in_progress'){
+							if(element.fb_id == currentUser){
+								console.log('closed this round, setting stage in_progress for next round on ' + element.name);
+								var player = that.attributes.players[index];
+								Object.defineProperty(player, "stage", {value : stage,
+			                               writable : true,
+			                               enumerable : true,
+			                               configurable : true});
+							}
+						} else {
+							var player = that.attributes.players[index];
+							Object.defineProperty(player, "stage", {value : stage,
+				                           writable : true,
+				                           enumerable : true,
+				                           configurable : true});
+						}
+						
+				};
+				gp.forEach(setStage);
 			}
 		},
 
@@ -319,7 +393,7 @@ var app = app || {};
 			this.save(this.setData(info),{
 				success: function(game){
 					if (info.close){
-						if(game.attributes.round_turn == name){
+						if(game.attributes.round_turn == name || game.attributes.round[2].complete || game.attributes.players.stage == 'review'){
 							app.AppView.vent.trigger('playGame', game);
 						} else {
 							app.AppView.vent.trigger('home');

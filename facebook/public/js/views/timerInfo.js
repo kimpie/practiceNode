@@ -7,10 +7,21 @@ var app = app || {};
 
 		template: Handlebars.compile(
 			'<div class="row">' +
-				'<div class="col-md-6 col-md-offset-3 lightOrange" id="timerInfo">'+
-					'<h2>Get ready!</h2>'+
-					'<div id="timercounter"></div>'+
-					'<div id="countdown"></div>' +
+				'<div class="col-md-12" id="timerInfo">' +
+					'<div class="row lightOrange" id="tiTop">' +
+						'<div class="col-xs-12 col-md-6" id="round"></div>' +
+						'<div class="col-xs-12 col-md-6" id="time" style="color:black;"></div>' +
+					'</div>' +
+					'<div class="row darkBlue">' +
+						'<div class="col-xs-12 col-md-10 col-md-offset-1" id="countdown"></div>' +
+					'</div>' +
+					'<div class="row lightBlue" id="tiBottom">' +	
+						'<div class="col-xs-12 col-md-10 col-md-offset-1" id="roundCard">' +
+							'<h3>Round Rules</h3>' +
+							'<div id="roundDir"></div>' +
+							'<div id="roundRule"></div>' +
+						'</div>' +
+					'</div>' +	
 				'</div>' +
 			'</div>'
 		),
@@ -19,19 +30,22 @@ var app = app || {};
 			console.log('timerInfo started with count of: ');
 			console.log(options);
 			var counter = setInterval(timer, 1000);
-			var count = 4;
+			var count = 6;
+			var round = location.hash.slice(10).split('/')[4];
 			function timer() {
-				$('#timercounter').html('<h2>You have ' + options.count + ' seconds to enter a word.</h2>');
+				$('#round').html('<h3>Round ' + round + '</h3>')
+				$('#time').html('<h3>' + options.count + ' seconds</h3>');
+				$('#roundDir').html('<h3><em>Inspiration</em>  ' + options.direction + '</h3>');
+				$('#roundRule').html('<h3><em>Rule</em>  ' + options.rule + '</h3>');
 				count=count-1;
 				if (count <= 0) {
 					clearInterval(counter);
-					var round = location.hash.slice(10).split('/')[4];
 					var game = location.hash.slice(10).split('/')[2];
 					app.AppView.vent.trigger('startRound', game, round);
 					return;
 				}
 				for(var i=0;i<count;i++){
-                    $('#countdown').html('<h1>' + count + '</h1>');
+                    $('#countdown').html('<h2>Start in ' + count + '</h2>');
                 }
 			}	
 		},

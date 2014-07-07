@@ -1,17 +1,20 @@
-/* Small devices (tablets, 768px and up) */
-@media screen (min-width: 146px) and (max-width: 990px) { 
+/* Small devices (tablets, 768px and up) */ 
+@media screen and (max-width: 990px) { 
 
 	#ng_words{
 		display: none;
 	}
 
 	div#mfs{ 
-		max-height:200px; 
+		min-height: 100px;
+		max-height: 200px;
 		position: relative;
 		text-align: left;
 	}
 
 	div#mfsContainer{
+		-webkit-min-height: 100px;
+		-webkit-max-height: 200px;
 		max-height:200px; 
 		max-width:800px; 
 		overflow: auto;
@@ -26,12 +29,14 @@
 		margin: 5px;
 		height: 110px;
 		cursor: pointer;
+		text-align: center;
+		line-height: 110px;
 	}
 
 }
 
 /* Medium devices (desktops, 992px and up) */
-@media screen and (min-width: 900px) and (max-width: 1199px){ 
+@media screen and (min-width: 990px) and (max-width: 1199px){ 
 	#ng_words{
 		padding-top: 20px;
 		height: 150px;
@@ -42,6 +47,8 @@
 		margin: 10px 10px 10px 10px;
 		text-align: left;
 		columns:100px 2;
+		min-height: 100px;
+		max-height: 200px;
 		-webkit-columns:100px 2; /* Safari and Chrome */
 		-moz-columns:100px 2; /* Firefox */
 	}
@@ -59,24 +66,30 @@
 		border: 1px solid white;
 		border-radius: 10px;
 		margin: 5px;
-		height: 200px;
+		height: 170px;
 		cursor: pointer;
+		text-align: center;
+		line-height: 170px;
 	}
 
 }
 
-/* Large devices (large desktops, 1200px and up) */
+/* Large devices (large desktops, 1200px and up) */ 
 @media screen and (min-width: 1200px) { 
 	div#mfs{ 
 		position: relative;
 		margin: 10px 10px 10px 10px;
 		text-align: left;
 		columns:100px 2;
-		-webkit-columns:100px 2; /* Safari and Chrome */
+		min-height: 100px;
+		max-height: 200px;
+		-webkit-columns:100px 2; /* Safari and Chrome */ 
 		-moz-columns:100px 2; /* Firefox */
 	}
 
 	div#mfsContainer{
+		-webkit-min-height: 100px;
+		-webkit-max-height: 200px;
 		max-height:200px; 
 		max-width:800px;
 		overflow: auto;
@@ -89,11 +102,18 @@
 		border: 1px solid white;
 		border-radius: 10px;
 		margin: 10px;
-		height: 200px;
+		height: 170px;
+		line-height: 170px;
 		cursor: pointer;
+		text-align: center;
 	}
 
 } 
+
+.cards > img {
+  vertical-align: middle;
+  height: 180px;
+}
 
 #mfsContainer::-webkit-scrollbar { 
     display: none; 
@@ -108,12 +128,33 @@
 	color: white;
 }
 
+div#card1  ul#cardList  li.cards {
+	background-color: #53F1F1;
+	color: #0447F1;
+}
+
+div#card2 ul#cardList  li.cards {
+	background-color: #658DF3;
+	color: white;
+}
+
+div#card3 ul#cardList  li.cards {
+	background-color: #FFA358;
+	color: white;
+}
+
 .darkOrangeTop{
 	background-color: #FFA358;
 	color: white;
 	text-align: center;
 	border-top: 1px solid white;
     border-radius: 5px 70px 0 0;
+}
+
+.darkOrange{
+	background-color: #FFA358;
+	color: white;
+	text-align: center;
 }
 
 .lightOrange{
@@ -163,14 +204,23 @@ input.transparent-input{
 }
 
 #timerInfo{
-	height: 200px;
+	min-height: 230px;
 	padding-top: 10px;
-	border: 1px solid white;
-	border-radius: 10px;
 }
 
-.turn{
-	background-color: yellow;
+#tiTop{
+	border-top: 1px solid white;
+	border-radius: 5px 5px 0 0;
+}
+
+#tiBottom{
+	border-bottom: 1px solid white;
+	border-radius: 0 0 5px 5px;
+}
+
+#timer{
+	height: 38px;
+	margin-bottom: 5px;
 }
 
 #cardList{
@@ -202,8 +252,8 @@ input.transparent-input{
 	margin-left: 160px;
 }
 
-#sharing{
-	margin: 10px 0px 10px 0px;
+#like{
+	margin: 10px;
 }
 
 .complete{
@@ -212,37 +262,66 @@ input.transparent-input{
 }
 
 #result{
-	height: 200px;
-	border-radius: 4px;
-	background-color: purple;
+	min-height: 200px;
+	border: 1px solid white;
+	border-radius: 10px;
 	text-align: center;
+}
+
+#round1review{
+	background-color: #658DF3;
 	color: white;
+}
+
+#round2review{
+	background-color: #53F1F1;
+	color: #0447F1;
+}
+
+#round3review{
+	background-color: #658DF3;
+	color: white;
+	border-bottom: 1px solid #658DF3;
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px; 
+}
+
+#done{
+	border: 1px solid white;
+	border-radius: 10px;
+	text-align: center;
 }
 
 #story{
 	border-top: 1px solid white;
 	border-left: 1px solid white;
 	border-right: 1px solid white;
-	border-radius: 5ps;
+	border-radius: 5px;
+	min-height: 130px;
 }
 
 #storyText{
 	margin: 10px 0px 10px 0px;
-	border-top: 1px solid white;
-	border-radius: 5px;
 	padding-top: 10px;
 	text-align: center;
 }
 
 #textArea{
-	padding: 0px 0px 10px 0px;
+	padding: 0;
 	border-bottom: 1px solid white;
 	border-radius: 5px;	
 }
 
 #input{
-	margin: 0px 0px 0px 0px;
+	margin: 5px 0px 0px 0px;
 	vertical-align: baseline;
+}
+
+#enter{
+	height: 60px;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	text-align: center;
 }
 
 #cardTitle{
@@ -287,8 +366,8 @@ input.transparent-input{
 }
 
 a#fb_pic{
-	margin-left: 70px;
-	margin-right: 50px;
+	margin-left: 30px;
+	margin-right: 40px;
 
 }
 
@@ -560,3 +639,4 @@ div#inputbox {
 	width: 99%;
 	height: 30%;
 }
+

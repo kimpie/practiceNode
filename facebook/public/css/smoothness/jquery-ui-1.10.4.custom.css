@@ -607,7 +607,7 @@ button.ui-button::-moz-focus-inner {
 	opacity: 0.25;
 }
 .ui-progressbar-indeterminate .ui-progressbar-value {
-	background-image: none;
+	background-color: #FFA358;
 }
 .ui-slider {
 	position: relative;
@@ -1164,14 +1164,14 @@ body .ui-tooltip {
 
 /* Overlays */
 .ui-widget-overlay {
-	background: #aaaaaa url("images/ui-bg_flat_0_aaaaaa_40x100.png") 50% 50% repeat-x;
+	background-color: #FFA358;
 	opacity: .3;
 	filter: Alpha(Opacity=30);
 }
 .ui-widget-shadow {
 	margin: -8px 0 0 -8px;
 	padding: 8px;
-	background: #aaaaaa url("images/ui-bg_flat_0_aaaaaa_40x100.png") 50% 50% repeat-x;
+	background-color: #FFA358;
 	opacity: .3;
 	filter: Alpha(Opacity=30);
 	border-radius: 8px;

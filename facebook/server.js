@@ -1,22 +1,20 @@
 var chatter = require('chatter'),
         express = require('express'),
         app = module.exports = express(),
+        multiparty = require('connect-multiparty'),
         fs = require('fs'),
-        //app = express(),
-        //db = require('./mongoose'),
         MongoStore = require('connect-mongo')(express);
-        //beforeGame = require('./data/beforeGame.json');
-       // inGame = require('./data/inGame');
+
 var mongoose = require('mongoose');
 var uri = 'mongodb://nodejitsu_kapienta:u62qdrfun7e30jeq9m1onp3qq8@ds045978.mongolab.com:45978/nodejitsu_kapienta_nodejitsudb4870797025';
 global.db = mongoose.createConnection(uri);
 fillinblank = 'ad8d386b72151909021d28d0830c6c72';
 
 var http = require('http'),
-        server = http.createServer(app),
-        io = require('socket.io').listen(server, {
-          resource: '/facebook/socket.io'
-        });
+    server = http.createServer(app),
+    io = require('socket.io').listen(server, {
+      resource: '/facebook/socket.io'
+    });
 
 var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', 'localhost:8080/ http://completethesentence.com https://www.completethesentence.com/ https://completethesentence.com https://completethesentence.com/facebook/ https://www.completethesentence.com/facebook/socket.io/ https://completethesentence.com/facebook/socket.io/1/ https://www.completethesentence.com/facebook/socket.io/1/ http://completethesentence.com/socket.io https://facebook.com /facebook/socket.io/socket.io.js');
@@ -27,8 +25,9 @@ var allowCrossDomain = function(req, res, next) {
 
 app.configure(function(){
         app.set('view engine', 'handlebars');
-        //app.enable('strict routing');
-        app.use(express.bodyParser());
+        app.use(multiparty());
+        app.use(express.json());
+        app.use(express.urlencoded());
         app.use(express.cookieParser());
         app.use(express.session({ 
                 key: 'express.sid', 
@@ -106,7 +105,7 @@ app.get('/facebook/players/:playerid/games/:id/round/:rid/cards', api.getCards);
 
 var chat_room = io;
 
-chat_room.configure('production', function(){
+chat_room.set('production', function(){
   chat_room.set('transports', 
     [
     'websocket'

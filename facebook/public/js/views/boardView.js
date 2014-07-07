@@ -3,20 +3,34 @@ var app = app || {};
 (function ($) {
         'use strict';
 
+    Handlebars.registerHelper('firstComplete', function(round, options) {
+    	console.log(round);
+		for(var i=0; i < round.length; i++){
+			if(!round[i].complete){
+				console.log('round ' + round[i].number + ' not complete, showing cards');
+				return '<div id="card' + round[i].number +'">' + options.fn(this) + '</div>';
+			}
+			break;
+		}
+	}),
+
+
 	app.boardView = Backbone.View.extend({
 
 		template: Handlebars.compile(
 			'<div class="row">'+
+			'{{#firstComplete round}}'+
 				'<ul id="cardList">'+
-					'<li class="col-xs-4 col-md-3 col-md-offset-1 cards lightBlue">Level 1</li>'+
-					'<li class="col-xs-4 col-md-3 cards lightBlue">Level 1</li>'+
-					'<li class="col-xs-4 col-md-3 cards lightBlue">Level 1</li>'+
+					'<li class="col-xs-4 col-md-3 col-md-offset-1 cards" title="1980\'s" style="background-image: url(https://i.imgur.com/MipnJcT.png); background-position: center center; background-repeat:no-repeat;"></li>' +
+					'<li class="col-xs-4 col-md-3 cards" title="1990\'s" style="background-image: url(https://i.imgur.com/Lg1khA7.png); background-position: center center; background-repeat:no-repeat;"></li>' +
+					'<li class="col-xs-4 col-md-3 cards" title="2000\'s" style="background-image: url(https://i.imgur.com/TPuIH9I.png); background-position: center center; background-repeat:no-repeat;"></li>' +
 				'</ul>' +
 				'<ul id="cardList">' +
-					'<li class="col-xs-4 col-md-3 col-md-offset-1 cards lightBlue">Level 1</li>'+
-					'<li class="col-xs-4 col-md-3 cards lightBlue">Level 1</li>'+
-					'<li class="col-xs-4 col-md-3 cards lightBlue">Level 1</li>'+
-				'</ul>'+
+					'<li class="col-xs-4 col-md-3 col-md-offset-1 cards" title="Animals" style="background-image: url(https://i.imgur.com/IVwyFoF.png); background-position: center center; background-repeat:no-repeat;"></li>' +
+					'<li class="col-xs-4 col-md-3 cards" title="Love" style="background-image: url(https://i.imgur.com/yOzRZXL.png); background-position: center center; background-repeat:no-repeat;"></li>' +
+					'<li class="col-xs-4 col-md-3 cards" title="Entertainment" style="background-image: url(https://i.imgur.com/yOzRZXL.png); background-position: center center; background-repeat:no-repeat;"></li>' +
+				'</ul>' +
+			'{{/firstComplete}}'+
 			'</div>'
 		),
 
@@ -55,6 +69,8 @@ var app = app || {};
 		},
 
 		showCard: function(info){
+			var category = info.curentTarget.title;
+			console.log(category);
 			app.AppRouter.navigate(location.hash + '/round/' + this.round);
 			app.AppView.vent.trigger('getCard', this.round);
 		},

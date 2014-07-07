@@ -67,8 +67,10 @@ jQuery(document).ready(function () {
 	});
 
 	socket.on('chat', function (data) {
-		end(data);
-		app.AppView.vent.trigger('saveNewSentence', data);
+		//end(data);
+		//app.AppView.vent.trigger('saveNewSentence', data);
+		console.log('inside chatter chat to updatePlayer');
+		app.AppView.vent.trigger('updatePlayer', data);
 	});
 
 	socket.on('newGameRequest', function (data) {

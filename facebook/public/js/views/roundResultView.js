@@ -6,12 +6,17 @@ var app = app || {};
 	app.roundResultView = Backbone.View.extend({
 
 		template: Handlebars.compile(
+			'<div class="row">'+
+				'<div class="col-md-12 lightOrange" id="done"><h3>Fib Review Finished</h3></div>' +
+			'</div>' +
 			'<div class="row">' +
-				'<div class="col-md-8 col-md-offset-2" id="result">'+
-					'<div><h3>Great Fib! This round is complete.</h3></div>' +
-					'<div><h3>Share this fib with friends.</h3></div>'+
+				'<div class="col-md-12 darkBlue" id="result">'+
+					'<div style="color:	#333399;"><h3>Great Fib! This round is complete.</h3></div>' +
 					'<div id="storyText"><h2>"{{story}}"</h2></div>' +
 				'</div>' +
+			'</div>' +
+			'<div class="row">' +
+				'<h3 style="text-align: center;">Round Card</h3>' +
 			'</div>'
 		),
 
@@ -22,6 +27,11 @@ var app = app || {};
 		},
 
 		events: {
+			'click #done' : 'send'
+		},
+
+		send: function(){
+			app.AppView.vent.trigger('sendGameData');
 		},
 
 		render: function () {

@@ -7,15 +7,15 @@ var app = app || {};
 
 		template: Handlebars.compile(
 			'<div class="row">' +
-				'<div class="col-md-8 col-md-offset-2" id="timer">'+
+				'<div class="col-md-12" id="timer" style="padding-right:0px; padding-left:0px;">'+
 				'</div>' +
 			'</div>' +
 			'<div class="row">' +
-				'<div class="col-md-8 col-md-offset-2 darkBlue" id="story">'+
+				'<div class="col-md-12 darkBlue" id="story">'+
 					'<div id="storyText"><h3>{{story}}</h3></div>' +
 				'</div>' +
-				'<div class="col-md-8 col-md-offset-2 lightBlue" id="textArea" style:"padding-left:0px; padding-right:0px;">'+
-					'<div id="input" class="transparent-input">' +
+				'<div class="col-md-12" id="textArea" style:"padding-left:0px; padding-right:0px;">'+
+					'<div id="input" class="transparent-input" style="background-color: #FFC858; color: #359999">' +
 					'</div>' +
 				'</div>' +
 			'</div>'
@@ -52,17 +52,10 @@ var app = app || {};
 		},
 
 		submitWord: function(event){
-			var word = jQuery('#enter').val();
+			this.word = jQuery('#enter').val(),
 			var that = this;
 			if (event.which == 32 || event.which == 13) {
-				var info = {
-					word: word,
-					room: that.room,
-					level: that.model.number,
-					playerId: location.hash.slice(10).split('/')[0]
-				};
-				console.log('sending word inside roundView');
-				app.AppView.vent.trigger('sendGameData', info);
+				that.count = 0;
 			}
 		},
 
@@ -73,9 +66,9 @@ var app = app || {};
 				this.count = 60;
 			} else {
 				if(round == 1){
-					this.count = 30;
-				}else if(round == 2){
 					this.count = 20;
+				}else if(round == 2){
+					this.count = 15;
 				}else{
 					this.count = 10;
 				}
@@ -87,7 +80,7 @@ var app = app || {};
 				if (that.count <= 0) {
 					clearInterval(counter);
 					console.log('counter ended');
-					//that.endOfTimer();
+					that.endOfTimer();
 					return;
 				}
 				if(that.live){
@@ -98,12 +91,12 @@ var app = app || {};
 				} else {
 					if(round == 1){
 						$('#timer').progressbar({
-							max: 30,
+							max: 20,
 							value: that.count
 						});
 					}else if(round == 2){
 						$('#timer').progressbar({
-							max: 20,
+							max: 15,
 							value: that.count
 						});
 					}else{
@@ -113,6 +106,28 @@ var app = app || {};
 						});
 					}	
 				}
+			}
+		},
+
+		endOfTimer: function(){
+			var that = this;
+			if(this.word != undefined && this.word != ''){
+				var info = {
+					word: word,
+					room: that.room,
+					level: that.model.number,
+					playerId: location.hash.slice(10).split('/')[0]
+				};
+				console.log('sending word inside roundView');
+				app.AppView.vent.trigger('sendGameData', info);
+			} else {
+				console.log('word wasn\'t submitted on time, lose a turn');
+				var info = {
+					room: that.room,
+					level: that.model.number,
+					playerId: location.hash.slice(10).split('/')[0]
+				};
+				app.AppView.vent.trigger('sendGameData', info);
 			}
 		},
 

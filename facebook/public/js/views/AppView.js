@@ -45,13 +45,17 @@ var app = app || {};
 			this.card = this.$('#card');
 			this.sharing = this.$('#sharing');
 			this.wc = this.$('#word_countdown');
+			this.topnav = this.$('#topnav');
 		},
 
-		//------Two events, when a user logs in to FB and when they invite friends to join
 		events: {
 			"click #login": "loginPlayer",
 			"click #home": "homeView",
-			"click #contact" : "contact"
+			"click #contact" : "contact",
+			"click #menu" : "options"
+		},
+
+		options: function(){
 
 		},
 
@@ -64,10 +68,6 @@ var app = app || {};
 		up: function(playerID, game, round){
 			var player = this.collection.findWhere({fb_id: playerID});
 			player.updateTurn(game, round);
-			console.log('should do socket emit next to update player: ' + player.id);
-			//socket.emit('updateTurn',{
-			///	room: player.id
-			//});
 		},
 
 		contact: function(){
@@ -86,6 +86,7 @@ var app = app || {};
 			this.sharing.hide();
 			this.board.hide();
 			this.card.hide();
+			this.topnav.show();
 			var hv = new app.homeView({model: playermodel});
 			this.play.html(hv.render().el);	
 		},
@@ -104,7 +105,7 @@ var app = app || {};
 			});
 		},
 
-		removeGame: function(model, player){
+		removeGame: function(model){
 			var gameModel = model;
 			var player = this.collection.findWhere({fb_id: Number(currentUser)});
 			app.AppView.vent.trigger('modelRemove', gameModel, player);
@@ -128,20 +129,38 @@ var app = app || {};
 			var level_ip = game_model.checkRounds('in_progress');
 			console.log('round in_progress are ' + level_ip);
 			this.board.show();
-			if(level_ip.length != 0){
+			var p_stage = game_model.checkStage(currentUser);
+			console.log('insdie AppView play, in stage ' + p_stage);
+			if(p_stage == 'review'){//level_ip.length != 0){
+				//if(game_model.attributes.round[level-1].review){
+				//if(level_ip.length != 0){
+					//var level = level_ip[0];
+
+				//} else if (level_complete != 0){
+					var x = level_complete.length;
+					var level = level_complete[x-1]; 
+				//}
+				console.log(level);
+				app.AppRouter.navigate('#/players/' + player.id + '/games/' + game_model.id + '/round/' + level);
+				this.review(game_model, level);
+				//} else {
+			}else if(p_stage == 'complete'){
+				console.log('game is complete, sending player to game review');
+				this.gameReview(game_model);
+			} else if (level_ip.length != 0){
 				var level = level_ip[0];
-				if(game_model.attributes.round[level-1].review){
-					app.AppRouter.navigate('#/players/' + player.id + '/games/' + game_model.id + '/round/' + level);
-					this.review(game_model, level);
-				} else {
-					app.AppRouter.navigate('#/players/' + player.id + '/games/' + game_model.id + '/round/' + level);
-					this.timer(level);
-				}
-			} else {
+				console.log(level);
+				app.AppRouter.navigate('#/players/' + player.id + '/games/' + game_model.id + '/round/' + level);
+				var cardId = game_model.attributes.round[level-1].card;
+				var card = this.cardCollection.findWhere({_id: cardId});
+				this.timer(level, card);
+				//}
+			}else {
 				this.sharing.hide();
 				this.card.hide();
 				this.wc.hide();
-				//this.play.hide();
+				this.board.hide();
+				this.topnav.hide();
 				//var gameview = new app.gameView({model: game_model});
 				//this.play.html(gameview.render().el);
 				var bv = new app.boardView({model: game_model, complete: level_complete});
@@ -179,11 +198,13 @@ var app = app || {};
 				var rd = location.hash.split('/')[6];
 			}
 			console.log(gm);
-			//var gameview = new app.gameView({model: gm});
-			//this.play.html(gameview.render().el);
-			this.board.hide();
+			var gameview = new app.gameView({model: gm});
+			this.play.html(gameview.render().el);
+			
+			this.board.show();
 			this.card.show();
 			this.wc.show();
+			this.topnav.hide();
 			if(gm.attributes.word_countdown == 10){
 				var rc = round_cards[0].card;
 			} else {
@@ -194,10 +215,11 @@ var app = app || {};
 			var c = this.cardCollection.findWhere({_id: rc});
 			var cv = new app.cardView({model: c});
 			this.card.html(cv.render().el);
+			
 			$('#cardTitle').show();
 			$('#cardBody').hide();
 	        var rv = new app.roundView({model: r, place: place});
-	        this.play.html(rv.render().el);
+	        this.board.html(rv.render().el);
 	        app.AppView.vent.trigger('wordTurn', gm.attributes.word_turn);
 		},
 
@@ -208,24 +230,29 @@ var app = app || {};
 			this.sharing.hide();
 			this.card.show();
 			this.play.hide();
+			this.topnav.hide();
 			var level = info.attributes.level;
 			round_cards =[{round: level, card: info.id}]; 
-			app.AppView.vent.trigger('startBtn');
 			var cv = new app.cardView({model: info});
 			this.card.html(cv.render().el);
 		},
 
-		timer: function(round){
+		timer: function(round, card){
 			this.card.hide();
+			this.topnav.hide();
 			this.play.show();
 			if(round == '1'){
-				var count = 30;
-			} else if(round == '2'){
 				var count = 20;
+			} else if(round == '2'){
+				var count = 15;
 			} else if(round == '3'){
 				var count = 10;
 			}
-			var tv = new app.timerInfo({count: count});
+			var card = card;
+			console.log(card);
+			var direction = card.attributes.direction;
+			var rule = card.attributes.rule;
+			var tv = new app.timerInfo({count: count, direction: direction, rule: rule});
 			this.play.html(tv.render().el);
 		},
 
@@ -235,13 +262,17 @@ var app = app || {};
 			} else {
 				var gm = this.gameCollection.findWhere({_id: game_model});
 			}
-			var gameview = new app.gameView({model: gm});
-			this.play.html(gameview.render().el);
-			app.AppView.vent.trigger('doneBtn');
-			this.board.show();
+			console.log('review has level: ' + level + ' and game_model ');
+			console.log(game_model);
+			//var gameview = new app.gameView({model: gm});
+			//this.play.html(gameview.render().el);
+			//app.AppView.vent.trigger('doneBtn');
+			//this.board.show();
+			this.board.hide();
 			var rrv = new app.roundResultView({model: gm.attributes.round[level - 1]});
-			this.board.html(rrv.render().el);
+			this.play.html(rrv.render().el);
 			this.card.show();
+			this.topnav.show();
 			var cid = gm.attributes.round[level - 1].card;
 			var c = this.cardCollection.findWhere({_id: cid});
 			var cv = new app.cardView({model: c});
@@ -249,11 +280,32 @@ var app = app || {};
 			this.sharing.show();
 		},
 
+		gameReview: function(game){
+			this.board.hide();
+			this.topnav.show();
+			var gr = new app.gameReview({model: game});
+			this.play.html(gr.render().el);
+		},
+
 		sendGD: function (info){
 			console.log(info);
-			var room = info.room;
-			var gm = this.gameCollection.findWhere({_id: room});
-			gm.saveData(info, {url: location.hash.slice(0, -6)});
+			if(info != undefined){
+				var room = info.room;
+				var gm = this.gameCollection.findWhere({_id: room});
+				gm.saveData(info, {url: location.hash.slice(0, -6)});
+			} else {
+				var room = location.hash.split('/')[4];
+				var round = location.hash.split('/')[6];
+				var info = {
+					room: room,
+					level: round,
+					playerId: location.hash.slice(10).split('/')[0],
+					close: true
+				};
+				var gm = this.gameCollection.findWhere({_id: room});
+				gm.saveData(info, {url: location.hash.slice(0, -6)});
+			}
+			
 		},
 
 //------Once FB registers the player has logged in, they trigger the click on loginPlayer
