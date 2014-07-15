@@ -135,7 +135,6 @@ exports.postGame = function (req, res){
 exports.updateGame = function (req, res){
 	console.log( 'Updating game ' + req.body.game );
     return Game.findById( req.params.id, function( err, game ) {
-		game.game_id = req.body.game_id;
 		game.complete = req.body.complete;
 		game.active = req.body.active;
 		game.round_turn = req.body.round_turn;

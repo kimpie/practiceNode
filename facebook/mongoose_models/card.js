@@ -6,6 +6,7 @@ var cardSchema = new Schema ({
 	level: Number,
 	direction: String,
 	rule: String,
+	category: String,
 	timer: Boolean
 });
 

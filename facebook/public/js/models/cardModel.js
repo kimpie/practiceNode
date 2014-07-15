@@ -14,10 +14,7 @@ var app = app || {};
 		idAttribute: '_id',
 
 		initialize: function(options){
-			console.log(options);
-			console.log(this.id);
 			var hash = location.hash.split('/');
-			console.log('cardModel hash' + hash);
 			if (hash[4] == undefined){
 				this.url = '/facebook/players/' + 'y' + '/games/' + 'x' + '/round/z'+'/cards';
 			} else {

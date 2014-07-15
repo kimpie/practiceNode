@@ -30,11 +30,11 @@ var app = app || {};
 			app.AppView.vent.on('showTimerInfo', this.timer, this);
 			app.AppView.vent.on('updateP', this.up, this);
 			app.AppView.vent.on('review', this.review, this);
-			app.AppView.vent.on('sendGameData', this.sendGD, this);
+			app.AppView.vent.on('ab', this.sendGD, this);
 			app.AppView.vent.on('sgp', this.sgp, this);
-
 			app.AppView.vent.on('launchFetch', this.go, this);
 			app.AppView.vent.on('removeGame', this.removeGame, this);
+			app.AppView.vent.on('showTutorial', this.tutorial, this);
 
 			var socket = io.connect('https://completethesentence.com/', {secure: true , resource:'facebook/socket.io'});
 
@@ -46,6 +46,8 @@ var app = app || {};
 			this.sharing = this.$('#sharing');
 			this.wc = this.$('#word_countdown');
 			this.topnav = this.$('#topnav');
+			this.app = this.$('#app');
+			this.cb = this.$('.cb');
 		},
 
 		events: {
@@ -55,8 +57,13 @@ var app = app || {};
 			"click #menu" : "options"
 		},
 
-		options: function(){
+		tutorial: function(){
+			var tv = new app.tutorialView();
+			this.app.html(tv.render().el);
+		},
 
+		options: function(info){
+			this.play.html('')
 		},
 
 		sgp: function(response, info){
@@ -105,10 +112,17 @@ var app = app || {};
 			});
 		},
 
-		removeGame: function(model){
+		removeGame: function(model, p, stage){
 			var gameModel = model;
-			var player = this.collection.findWhere({fb_id: Number(currentUser)});
-			app.AppView.vent.trigger('modelRemove', gameModel, player);
+			console.log(model);
+			console.log(p);
+			console.log(stage);
+			if(p != undefined && p != ''){
+				var player = this.collection.findWhere({fb_id: p});
+			} else {
+				var player = this.collection.findWhere({fb_id: Number(currentUser)});
+			}
+			player.removeGame(gameModel, player, stage);
 		},
 
 
@@ -131,19 +145,12 @@ var app = app || {};
 			this.board.show();
 			var p_stage = game_model.checkStage(currentUser);
 			console.log('insdie AppView play, in stage ' + p_stage);
-			if(p_stage == 'review'){//level_ip.length != 0){
-				//if(game_model.attributes.round[level-1].review){
-				//if(level_ip.length != 0){
-					//var level = level_ip[0];
-
-				//} else if (level_complete != 0){
-					var x = level_complete.length;
-					var level = level_complete[x-1]; 
-				//}
+			if(p_stage == 'review'){
+				var x = level_complete.length;
+				var level = level_complete[x-1]; 
 				console.log(level);
 				app.AppRouter.navigate('#/players/' + player.id + '/games/' + game_model.id + '/round/' + level);
 				this.review(game_model, level);
-				//} else {
 			}else if(p_stage == 'complete'){
 				console.log('game is complete, sending player to game review');
 				this.gameReview(game_model);
@@ -153,7 +160,7 @@ var app = app || {};
 				app.AppRouter.navigate('#/players/' + player.id + '/games/' + game_model.id + '/round/' + level);
 				var cardId = game_model.attributes.round[level-1].card;
 				var card = this.cardCollection.findWhere({_id: cardId});
-				this.timer(level, card);
+				this.timer(game_model, level, card);
 				//}
 			}else {
 				this.sharing.hide();
@@ -202,7 +209,6 @@ var app = app || {};
 			this.play.html(gameview.render().el);
 			
 			this.board.show();
-			this.card.show();
 			this.wc.show();
 			this.topnav.hide();
 			if(gm.attributes.word_countdown == 10){
@@ -210,17 +216,31 @@ var app = app || {};
 			} else {
 				var rc = r.card;
 			}
+			var gp = gm.attributes.players;
+			var turn;
+			function getController(element, index, array){
+				if(element.controller == true){
+					turn = element.name;
+				}
+			};
+			gp.forEach(getController);
+			if (turn == undefined || turn == ''){
+				var wt = gm.attributes.word_turn;
+			} else {
+				var wt = turn;
+			}		
 			console.log(r);
 			console.log(rc);
 			var c = this.cardCollection.findWhere({_id: rc});
 			var cv = new app.cardView({model: c});
 			this.card.html(cv.render().el);
-			
+			this.card.show();
+			$('.cb').hide();
 			$('#cardTitle').show();
 			$('#cardBody').hide();
 	        var rv = new app.roundView({model: r, place: place});
 	        this.board.html(rv.render().el);
-	        app.AppView.vent.trigger('wordTurn', gm.attributes.word_turn);
+	        app.AppView.vent.trigger('wordTurn', wt);
 		},
 
 		card: function(info){
@@ -231,22 +251,32 @@ var app = app || {};
 			this.card.show();
 			this.play.hide();
 			this.topnav.hide();
+			$('.cb').show();
 			var level = info.attributes.level;
 			round_cards =[{round: level, card: info.id}]; 
 			var cv = new app.cardView({model: info});
 			this.card.html(cv.render().el);
 		},
 
-		timer: function(round, card){
+		timer: function(game_model, round, card){
 			this.card.hide();
 			this.topnav.hide();
 			this.play.show();
-			if(round == '1'){
-				var count = 20;
-			} else if(round == '2'){
-				var count = 15;
-			} else if(round == '3'){
-				var count = 10;
+			if(typeof game_model == 'object'){
+				var gm = game_model;
+			} else {
+				var gm = this.gameCollection.findWhere({_id: game_model});
+			}
+			if(gm.attributes.place == 'Live'){
+				var count = 60;
+			} else {
+				if(round == '1'){
+					var count = 20;
+				} else if(round == '2'){
+					var count = 15;
+				} else if(round == '3'){
+					var count = 10;
+				}
 			}
 			var card = card;
 			console.log(card);
@@ -277,12 +307,15 @@ var app = app || {};
 			var c = this.cardCollection.findWhere({_id: cid});
 			var cv = new app.cardView({model: c});
 			this.card.html(cv.render().el);
+			this.cb.hide();
 			this.sharing.show();
 		},
 
 		gameReview: function(game){
 			this.board.hide();
 			this.topnav.show();
+			this.card.hide();
+
 			var gr = new app.gameReview({model: game});
 			this.play.html(gr.render().el);
 		},
@@ -290,6 +323,11 @@ var app = app || {};
 		sendGD: function (info){
 			console.log(info);
 			if(info != undefined){
+				if (info.close){
+					var temp = 'no';
+				} else {
+					var temp = "Your fib!";
+				}
 				var room = info.room;
 				var gm = this.gameCollection.findWhere({_id: room});
 				gm.saveData(info, {url: location.hash.slice(0, -6)});
@@ -300,12 +338,37 @@ var app = app || {};
 					room: room,
 					level: round,
 					playerId: location.hash.slice(10).split('/')[0],
+					word_countdown: 0,
 					close: true
 				};
 				var gm = this.gameCollection.findWhere({_id: room});
+				var temp = "Review this fib!"
 				gm.saveData(info, {url: location.hash.slice(0, -6)});
 			}
-			
+			var gp = gm.attributes.players;
+			var url = 'https://apps.facebook.com/playfibs';
+			var notify = info.notify;
+			function getFBID(element, index, array){
+				if(element.fb_id != currentUser){
+				FB.api('/' + element.fb_id + '/notifications',
+			        'post',
+			        {
+			            access_token: notify,
+		                href: url,
+		                template: temp
+			            
+			        },
+			        function (response) {
+			          console.log(response);
+			          }
+			    );
+				}
+			}
+			if(gm.attributes.place != 'Live'){
+				if(temp != 'no'){
+					gp.forEach(getFBID);
+				}
+			}
 		},
 
 //------Once FB registers the player has logged in, they trigger the click on loginPlayer

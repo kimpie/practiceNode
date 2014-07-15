@@ -16,7 +16,9 @@ var playerSchema = new Schema ({
 		id: [{type: Schema.Types.ObjectId, ref: 'Game'}], 
 		players: [],
 		url: String,
-		turn: String
+		turn: String,
+		stage: String,
+		controller: Boolean
 	}]
 });
 

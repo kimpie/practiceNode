@@ -45,7 +45,6 @@ var app = app || {};
 
 			app.AppView.vent.on('example', function (info){ console.log(info + ' from socket!'); });
 			app.AppView.vent.on('updateGameInfo', this.updateGameInfo, this);
-			app.AppView.vent.on('removeGame', this.changeActive, this);
 			app.AppView.vent.on('requestNewGame', this.rng, this);
 		  	app.AppView.vent.on('loadPlayers', this.addPlayers, this);
 			//console.log('GameModel initialized with player: ' + this.y + 'and game: ' + this.x);
@@ -178,6 +177,7 @@ var app = app || {};
 		},
 
 		changeActive: function(model){
+			console.log(model);
   			model.save({
   				active: false
   			},{
@@ -244,36 +244,92 @@ var app = app || {};
 			return t;
 		},
 
+
+
 		setData: function(info){
 			console.log(info);
-			var gp = this.attributes.players,
-				that = this;
-			var w_c = this.attributes.word_countdown,
-				rIndex = info.level - 1,
-				roundx = this.attributes.round[rIndex];
-
-			if(info.ng_request != '' && info.ng_request != undefined){
-			//new game is requested
-				return{
-					ng_request: info.ng_request,
-					complete:true
+			var that = this,
+				rIndex = Number(info.level) - 1,
+				roundx = this.attributes.round[rIndex],
+				gp = this.attributes.players;
+			if(info.word_countdown != undefined && info.word_countdown != ''){
+				var w_c = info.word_countdown;
+			} else { var w_c = this.attributes.word_countdown;}
+			var wc, story, ip, rev, rturn, z, stage, wturn;
+			function attrConstant(){
+				console.log('nothingChanges fn, all attr stay same');
+				wc = that.attributes.word_countdown,
+				story = that.attributes.round[rIndex].story,
+				ip = that.attributes.round[rIndex].in_progress,
+				rev = that.attributes.round[rIndex].review,
+				rturn = that.attributes.round_turn,
+				z = that.attributes.round[rIndex].card,
+				wturn = that.attributes.word_turn;
+			};
+			function setupReview(){
+				console.log('inside setupReview');
+				rev = true,
+				rturn = that.rotateTurn({round_turn: true}),
+				wturn = rturn,
+				ip = false,
+				stage = 'review';
+				Object.defineProperty(roundx, "complete", {value : true,
+	                               writable : true,
+	                               enumerable : true,
+	                               configurable : true});
+				Object.defineProperty(roundx, "url", {value : roundx.url + '/complete',
+	                               writable : true,
+	                               enumerable : true,
+	                               configurable : true});
+			};
+			function setupNew(){
+				console.log('inside setupNew');
+				wc = 10,
+				story = that.attributes.round[rIndex].story,
+				ip = false,
+				rev = false,
+				rturn = that.attributes.round_turn,
+				z = that.attributes.round[rIndex].card,
+				wturn = that.attributes.round_turn,
+				stage = 'in_progress';	
+			};
+			function callRemove(element, index, array){
+				var stage = undefined;
+				var p = element.fb_id;
+				app.AppView.vent.trigger('removeGame', that, p, stage);
+			};
+			if(info.stage == 'removed'){
+				stage = 'removed';
+				wc =''; rturn =''; wturn ='';
+				var gp = that.attributes.players;	
+				var k;
+				function removeAll(element, index, array){
+					if(element.name != name && element.stage != 'removed'){
+						k  = true;
+					}
+				};
+				gp.forEach(removeAll);
+				if(k){
+				  console.log('not ready to remove from all');
+				} else {
+				  console.log('ready to remove all');
+				  that.changeActive(that);
+				  gp.forEach(callRemove);
 				}
 			} else {
-				if(w_c > 1){
-					var wc = w_c - 1,
-						stage = 'in_progress',
-						rev = false, 
-						ip = true,
-						rturn = this.attributes.round_turn,
-						wturn = this.rotateTurn({round_turn: false}),
-						z;
-					//On first save, save the card info, all other times refer back to round card.
-					if(wc == 9){
-						if(info.word != undefined && info.word != ''){
-							var story = info.word;
+				if (this.attributes.place == 'Live'){
+					console.log('game is live');
+					if(info.close){
+						if(rIndex == 2){
+							stage = 'complete';
 						} else {
-							var story = '';
+							setupNew();
+							console.log(wc);
 						}
+
+					}else {
+						var wc = 0,
+							story = info.word;
 						if (round_cards != undefined){
 							var rd = info.level;
 							function cid(element, index, array){
@@ -284,57 +340,85 @@ var app = app || {};
 							};
 							round_cards.forEach(cid);
 						}
-					}else {
-						//Not first save, add the word to the story and save existing card.
-						//make sure a word was entered.
+						setupReview();
+					}
+				} else {
+					if(w_c > 1){
+						console.log('w_c > 1');
+						var pStage = this.checkStage();
+						console.log('player stage is ' + pStage);
+						if(pStage == 'review'){
+							console.log('calling attrConstant fn');
+							//new round has started and player is now joinging it
+							var stage = 'in_progress';
+							attrConstant();
+						} else {
+							var wc = w_c - 1,
+								stage = 'in_progress',
+								rev = false, 
+								ip = true,
+								rturn = this.attributes.round_turn,
+								wturn = this.rotateTurn({round_turn: false}),
+								z;
+							//On first save, save the card info, all other times refer back to round card.
+							if(wc == 9){
+								if(info.word != undefined && info.word != ''){
+									var story = info.word;
+								} else {
+									var story = '';
+								}
+								if (round_cards != undefined){
+									var rd = info.level;
+									function cid(element, index, array){
+									    console.log(element);
+									    if(rd == element.round){
+										    z = element.card;
+									    }
+									};
+									round_cards.forEach(cid);
+								}
+							}else {
+								//Not first save, add the word to the story and save existing card.
+								//make sure a word was entered.
+								if(info.word != undefined && info.word != ''){
+									var story = this.attributes.round[rIndex].story + ' ' + info.word;
+								} else {
+									var story = this.attributes.round[rIndex].story;
+								}
+								z = this.attributes.round[rIndex].card;
+							}
+						}
+					} else if(w_c == 1) {  
+						console.log('w_c == 1');
+						//word_countdown will now be 0; Setup for roundReview
+						var wc = w_c - 1;
+						setupReview();
+						z = that.attributes.round[rIndex].card;
 						if(info.word != undefined && info.word != ''){
 							var story = this.attributes.round[rIndex].story + ' ' + info.word;
 						} else {
 							var story = this.attributes.round[rIndex].story;
 						}
-						z = this.attributes.round[rIndex].card;
-					}
 
-				} else if(w_c == 1) {  
-					//word_countdown will now be 0
-					// Setup for roundReview
-					var wc = w_c - 1,
-						rev = true,
-						rturn = this.rotateTurn({round_turn: true}),
-						wturn = rturn,
-						ip = true,
-						stage = 'review';
-					Object.defineProperty(roundx, "complete", {value : true,
-		                               writable : true,
-		                               enumerable : true,
-		                               configurable : true});
-					Object.defineProperty(roundx, "url", {value : roundx.url + '/complete',
-		                               writable : true,
-		                               enumerable : true,
-		                               configurable : true});
-				}else if(w_c == 0){
-					if (info.close != undefined){//done with round review
-						console.log('setting review to false, setting up new round');
-						if(rIndex !== 2 && !this.attributes.round[rIndex + 1].in_progress){
-							var wc = 10,
-								story = this.attributes.round[rIndex].story,
-								ip = false,
-								rev = false,
-								rturn = this.attributes.round_turn,
-								wturn = this.attributes.round_turn;	
-						} else {
-							if(rIndex == 2){
-								var stage = 'complete';
+					}else if(w_c == 0){
+						console.log('w_c == 0');
+						if (info.close != undefined){//done with round review
+							if(rIndex !== 2 && !this.attributes.round[rIndex + 1].in_progress && this.attributes.round_turn == name){
+								console.log('setting review to false, setting up new round');
+								setupNew();
+							} else {
+								console.log(rIndex);
+								if(rIndex == 2){
+									var stage = 'complete';
+								} else {
+									console.log('keeping everything the same, setting stage to in_progress');
+									var stage = 'in_progress';
+									attrConstant();
+								}
 							}
-							var wc = this.attributes.round[rIndex].word_countdown,
-								story = this.attributes.round[rIndex].story,
-								ip = this.attributes.round[rIndex].in_progress,
-								rev = this.attributes.round[rIndex].review,
-								rturn = this.attributes.round_turn,
-								wturn = this.attributes.word_turn;
 						}
-					}
-				}//end of w_c conditional
+					}//end of w_c conditional
+				}
 				console.log(z);
 				Object.defineProperty(roundx, "card", {value : z,
 	                               writable : true,
@@ -356,32 +440,33 @@ var app = app || {};
 
 				console.log(roundx);
 				console.log('word_countdown is ' + wc);
-				return{
-					word_countdown: wc,
-					word_turn: wturn,
-					round_turn: rturn
+			}
+			function setStage(element, index, array){
+				console.log('inside setStage');
+				if(stage == 'in_progress' || stage == 'removed'){
+					if(element.fb_id == currentUser){
+						console.log('setting stage in_progress for ' + element.name);
+						var player = that.attributes.players[index];
+						Object.defineProperty(player, "stage", {value : stage,
+	                               writable : true,
+	                               enumerable : true,
+	                               configurable : true});
+					}
+				} else {
+					var player = that.attributes.players[index];
+					Object.defineProperty(player, "stage", {value : stage,
+		                           writable : true,
+		                           enumerable : true,
+		                           configurable : true});
 				}
-				function setStage(element, index, array){
-						console.log('inside setStage');
-						if(stage == 'in_progress'){
-							if(element.fb_id == currentUser){
-								console.log('closed this round, setting stage in_progress for next round on ' + element.name);
-								var player = that.attributes.players[index];
-								Object.defineProperty(player, "stage", {value : stage,
-			                               writable : true,
-			                               enumerable : true,
-			                               configurable : true});
-							}
-						} else {
-							var player = that.attributes.players[index];
-							Object.defineProperty(player, "stage", {value : stage,
-				                           writable : true,
-				                           enumerable : true,
-				                           configurable : true});
-						}
-						
-				};
-				gp.forEach(setStage);
+					
+			};
+			console.log('should setStage now with ' + stage);
+			gp.forEach(setStage);
+			return{
+				word_countdown: wc,
+				word_turn: wturn,
+				round_turn: rturn
 			}
 		},
 
@@ -392,26 +477,29 @@ var app = app || {};
 			var that = this;
 			this.save(this.setData(info),{
 				success: function(game){
-					if (info.close){
-						if(game.attributes.round_turn == name || game.attributes.round[2].complete || game.attributes.players.stage == 'review'){
-							app.AppView.vent.trigger('playGame', game);
-						} else {
-							app.AppView.vent.trigger('home');
-						}
-					} else {
-						if(game.attributes.round[info.level - 1].complete == true){
-							app.AppView.vent.trigger('playGame', game);
-						} else {
-							app.AppView.vent.trigger('home');
-						}
-					}
-					
 					var gp = game.attributes.players;
+					var i, c, remove;
+					function findMe(element, index, array){
+						if(element.name == name){
+							i = index;
+							if(element.stage == 'removed'){
+								remove = true;
+							} else { remove = false;}
+						}		
+					};
+					gp.forEach(findMe);
+					if( (game.attributes.place == 'Online' && game.attributes.word_turn != name) || remove){
+						console.log('gameModel trigger home');
+						app.AppView.vent.trigger('home');
+					} else {
+						console.log('gameModel trigger playGame');
+						app.AppView.vent.trigger('playGame', game);
+					}				
+					
 					function update(element, index, array){
-						var rIndex = info.level - 1;
+						var pIndex = index;
 						var playerID = element.fb_id;
-						console.log(that.y);
-					    app.AppView.vent.trigger('updateP', playerID, game, rIndex);
+					    app.AppView.vent.trigger('updateP', playerID, game, pIndex);
 					};
 					gp.forEach(update);
 	
@@ -440,39 +528,3 @@ var app = app || {};
 	});
 
 })();
-
-/*
-Game play needs to be managed for users online and live:
-
-Play for online user:
-1. Accept or initiate game by accepting invite or inviting players
-	1a - controller doesn't matter in online game.  Every player is treated the same.
-2. Player first invited starts the round by seleceting a card 
-	and hitting the start button
-3. Start button begins the round by allowing player to enter a word within 30 seconds, sequentially
-4. After they enter their word, its saved to game model and signals next player that its their turn
-	4a - When its not a player's turn their input is disabled and screen shows who's turn it is.
-	4b - Each player has 30 seconds to enter their word. If its not entered, they lose their turn and the next player enters their word.
-5. Round_Turn stays same, only word_turn is updated until end of round.
-6. Round ends when players reach 15 words.
-7. At end of round, round_turn is updated to next player and process starts over at #3.
-
-Play for live user:
-1. Accept or initiate game by accepting invite or inviting players
-2. Player first invited starts the round by seleceting a card 
-	and hitting the start button
-3. Start button begins the round which lasts for 60 seconds
-4. The player that is the controller(or the one who started the game) is allowed to enter words
-	continuously for that 60 seconds.  
-4. Nothing is saved until the end of the round.  The sentence and card are saved then.
-5. word_turn is used to assign the word in order of the player list so it will be saved according to player.
-6. Round ends when time is up.
-7. At end of round, round_turn is updated to next player and process starts over at #3.
-
-Game Model knows if game is live or online - it signals to the view what to display.
-Game view receives user input and sends to model to deicde what to do next. 
-
-Logic:
-1. When gameView initializes it checks whether the game is live or online.
-	1a - if live, view loads 
-*/

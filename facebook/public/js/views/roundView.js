@@ -7,14 +7,14 @@ var app = app || {};
 
 		template: Handlebars.compile(
 			'<div class="row">' +
-				'<div class="col-md-12" id="timer" style="padding-right:0px; padding-left:0px;">'+
+				'<div class="col-md-12" id="timer">'+
 				'</div>' +
 			'</div>' +
 			'<div class="row">' +
 				'<div class="col-md-12 darkBlue" id="story">'+
 					'<div id="storyText"><h3>{{story}}</h3></div>' +
 				'</div>' +
-				'<div class="col-md-12" id="textArea" style:"padding-left:0px; padding-right:0px;">'+
+				'<div class="col-md-12" id="textArea">'+
 					'<div id="input" class="transparent-input" style="background-color: #FFC858; color: #359999">' +
 					'</div>' +
 				'</div>' +
@@ -26,18 +26,15 @@ var app = app || {};
 			console.log('round view initialized with ');
 			console.log(this.model);
 			this.room = location.hash.split('/')[4];
-			if (options.place == 'Live'){
-				this.live == true;
-			} else {
-				this.live == false;
-			}
-
+			this.place = options.place;
+			var socket = io.connect('https://completethesentence.com/', {secure: true , resource:'facebook/socket.io'});
+			socket.emit('room', {room: this.room});
 			app.AppView.vent.on('update', this.render, this);
 			app.AppView.vent.on('wordTurn', this.wt, this);
-
 		},
 
 		events: {
+			'click #enter': 'speech',
 			'keypress #enter': 'submitWord'
 		},
 
@@ -45,24 +42,73 @@ var app = app || {};
 			if(wt == name){
 				var round = this.model.number;
 				this.startTimer();
-				$('#input').html('<input x-webkit-speech class="form-control" id="enter" type="text" name="enter_word" placeholder="Your turn to Fib!"></>');
+				if(this.place == 'Live'){
+					var input = '<h3 id="enter" class="lightOrange talk">Press to Talk</h3>';
+				} else {
+					var input = '<input type="text" x-webkit-speech class="form-control" id="enter" name="enter_word" placeholder="Your turn to fib"></>';
+				}
+				$('#input').html(input);
 			} else {
-				$('#input').html('<input type="text" id="disabledTextInput" class="form-control" placeholder="Waiting for the next fib" disabled></>');
+				var text = 'Waiting for next fib'
+				$('#input').html('<input type="text" id="disabledTextInput" class="form-control" placeholder='+ text + ' disabled></>');
 			}
 		},
 
-		submitWord: function(event){
-			this.word = jQuery('#enter').val(),
+		speech: function(){
 			var that = this;
-			if (event.which == 32 || event.which == 13) {
-				that.count = 0;
+			console.log('speech fn fired');
+			var recognition = new webkitSpeechRecognition();
+			recognition.lang = "en-US";
+			recognition.onresult = function(event) { 
+			  console.log(event.results[0][0].transcript); 
+			  that.speech = event.results[0][0].transcript;
+			  that.submitWord(that.speech);
 			}
+			$('#enter').bind('touchstart', function(){
+				console.log('mousedown');
+				$('#enter').attr('class', 'lightBlue');
+				recognition.start();
+			});
+			$('#enter').bind('touchend', function(){
+				console.log('mouseup');
+				$('#enter').attr('class', 'lightOrange');
+				recognition.stop();
+			});
+		},
+
+		submitWord: function(event){
+			var that = this;
+			console.log(typeof event == "string");
+			if (typeof event == "string" || event.which == 32 || event.which == 13) {
+				if(that.place == 'Live'){
+					if(typeof event == "string"){
+						that.word = event;
+					} else {
+						that.word = jQuery('#enter').val();	
+					}
+					console.log('live game with word ' + that.word);
+					socket.emit('chat',{
+						word: that.word,
+						room: that.room,
+						level: that.model.number,
+						playerId: location.hash.slice(10).split('/')[0],
+						place: 'Live'
+					});
+					jQuery('#enter').val('');
+				} else {
+					console.log('game online');
+					that.word = jQuery('#enter').val();
+					that.count = 0;
+				}
+			}				
+
+
 		},
 
 		startTimer: function(){
 			console.log('timer triggered');
 			var round = location.hash.split('/')[6];
-			if (this.live){
+			if (this.place == 'Live'){
 				this.count = 60;
 			} else {
 				if(round == 1){
@@ -83,7 +129,7 @@ var app = app || {};
 					that.endOfTimer();
 					return;
 				}
-				if(that.live){
+				if(that.place == 'Live'){
 					$('#timer').progressbar({
 						max: 60,
 						value: that.count
@@ -110,24 +156,33 @@ var app = app || {};
 		},
 
 		endOfTimer: function(){
+			console.log('endOfTimer called');
 			var that = this;
-			if(this.word != undefined && this.word != ''){
-				var info = {
-					word: word,
-					room: that.room,
-					level: that.model.number,
-					playerId: location.hash.slice(10).split('/')[0]
-				};
-				console.log('sending word inside roundView');
-				app.AppView.vent.trigger('sendGameData', info);
+			if(this.place == 'Live'){
+				that.word = jQuery('#storyText').text();
+				socket.emit('chat', {
+						word: that.word,
+						room: that.room,
+						level: that.model.number,
+						playerId: location.hash.slice(10).split('/')[0],
+						place: 'Live',
+						round: 'complete'
+				});
 			} else {
-				console.log('word wasn\'t submitted on time, lose a turn');
-				var info = {
-					room: that.room,
-					level: that.model.number,
-					playerId: location.hash.slice(10).split('/')[0]
-				};
-				app.AppView.vent.trigger('sendGameData', info);
+				if(this.word != undefined && this.word != ''){
+					socket.emit('chat', {
+						word: that.word,
+						room: that.room,
+						level: that.model.number,
+						playerId: location.hash.slice(10).split('/')[0]
+					});
+				} else {
+					socket.emit('chat', {
+						room: that.room,
+						level: that.model.number,
+						playerId: location.hash.slice(10).split('/')[0]
+					})
+				}
 			}
 		},
 

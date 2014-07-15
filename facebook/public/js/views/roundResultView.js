@@ -14,9 +14,6 @@ var app = app || {};
 					'<div style="color:	#333399;"><h3>Great Fib! This round is complete.</h3></div>' +
 					'<div id="storyText"><h2>"{{story}}"</h2></div>' +
 				'</div>' +
-			'</div>' +
-			'<div class="row">' +
-				'<h3 style="text-align: center;">Round Card</h3>' +
 			'</div>'
 		),
 
@@ -31,7 +28,8 @@ var app = app || {};
 		},
 
 		send: function(){
-			app.AppView.vent.trigger('sendGameData');
+			console.log('send called');
+			app.AppView.vent.trigger('ab');
 		},
 
 		render: function () {

@@ -1,23 +1,27 @@
-/* Small devices (tablets, 768px and up) */ 
-@media screen and (max-width: 990px) { 
+/* Extra small devices (phones, less than 768px) */
+/* No media query since this is the default in Bootstrap */
 
+/* Small devices (tablets, 768px and up) */ 
+@media (min-width: 768px) and (max-width: 992px) { 
 	#ng_words{
 		display: none;
 	}
 
 	div#mfs{ 
-		min-height: 100px;
-		max-height: 200px;
 		position: relative;
+		margin: 10px 10px 10px 10px;
 		text-align: left;
+		columns:100px 2;
+		-webkit-columns:100px 2; /* Safari and Chrome */
+		-moz-columns:100px 2; /* Firefox */
 	}
 
 	div#mfsContainer{
 		-webkit-min-height: 100px;
 		-webkit-max-height: 200px;
 		max-height:200px; 
-		max-width:800px; 
-		overflow: auto;
+		max-width:100%; 
+		overflow-y: auto;
 		overflow-x: hidden;
 		position: relative;
 	}
@@ -36,10 +40,11 @@
 }
 
 /* Medium devices (desktops, 992px and up) */
-@media screen and (min-width: 990px) and (max-width: 1199px){ 
-	#ng_words{
-		padding-top: 20px;
-		height: 150px;
+@media (min-width: 992px) and (max-width: 1200px) { 
+	body{
+		background-image: url("http://i.imgur.com/SSzCTRh.png");
+		background-repeat:no-repeat;
+		background-position:center;
 	}
 
 	div#mfs{ 
@@ -47,16 +52,14 @@
 		margin: 10px 10px 10px 10px;
 		text-align: left;
 		columns:100px 2;
-		min-height: 100px;
-		max-height: 200px;
 		-webkit-columns:100px 2; /* Safari and Chrome */
 		-moz-columns:100px 2; /* Firefox */
 	}
 
 	div#mfsContainer{
 		max-height:200px; 
-		max-width:800px; 
-		overflow: auto;
+		max-width:100%; 
+		overflow-y: auto;
 		overflow-x: hidden;
 		position: relative;
 	}
@@ -75,14 +78,18 @@
 }
 
 /* Large devices (large desktops, 1200px and up) */ 
-@media screen and (min-width: 1200px) { 
+@media (min-width: 1200px) { 
+	body{
+		background-image: url("http://i.imgur.com/SSzCTRh.png");
+		background-repeat:no-repeat;
+		background-position:center;
+	}
+
 	div#mfs{ 
 		position: relative;
 		margin: 10px 10px 10px 10px;
 		text-align: left;
 		columns:100px 2;
-		min-height: 100px;
-		max-height: 200px;
 		-webkit-columns:100px 2; /* Safari and Chrome */ 
 		-moz-columns:100px 2; /* Firefox */
 	}
@@ -91,8 +98,8 @@
 		-webkit-min-height: 100px;
 		-webkit-max-height: 200px;
 		max-height:200px; 
-		max-width:800px;
-		overflow: auto;
+		max-width:100%;
+		overflow-y: auto;
 		overflow-x: hidden;
 		position: relative;
 	}
@@ -110,22 +117,44 @@
 
 } 
 
+body{
+	min-width: 1000px;
+    overflow-x: hidden;
+}
+
 .cards > img {
   vertical-align: middle;
   height: 180px;
+}
+
+#mfs{
+	position: relative;
+	margin: 10px 10px 10px 10px;
+	text-align: left;
 }
 
 #mfsContainer::-webkit-scrollbar { 
     display: none; 
 }
 
-.media:nth-child(even){	
-	background-color: #FFC858;
-	color: #359999;
+#mfsContainer{
+	max-height:200px; 
+	max-width:100%;
+	overflow-y: auto;
+	overflow-x: hidden;
+	position: relative;
 }
 
 #startbtn:hover {
 	color: white;
+}
+
+li.cards{
+	margin: 10px;
+	min-height: 160px;
+	min-width: 150px;
+	border: 1px solid white;
+	border-radius: 10px;
 }
 
 div#card1  ul#cardList  li.cards {
@@ -184,7 +213,6 @@ div#card3 ul#cardList  li.cards {
 }
 
 #topnav{
-	background-color: white;
 	text-align: center;
 }
 
@@ -227,13 +255,18 @@ input.transparent-input{
 	list-style: none;
 }
 
+.cb{
+	border: 1px solid white; 
+	border-radius: 10px; 
+	margin-top: 10px;
+}
+
 #cbtop{
 	padding: 25px 20px 25px 20px;
 	border-radius: 10px 10px 0 0;
 	border-top: 3px solid #034BF1;
 	border-right: 3px solid #034BF1;
 	border-left: 3px solid #034BF1;
-	cursor: pointer;
 }
 
 #cbbottom{
@@ -242,7 +275,6 @@ input.transparent-input{
 	border-bottom: 3px solid #034BF1;
 	border-right: 3px solid #034BF1;
 	border-left: 3px solid #034BF1;
-	cursor: pointer;
 }
 
 #action{
@@ -306,6 +338,14 @@ input.transparent-input{
 	text-align: center;
 }
 
+#storyText > li{
+	margin: 10px 0px 10px 0px;
+	padding-top: 10px;
+	text-align: center;
+	list-style: none;
+	display: inline;
+}
+
 #textArea{
 	padding: 0;
 	border-bottom: 1px solid white;
@@ -331,7 +371,7 @@ input.transparent-input{
 #cardBody{
 	border: 1px solid white;
 	border-radius: 10px;
-	margin-top: 10px;
+	margin-top: 4px;
 	text-align: center;
 }
 
@@ -387,8 +427,8 @@ div#progress_bar{
 }
 
 div#fblogin{
-	padding-top: 80px;
-	text-align: center;
+	padding-top: 20px;
+	padding-bottom: 20px;
 }
 
 ul#gamelist{
@@ -640,3 +680,22 @@ div#inputbox {
 	height: 30%;
 }
 
+#menu{
+	cursor: pointer;
+	margin: 10px 0 10px 0;
+}
+
+#play{
+	margin-top: 10px;
+}
+
+div#loading {
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	text-align: center;
+	/*background: url('images/page-loader.gif') 50% 50% no-repeat rgb(249,249,249);*/
+}

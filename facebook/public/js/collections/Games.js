@@ -9,7 +9,7 @@ var app = app || {};
 		initialize: function(options){
 			//console.log('Game Collection initialized with options id: ');
 			//console.log(options);
-		    _.bindAll(this, 'rotateModel','checkGames','setGameData','createGame','renderGame', 'triggerURL', 'url');
+		    _.bindAll(this, 'rotateModel','checkGames','createGame','renderGame', 'triggerURL', 'url');
 		    app.AppView.vent.on('checkForGames', this.checkGames, this);
 		    app.AppView.vent.on('startTimer', this.rotateModel, this);
 		    //app.AppView.vent.on('roundInfo', this.getGame, this);
@@ -234,46 +234,6 @@ var app = app || {};
 
 		},
 
-		setGameData: function(info, response){
-			console.log('all info coming in from createGame');
-			console.log(info);
-			console.log(response);
-			var modelPlayers = [];
-			var to = response.to;
-			var place = info[1];
-			function setPlayerData(data){
-				console.log('iterating through setPlayerData on ' + data.name);
-				var x = data.name,
-				    y = data.id;
-				    playerInfo = {
-				        'name': x, 
-				        'fb_id': y,
-				        'points': 0
-				    }; 
-				    modelPlayers.push(playerInfo);
-			};
-			for ( var i = 0; i < to.length; i++){
-			    FB.api(to[i], function (data){
-					setPlayerData(data);
-				});
-				console.log('mp from inside for loop');
-				console.log(modelPlayers);
-			};
-			console.log('modelPlayers outside');
-			console.log(modelPlayers);
-				if (modelPlayers.length > 0){
-					console.log('modelPlayers length ' + modelPlayers.length)
-					return{
-						complete: false,
-						active: true,
-						turn: '',
-						place: place,
-						players: modelPlayers
-					};
-				} else {
-					console.log('modelPlayers is empty');
-				}
-		},
 
 		check: function(friend, info){
 			console.log('going through check inside Games collection');
@@ -339,14 +299,20 @@ var app = app || {};
 				place = info[0],
 				stage = info[2],
 				that = this;
+			if(place == "Live"){
+				var t = true;
+			} else {
+				var t = false;
+			}
 			var modelPlayers = [{
 				'name': name,
 				'fb_id' : Number(currentUser),
 				'points' : Number('0'),
-				'controller' : true,
+				'controller' : t,
 				'stage' : 'in_progress'
 			}];
 			function setData(data){
+				console.log('fn setData on player ' + data);
 				var currentStage;
 				if(stage != undefined){
 					currentStage = stage;
@@ -357,7 +323,8 @@ var app = app || {};
 					'name': data.name,
 					'fb_id' : Number(data.id),
 					'points': Number('0'),
-					'stage' : currentStage
+					'stage' : currentStage,
+					'controller' : false
 				};
 				modelPlayers.push(playerInfo);
 				console.log(modelPlayers);
@@ -390,7 +357,7 @@ var app = app || {};
 				});
 			} else {
 				var to = response.to;
-				for ( var i = 0; i < to.length; i++){
+				for ( var i = 0; i <= to.length; i++){
 			    	console.log('iterating through ' + to[i]);
 				    FB.api(to[i], function (data){
 				    	setData(data);

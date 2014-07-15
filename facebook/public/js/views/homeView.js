@@ -3,17 +3,17 @@ var app = app || {};
 (function ($) {
         'use strict';
 
-	Handlebars.registerHelper('ifMyTurn', function(turn, options) {
-		console.log('turn for ' + turn + ' I\'m ' + name);
+	Handlebars.registerHelper('ifMyTurn', function(turn, controller, options) {
 	  if(turn == name) {
 	    return options.fn(this);
+	  } else if (controller == true){
+	  	return options.fn(this);
 	  } else {
 	  	return options.inverse(this);
 	  }
 	}),
     
     Handlebars.registerHelper('insertComma', function(context, options) {
-		console.log(context);
 	 	var str = '';
 	 	for(var i=0; i<context.length; i++){
 	 		if(i == context.length -1){
@@ -26,8 +26,7 @@ var app = app || {};
 	}),
 
 	Handlebars.registerHelper('ifIP', function(stage, options) {
-		console.log(stage);
-	 	if(stage != 'waiting'){
+	 	if(stage != 'removed'){
 	 		return options.fn(this);
 	 	}
 	}),
@@ -41,19 +40,23 @@ var app = app || {};
 						'<h2>fib: <em>noun</em> a lie, typically an unimportant one.</h2>' +
 						'<h3>Don\'t tell fibs, play them!</h3>' +
 					'</div>'+
+				'</div>'+
+				'<div class="row">'+
 					'<div class="col-xs-12 col-md-12 lightOrange" id="startbtn">'+
 						'<h2>Start Fib</h2>'+
 					'</div>'+
 				'</div>'+
 				'<div class="row">'+
-					'<div class="col-xs-12 col-md-12" style="padding: 0px">' +
+					'<div class="col-xs-12 col-md-12" style="padding-left: 0px; padding-right: 0px;">' +
 						'<ul id="gamelist">' +
 							'{{#each games}}' +
-								'{{#ifMyTurn turn}}' +
-									'<li id="player_name"><a id="indGame" href="{{url}}"><h3 style="margin-top:0px; margin-bottom:0px;">Fib with {{#insertComma players}}{{#ifIP stage}}{{name}}{{else}}waiting{{/ifIP}}{{/insertComma}}</h3></a></li>' +	
+								'{{#ifIP stage}}' +
+								'{{#ifMyTurn turn controller}}' +
+									'<li id="player_name"><a id="indGame" href="{{url}}"><h3 style="margin-top:0px; margin-bottom:0px;">Fib with {{#insertComma players}}{{name}}{{/insertComma}}</h3></a></li>' +	
 								'{{else}}' +
-									'<li id="notTurn"><h3 style="margin-top:0px; margin-bottom:0px;">Fib with {{#insertComma players}}{{#ifIP stage}}{{name}}{{else}}waiting{{/ifIP}}{{/insertComma}}</h3></li>' +
+									'<li id="notTurn"><h3 style="margin-top:0px; margin-bottom:0px;">Fib with {{#insertComma players}}{{name}}{{/insertComma}}</h3></li>' +
 								'{{/ifMyTurn}}' +
+								'{{/ifIP}}' +
 							'{{/each}}' +
 						'</ul>' +
 					'</div>' +

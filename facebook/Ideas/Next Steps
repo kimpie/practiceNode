@@ -1,16 +1,62 @@
 Next Steps
 
 Current state:
-- Online functionality near complete
-- Mozzila FF everything works fine - Opera & Chrome have issues
-- Mobile loading doesn't work
+X Online functionality near complete
+X Mozzila FF everything works fine - Opera & Chrome issues fixed
+X Mobile loading fixed
+X Added controller component for Live game play 
 
 ToDo:
-- Polish off the final touches for computing word count and saving all info at right time.
+X Polish off the final touches for computing word count and saving all info at right time.
+X Make sure everything is small screen compatible
+- Add final step to switch active to false once last player delete game
 - Add speech to text component
-- Make sure everything is small screen compatible
-- Complete any other live functionality?
+- Play through as Live and make sure everything works
+- Add tutorial for first time players 
+- Add menu, contact, kickstarter/indiegogo info (next version & ask for donation) buttons
+- Add animal and question mark cards
+- Create rules for cards that need them
+- point system
+- Add loading gif
+- Add share button
+-BONUS Could be cool to see who added which word
+***Finish the live story building! Great job Kim you're almost there!!! :D
 
+Tutorial parts:
+Screen 1 (overview of game)
+# 1, 4
+screen shot of the in-game sentence half-way built with a word being addeed
+Screen 2 (getting started)
+# 2, 3
+screen shot of setting up game, choosing friends to play
+Screen 3(categories)
+# 5
+screen shot of category options + a sample card with the inspiration & rule 
+Screen 4 (winning)
+player enters points at the end based on how they thought the other player did
++ whats to come & how they can help 
+
+WHAT YOU NEED TO KNOW
+1 What the game is about
+	- Game of made up stories between friends.  Create a one line story, each person adding one word at a time.
+2 As a group or one-one 
+3 Face to face or online option (with differences)
+	a. online 
+		- 10 words per round
+		- 20 sec R1, 15 sec R2, 10 sec R3
+		- turn based rounds 
+	b. face to face
+		- 60 seconds per round
+		- enter as many words as you can in that time frame
+4 3 rounds per game, rules increase in difficulty
+5 Categories for Inspiration OR make up your own
+	-  5 categories that will prompt you with a topic or question
+	- you can choose to go with the inspiration or simply make up your own 
+6 Winning
+	- Check out our kickstarter/indiegogo for future version ways to win
+	- As of this release, winning is subjective.  You vote on the other players performance. 
+7 Cues
+	- When the card displays, click on it after you've read it to move on
 
 Promotion part:
 =   

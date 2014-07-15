@@ -1,9 +1,9 @@
 <html lang="en" data-framework="backbonejs">
 <head>
-	<title>Complete the Sentence</title>
+	<title>fibs</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+	<meta name="viewport" content="width=device-width, user-scalable=no">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 	<link rel="stylesheet" type="text/css" href="css/style.css" />	
@@ -41,6 +41,7 @@
 	<script type="text/javascript" src="js/views/timerInfo.js"></script>
 	<script type="text/javascript" src="js/views/roundResultView.js"></script>
 	<script type="text/javascript" src="js/views/gameReview.js"></script>
+	<script type="text/javascript" src="js/views/tutorialView.js"></script>
 	<script type="text/javascript" src="js/routers/router.js"></script>
 	<script type="text/javascript" src="js/app.js"></script>	
 
@@ -54,11 +55,17 @@
 	  ga('send', 'pageview');
 
 	</script>
+	<script type="text/javascript">
+		$(window).load(function() {
+			$("div#loading").fadeOut("slow");
+		})
+	</script>
 </head>
 <body>
 	<div id="fb-root"></div>
 
 	<div class="container-fluid" id="app">
+		<div id="loading">Loading...</div>
 		<div class="row" id="topnav">
 			<div class="col-md-2 col-md-offset-5">
 				<h3 class="logoFont" id="home" style="cursor: pointer;">fibs</h3>
@@ -69,21 +76,18 @@
 		</div>
 
 		<div class="row">
-			<div class="col-md-12">
-				<div class="col-md-6 col-md-offset-3 loggedin" id="play" style="padding:0;">
-
-					<div class="loggedoff">
-						<div id="fblogin" class="darkOrangeTop">
-							<h1>Best Game Eva!</h1>
-							<p lead> Welcome to the Sentence Game.  This game is currently only available through Facebook.  Enjoy!</p>
-							<h3>To begin Login: </h3>
-							<fb:login-button show-faces="true" width="200" max-rows="1" id="login"></fb:login-button>
-						</div>
-					</div>
+			<div class="col-md-6 col-md-offset-3 loggedoff">
+				<div id="fblogin" class="darkOrangeTop">
+					<h1>Welcome to fibs!</h1>
+					<h3 style="color: #658DF3"> The game of made up stories between friends. <br> This game is currently only available through Facebook.  Enjoy!</h3>
+					<h3>To begin Login: </h3>
+					<fb:login-button show-faces="true" width="200" max-rows="1" id="login"></fb:login-button>
 				</div>
-				<div class="col-md-6 col-md-offset-3" id="board" style="padding-left:0px; padding-right:0px;"></div>
-				<div class="col-md-6 col-md-offset-3" id="card" style="padding-left:0px; padding-right:0px;"></div>
 			</div>
+			<div class="col-md-6 col-md-offset-3 loggedin" id="play">
+			</div>
+			<div class="col-md-6 col-md-offset-3" id="board"></div>
+			<div class="col-md-6 col-md-offset-3" id="card"></div>
 		</div>	
 
 	</div>

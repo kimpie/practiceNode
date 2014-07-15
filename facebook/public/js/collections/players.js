@@ -39,7 +39,8 @@ var app = app || {};
 		      		model.renderPlayer(player);
 					console.log('Creating new model with URL: ' + player.id);
 					var pcGames = player.attributes.games;
-					app.AppView.vent.trigger('launchFetch', player, pcGames);
+					//app.AppView.vent.trigger('launchFetch', player, pcGames);
+					app.AppView.vent.trigger('showTutorial', player, pcGames);
 			    }
 			});
 

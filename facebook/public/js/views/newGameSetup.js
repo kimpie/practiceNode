@@ -22,7 +22,7 @@ var app = app || {};
 			'<div class="row">' +
 				'<div id="place" class="col-md-12 question">' +
 				   	'<section class="col-xs-12 col-md-6 select" id="placetitle" style="background-color: #658DF3;"><h3>Play Online</h3></section>' +
-				   	'<section class="col-xs-12 col-md-6 select" id="placetitle" style="background-color: #53F1F1;"><h3>Play Live</h3></section>' +
+				   	'<section class="col-xs-12 col-md-6 select" id="placetitle" style="background-color: #53F1F1;"><h3>Play Face to Face</h3></section>' +
 				'</div>' +
 			'</div>' +
 			'<div class="row">' +
@@ -38,11 +38,17 @@ var app = app || {};
 				'<div class="col-xs-12 col-md-10 col-md-offset-1">'+
 				    '<input class="form-control input-lg" type="text" name="q" id="query" placeholder="Find friends to fib with you..."/> ' +
 				'</div>' +
+				'<div class="col-xs-12 col-md-10 col-md-offset-1">' +
+				  '<em>Click on a friend to add them to a game.</em>' +
+				'</div>' +
 			'</div>' +
 			'<div class="row" style="display:none; margin: 0 0 0 5px;" id="mfsContainer">' +
 				    '<div class="col-xs-12 col-md-12" id="mfs"></div>' +
 			'</div>' +
 			'<div class="row lightOrange" id="sendInvite" style="display:none; vertical-align: middle; margin: 0px;">' +
+				'<div class="col-xs-12 col-md-12" style="color:white;"">' +
+					'<em>Click on a friend to remove them from the game.</em>' +
+				 '</div>' +
 				'<div class="col-xs-12 col-md-12">' +
 			      	'<div id="listInvitees" style="display:inline; text-align:left;">' +
 					'</div>'+
@@ -129,6 +135,9 @@ var app = app || {};
 		console.log(k);
 		if ( k.parent().attr('id') == 'listInvitees' ){
 			$('#mfsForm').append(k);
+			if($('div#listInvitees > div').length == 0){ 
+				$('#sendInvite').hide();
+			}
 		} else {
 		    $('#sendInvite').show();
 			$('#listInvitees').append(k);
@@ -160,7 +169,14 @@ var app = app || {};
 			title: 'Play MadFibs with me!',
 			message: 'Check out this Awesome Game!',
 		}, callback);
-		var place = $('div#placetitle').text().split(' ')[1];
+		var pla = $('div#placetitle').text().split(' ').length;
+		if(pla == 2){
+			var place = $('div#placetitle').text().split(' ')[1];
+			console.log('place is ' + place);
+		} else {
+			var place = 'Live';
+			console.log('place is ' + place);
+		}
 		var ppl = $('div#peopletitle').text().split(' ').length;
 		if(ppl == 1){
 			var people = $('div#peopletitle').text();
@@ -178,7 +194,9 @@ var app = app || {};
 	},
 
 	MFS: function(){
-
+		$('#mfsForm').load(function(){
+			console.log('mfsForm all loaded?');
+		});
 		//Building a custom multi-friend selector
 		 function renderMFS() {
 
@@ -230,7 +248,6 @@ var app = app || {};
 				});
 			};
 						
-		
 		renderMFS();
 
 
