@@ -29,6 +29,13 @@ var app = app || {};
             socket.emit('room', {room: this.room});
 		},
 
+        update: function(val){
+            console.log(this);
+            this.save({
+                first_login: val
+            });
+        },
+
         updateTurn: function(game, p){ 
             var game = game;
             var p = p;
@@ -191,25 +198,22 @@ var app = app || {};
 
         gameArray: function(game, player){
             var gp = game.attributes.players;
+            console.log(gp);
             var m;
             function k (){
-                for(var i =0;i<=gp.length;i++){
-                    console.log(gp[i]);
-                    m = gp[i];
-                    if(gp[i].controller == true){
+                for(var i =0;i<gp.length;i++){
+                    console.log('iterating through ' + gp[i].name);
+                    if(gp[i].name == name && gp[i].controller == true){
+                        m = gp[i];
                         break; 
                     }
                 }
             };
             k();
             var t;
-
-            if(m.name == name){
+            if(m != undefined && m.name == player.attributes.name){
                 t = true;
-            } else {
-                t = false;
-            }
-            console.log('Controller is ' + m.name + ' I\'m ' + name + ' t is ' + t);
+            } else {t = false;}
             var x = {
                 id: game.id, 
                 players: game.attributes.players,

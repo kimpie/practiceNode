@@ -3,27 +3,13 @@
 
 /* Small devices (tablets, 768px and up) */ 
 @media (min-width: 768px) and (max-width: 992px) { 
+	body{
+		background-image: url("http://i.imgur.com/SSzCTRh.png");
+		background-repeat:repeat-x;
+		background-position:center;
+	}
 	#ng_words{
-		display: none;
-	}
-
-	div#mfs{ 
-		position: relative;
-		margin: 10px 10px 10px 10px;
-		text-align: left;
-		columns:100px 2;
-		-webkit-columns:100px 2; /* Safari and Chrome */
-		-moz-columns:100px 2; /* Firefox */
-	}
-
-	div#mfsContainer{
-		-webkit-min-height: 100px;
-		-webkit-max-height: 200px;
-		max-height:200px; 
-		max-width:100%; 
-		overflow-y: auto;
-		overflow-x: hidden;
-		position: relative;
+		display: block;
 	}
 
 	.cards{
@@ -43,25 +29,19 @@
 @media (min-width: 992px) and (max-width: 1200px) { 
 	body{
 		background-image: url("http://i.imgur.com/SSzCTRh.png");
-		background-repeat:no-repeat;
+		background-repeat:repeat-x;
 		background-position:center;
+	}
+
+	#ng_words{
+		display: block;
 	}
 
 	div#mfs{ 
 		position: relative;
 		margin: 10px 10px 10px 10px;
 		text-align: left;
-		columns:100px 2;
-		-webkit-columns:100px 2; /* Safari and Chrome */
 		-moz-columns:100px 2; /* Firefox */
-	}
-
-	div#mfsContainer{
-		max-height:200px; 
-		max-width:100%; 
-		overflow-y: auto;
-		overflow-x: hidden;
-		position: relative;
 	}
 
 	.cards{
@@ -81,27 +61,18 @@
 @media (min-width: 1200px) { 
 	body{
 		background-image: url("http://i.imgur.com/SSzCTRh.png");
-		background-repeat:no-repeat;
+		background-repeat:repeat-x;
 		background-position:center;
+	}
+	#ng_words{
+		display: block;
 	}
 
 	div#mfs{ 
 		position: relative;
 		margin: 10px 10px 10px 10px;
 		text-align: left;
-		columns:100px 2;
-		-webkit-columns:100px 2; /* Safari and Chrome */ 
 		-moz-columns:100px 2; /* Firefox */
-	}
-
-	div#mfsContainer{
-		-webkit-min-height: 100px;
-		-webkit-max-height: 200px;
-		max-height:200px; 
-		max-width:100%;
-		overflow-y: auto;
-		overflow-x: hidden;
-		position: relative;
 	}
 
 	.cards{
@@ -118,8 +89,13 @@
 } 
 
 body{
-	min-width: 1000px;
+	min-width: 100%;
     overflow-x: hidden;
+}
+
+.tut{
+	min-height: 80px;
+	padding: 15px;
 }
 
 .cards > img {
@@ -133,11 +109,13 @@ body{
 	text-align: left;
 }
 
-#mfsContainer::-webkit-scrollbar { 
+div#mfsContainer::-webkit-scrollbar { 
     display: none; 
 }
 
-#mfsContainer{
+div#mfsContainer{
+	-webkit-min-height: 100px;
+	-webkit-max-height: 200px;
 	max-height:200px; 
 	max-width:100%;
 	overflow-y: auto;
@@ -145,14 +123,14 @@ body{
 	position: relative;
 }
 
-#startbtn:hover {
+#startbtn:hover, #done:hover, .cb:hover #tvDone:hover {
 	color: white;
 }
 
 li.cards{
 	margin: 10px;
-	min-height: 160px;
-	min-width: 150px;
+	min-height: 130px;
+	min-width: 120px;
 	border: 1px solid white;
 	border-radius: 10px;
 }
@@ -201,6 +179,29 @@ div#card3 ul#cardList  li.cards {
 .lightBlue{
 	background-color: #53F1F1;
 	color: #0447F1;
+}
+
+.lightBlue:active{
+	background-color: #00E6E6;
+	color: black;
+}
+
+.darkBlue:active{
+	background-color: #1854EA;
+	color: white;
+}
+.darkOrange:active{
+	background-color: #ED6E05;
+	color: white;
+
+}
+.lightOrange:active{
+	background-color: #EDA105;
+	color: white;
+}
+li#player_name:active{
+	background-color: 	#D3D3D3;
+	color: #808080;
 }
 
 #startFib{
@@ -295,8 +296,8 @@ input.transparent-input{
 
 #result{
 	min-height: 200px;
-	border: 1px solid white;
-	border-radius: 10px;
+	border-bottom-right-radius: 10px;
+	border-bottom-left-radius: 10px;
 	text-align: center;
 }
 
@@ -318,10 +319,26 @@ input.transparent-input{
 	border-bottom-right-radius: 10px; 
 }
 
-#done{
-	border: 1px solid white;
-	border-radius: 10px;
+#done, #support{
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px; 
 	text-align: center;
+	cursor: pointer;
+}
+
+#rules{
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px; 
+	text-align: center;
+	cursor: pointer;
+}
+
+#share{
+	text-align: center;
+}
+
+#share:hover{
+	color: #658DF3;
 }
 
 #story{
@@ -380,7 +397,6 @@ input.transparent-input{
 }
 
 #query{
-	margin-left: 10px;
 	margin-right: 10px;
 	margin-bottom: 10px;
 }
@@ -403,6 +419,10 @@ input.transparent-input{
 	padding: 0;
 	margin: 0;
 	cursor: pointer;
+}
+
+.select:hover{
+	color: black;
 }
 
 a#fb_pic{
@@ -543,10 +563,6 @@ div#intro{
 	padding-bottom: 20px;
 }
 
-div#rules{
-	text-align: justify;
-}
-
 #sendInvite:hover {
 	background-color: #658DF3;
 	color: white;
@@ -682,7 +698,7 @@ div#inputbox {
 
 #menu{
 	cursor: pointer;
-	margin: 10px 0 10px 0;
+	margin: 0 0 10px 0;
 }
 
 #play{

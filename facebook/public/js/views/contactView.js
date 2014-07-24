@@ -38,15 +38,16 @@ var app = app || {};
 			"click #submit" : "sendForm"
 		},
 
-		sendForm: function(){
+		sendForm: function(e){
+			e.preventDefault();
 			var n = jQuery('#name').val();
 			var c = jQuery('#comment').val();
-
-			this.model.save({
+			var info = {
 				name: n,
 				comments: c,
 				player_id: Number(currentUser)
-			});
+			};
+			app.AppView.vent.trigger('sendContact', info);
 		},
 
 

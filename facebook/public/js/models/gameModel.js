@@ -251,10 +251,15 @@ var app = app || {};
 			var that = this,
 				rIndex = Number(info.level) - 1,
 				roundx = this.attributes.round[rIndex],
-				gp = this.attributes.players;
-			if(info.word_countdown != undefined && info.word_countdown != ''){
-				var w_c = info.word_countdown;
-			} else { var w_c = this.attributes.word_countdown;}
+				gp = this.attributes.players, w_c;
+			console.log(info.word_countdown);
+			if(info.word_countdown != undefined){
+				w_c = info.word_countdown;
+				console.log('inside if, w_c is '+ w_c);
+			} else { 
+				w_c = this.attributes.word_countdown;
+				console.log('inside else, w_c is '+ w_c);
+			}
 			var wc, story, ip, rev, rturn, z, stage, wturn;
 			function attrConstant(){
 				console.log('nothingChanges fn, all attr stay same');
@@ -317,6 +322,7 @@ var app = app || {};
 				  gp.forEach(callRemove);
 				}
 			} else {
+				console.log('game is ' + this.attributes.place);
 				if (this.attributes.place == 'Live'){
 					console.log('game is live');
 					if(info.close){
@@ -343,6 +349,7 @@ var app = app || {};
 						setupReview();
 					}
 				} else {
+					console.log('game is online and w_c is ' + w_c);
 					if(w_c > 1){
 						console.log('w_c > 1');
 						var pStage = this.checkStage();
@@ -475,36 +482,46 @@ var app = app || {};
 			this.y = info.playerId;
 			this.x = info.room;
 			var that = this;
-			this.save(this.setData(info),{
-				success: function(game){
-					var gp = game.attributes.players;
-					var i, c, remove;
-					function findMe(element, index, array){
-						if(element.name == name){
-							i = index;
-							if(element.stage == 'removed'){
-								remove = true;
-							} else { remove = false;}
-						}		
-					};
-					gp.forEach(findMe);
-					if( (game.attributes.place == 'Online' && game.attributes.word_turn != name) || remove){
-						console.log('gameModel trigger home');
-						app.AppView.vent.trigger('home');
-					} else {
-						console.log('gameModel trigger playGame');
-						app.AppView.vent.trigger('playGame', game);
-					}				
-					
-					function update(element, index, array){
-						var pIndex = index;
-						var playerID = element.fb_id;
-					    app.AppView.vent.trigger('updateP', playerID, game, pIndex);
-					};
-					gp.forEach(update);
-	
-				}
-			});
+			console.log(location.hash.split('/')[2]);
+			console.log(this.y == location.hash.split('/')[2]);
+			if(this.y == location.hash.split('/')[2]){
+				this.save(this.setData(info),{
+					success: function(game){
+						var gp = game.attributes.players;
+						var i, c, remove, m, review;
+						function findMe(element, index, array){
+							if(element.name == name){
+								i = index;
+								m = element.fb_id;
+								if(element.stage == 'removed'){
+									remove = true;
+								} else { remove = false;}
+								if(element.stage == 'review' || element.stage == 'complete'){
+									review = true;
+								} else {review=false;}
+							}		
+						};
+						gp.forEach(findMe);
+						if(m == currentUser){
+							if( !review || remove || (game.attributes.place == 'Online' && game.attributes.word_turn != name) || !(game.attributes.word_countdown == 10 && game.attributes.round_turn == name) || game.attributes.word_countdown != 0){
+								console.log('gameModel trigger home for ' + name);
+								app.AppView.vent.trigger('home');
+							} else {
+								console.log('gameModel trigger playGame for ' + name);
+								app.AppView.vent.trigger('playGame', game);
+							}	
+						}
+						function update(element, index, array){
+							var pIndex = index;
+							var playerID = element.fb_id;
+						    app.AppView.vent.trigger('updateP', playerID, game, pIndex);
+						};
+						gp.forEach(update);
+					}
+
+				});
+			}
+
 		},
 
 		url: function(){

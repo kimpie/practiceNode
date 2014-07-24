@@ -6,50 +6,43 @@ var app = app || {};
 	app.tutorialView = Backbone.View.extend({
 
 		template: Handlebars.compile(
-			'<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">' +
-			  <!-- Indicators -->
-			  '<ol class="carousel-indicators">' +
-			    '<li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>' +
-			    '<li data-target="#carousel-example-generic" data-slide-to="1"></li>' +
-			    '<li data-target="#carousel-example-generic" data-slide-to="2"></li>' +
-			  '</ol>'+
-
-			  <!-- Wrapper for slides -->
-			  '<div class="carousel-inner">' +
-			    '<div class="item active">' +
-			      '<img src="https://i.imgur.com/qWizSL2.png" alt="test">' +
-			      '<div class="carousel-caption">' +
-			        '<h1>Test1</h1>' +
-			      '</div>' +
-			    '</div>' +
-			    '<div class="item">' +
-			      '<img src="https://i.imgur.com/yOzRZXL.png" alt="test2">' +
-			      '<div class="carousel-caption">' +
-			        '<h2>Test2</h2>'+
-			      '</div>'+
-			    '</div>'+
-			    '<h4>Where does this go?</h4>'+
-			  '</div>'+
-
-			  <!-- Controls -->
-			  '<a class="left carousel-control" style="background-image: linear-gradient(to right, rgba(255, 170, 102, 1) 0px, rgba(255, 170, 102, 0) 100%);" href="#carousel-example-generic" role="button" data-slide="prev">' +
-			    '<span class="glyphicon glyphicon-chevron-left"></span>' +
-			  '</a>' +
-			  '<a class="right carousel-control" style=" background-image: linear-gradient(to right, rgba(255, 170, 102, 0) 0px, rgba(255, 170, 102, 1) 100%);" href="#carousel-example-generic" role="button" data-slide="next">'+
-			   '<span class="glyphicon glyphicon-chevron-right"></span>' +
-			  '</a>' +
+			'<div class="row">'+
+				'<div class="col-md-12 darkOrangeTop tut" style="margin-top:20px;">'+
+					'<h4>Welcome to fibs! The game of hilarious stories between friends!</h4>'+
+				'</div>'+
+				'<div class="col-md-12 lightOrange tut">'+
+					'<h4>To begin, setup your game to play online or face-to-face</h4>'+
+				'</div>'+
+				'<div class="col-md-12 darkBlue tut">'+
+					'<h4>with a group or one-on-one.</h4>'+
+				'</div>'+
+				'<div class="col-md-12 lightBlue tut">'+
+					'<h4>Three timed rounds, five categories.</h4>'+
+				'</div>'+
+				'<div class="col-md-12 darkBlue tut">'+
+					'<h4>Create the best fib by adding one word at a time</h4>'+
+				'</div>'+
+				'<div class="col-md-12 lightOrange tut" id="tvDone" style="border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; cursor:pointer;">'+
+					'<h4>GET STARTED</h4>'+
+				'</div>'+
 			'</div>'
 		),
 
+		initialize: function(){
+			console.log('tutorialView initialized');
+		},
+
 		events: {
-			'click #startbtn' : 'request'
+			'click #tvDone': 'done'
 		},
 
-		initialize: function  (options) {
-
+		done: function(){
+			console.log('calling tvDone for loginPlayers');
+			var fl = false;
+			app.AppView.vent.trigger('tvDone', fl);
 		},
 
-		render: function () {
+		render: function(){
 			this.$el.html(this.template);
 			return this;
 		}

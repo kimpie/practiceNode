@@ -8,7 +8,7 @@ var app = app || {};
 		template: Handlebars.compile(
 			'<div class="row">' +
 				'<div class="col-md-12" id="timerInfo">' +
-					'<div class="row lightOrange" id="tiTop">' +
+					'<div class="row lightOrange" style="cursor:default;" id="tiTop">' +
 						'<div class="col-xs-12 col-md-6" id="round"></div>' +
 						'<div class="col-xs-12 col-md-6" id="time" style="color:black;"></div>' +
 					'</div>' +
@@ -33,8 +33,13 @@ var app = app || {};
 			var count = 6;
 			var time = options.count;
 			var round = location.hash.slice(10).split('/')[4];
+			if(round == '3'){
+				var l = 'Final Round';
+			} else {
+				var l = 'Round ' + round;
+			}
 			function timer() {
-				$('#round').html('<h3>Round ' + round + '</h3>')
+				$('#round').html('<h3>' + l + '</h3>')
 				$('#time').html('<h3>' + time + ' seconds</h3>');
 				$('#roundDir').html('<h3><em>Inspiration</em>  ' + options.direction + '</h3>');
 				$('#roundRule').html('<h3><em>Rule</em>  ' + options.rule + '</h3>');

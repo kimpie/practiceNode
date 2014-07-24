@@ -42,7 +42,7 @@ var app = app || {};
 				  '<em>Click on a friend to add them to a game.</em>' +
 				'</div>' +
 			'</div>' +
-			'<div class="row" style="display:none; margin: 0 0 0 5px;" id="mfsContainer">' +
+			'<div class="row" style="display:none; margin: 0 0 5px 5px;" id="mfsContainer">' +
 				    '<div class="col-xs-12 col-md-12" id="mfs"></div>' +
 			'</div>' +
 			'<div class="row lightOrange" id="sendInvite" style="display:none; vertical-align: middle; margin: 0px;">' +
@@ -166,8 +166,8 @@ var app = app || {};
 		// Use FB.ui to send the Request(s)
 		FB.ui({method: 'apprequests',
 			to: sendUIDs,
-			title: 'Play MadFibs with me!',
-			message: 'Check out this Awesome Game!',
+			title: 'fibs game request',
+			message: 'Play fibs with me!',
 		}, callback);
 		var pla = $('div#placetitle').text().split(' ').length;
 		if(pla == 2){

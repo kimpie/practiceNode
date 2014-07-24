@@ -18,34 +18,41 @@ var app = app || {};
 	    return options.fn(this);
 	  } 
 	}),
-    Handlebars.registerHelper('lastP', function(context, options) {
-    	console.log(context);
-	 	for(var i=0; i<context.length; i++){
-	 		if(word_turn == context[i].name){
-	 			var pI = context[i].index;
-	 			if(pI == 0){
-	 				console.log(context.length - 1);
-	 				return options.fn(context[context.length - 1]);
-	 			} else {
-	 				console.log(context[pI - 1]);
-	 				return options.fn(context[pI - 1]);
-	 			}
-	 		} 
-	 	};
-	}),
-	Handlebars.registerHelper('lastW', function(context, options) {
-		console.log(context);
-		var arr = context.split(' ');
-		console.log(arr);
-		return options.fn(arr[arr.length - 1]);
-	}),
 	Handlebars.registerHelper('ifwc', function(context, options) {
 		console.log(context);
 		if(context != 10 && context != 0){
 			return options.fn(this);
 		}
 	}),
-
+    Handlebars.registerHelper('lastP', function(players, word_turn) {
+    	console.log(players);
+    	console.log(word_turn);
+    	for(var i=0; i<players.length; i++){
+	 		if(word_turn == players[i].name){
+		        console.log(players.indexOf(players[i]));
+		        var pI = players.indexOf(players[i]);
+	 			if(pI == 0){
+	 				console.log(players.length - 1);
+	 				return players[players.length - 1].name;
+	 			} else {
+	 				console.log(players[pI - 1]);
+	 				return players[pI - 1].name;
+	 			}
+	 		} 
+	 	};
+	}),
+	Handlebars.registerHelper('lastW', function(round) {
+		console.log(round);
+		var arr;
+		function getStory(element, index, array){
+			if(element.in_progress){
+				console.log(element.story);
+				arr = element.story.split(' ');
+			}
+		}
+		round.forEach(getStory);
+		return arr[arr.length - 1];
+	}),
 
 	app.gameView = Backbone.View.extend({
 
@@ -62,16 +69,13 @@ var app = app || {};
 						'{{#each players}}' +
 							'<li id="players" class="{{firstName name}}">{{name}}</li>'+
 						'{{/each}}'+
-						'{{#ifLive place}}' +
-							'<li id="players"><a id="addPlayer"><span class="glyphicon glyphicon-plus"></span></a></li>' +
-						'{{/ifLive}}'+
 						'</ul>'+ 
 					'</div>'+
 				'</div>' +
 				'<div class="col-md-12">' +
 				'{{#ifOnline place}}' +
 				'{{#ifwc word_countdown}}'+
-					'{{#lastP players}}<h3>{{name}} {{/lastP}}entered {{#lastW}}{{story}}{{/lastW}}'+
+					'<h3>{{lastP players word_turn}} entered "<strong>{{lastW round}}</strong>"'+
 				'{{/ifwc}}'+
 				'{{/ifOnline}}' +
 				'</div>' +

@@ -8,7 +8,7 @@ var app = app || {};
 //------from the router and the players collection upon login 
 		initialize: function  (options) {
 			console.log('AppView is initialized.');
-
+			this.startnav();
 			this.collection  = new app.Players();
 			
 			this.gameCollection = new app.Games();
@@ -24,6 +24,7 @@ var app = app || {};
 
 			app.AppView.vent.on('requestGame', this.requestDialog, this);
 			app.AppView.vent.on('home', this.homeView, this);
+			app.AppView.vent.on('options', this.options, this);
 			app.AppView.vent.on('playGame', this.play, this);
 			app.AppView.vent.on('showCard', this.card, this);
 			app.AppView.vent.on('startRound', this.round, this);
@@ -35,6 +36,10 @@ var app = app || {};
 			app.AppView.vent.on('launchFetch', this.go, this);
 			app.AppView.vent.on('removeGame', this.removeGame, this);
 			app.AppView.vent.on('showTutorial', this.tutorial, this);
+			app.AppView.vent.on('changeMeta', this.changeMeta, this);
+			app.AppView.vent.on('ty', this.ty, this);
+			app.AppView.vent.on('tvDone', this.loginPlayer, this);
+			app.AppView.vent.on('sendContact', this.sc, this);
 
 			var socket = io.connect('https://completethesentence.com/', {secure: true , resource:'facebook/socket.io'});
 
@@ -46,24 +51,67 @@ var app = app || {};
 			this.sharing = this.$('#sharing');
 			this.wc = this.$('#word_countdown');
 			this.topnav = this.$('#topnav');
-			this.app = this.$('#app');
 			this.cb = this.$('.cb');
 		},
 
 		events: {
 			"click #login": "loginPlayer",
 			"click #home": "homeView",
-			"click #contact" : "contact",
-			"click #menu" : "options"
+			"click #menu" : "options",
+			"click #support": "contact",
+			"click #about": "about",
 		},
 
+		startnav: function(){
+			console.log('start triggered');
+			$('.h').append('<a class="navbar-brand logoFont" id="home" style="float:none; color:black; font-size:25;">fibs</a>');
+			$('.m').append('<span class="glyphicon glyphicon-th-large" id="menu" style="margin:25px 10px 0 10px;"></span>');
+			$('#home').bind('touchstart', function(){
+				console.log('touch home');
+				app.AppView.vent.trigger('home');
+			});
+			$('#menu').bind('touchstart', function(){
+				console.log('touch menu');
+				app.AppView.vent.trigger('options');
+			});
+		},
+
+		sc: function(info){
+			console.log('sending info to cc');
+			console.log(info);
+			this.cc.newModel(info);
+		},
+
+		ty: function(){
+			this.play.html('<h3>Thank you!</h3><br><h3>You\'re comments have been received.</h3>');
+			var counter = setInterval(timer, 1000);
+			var count = 3;
+			var that = this;
+			function timer() {
+				count=count-1;
+				if (count <= 0) {
+					clearInterval(counter);
+					that.homeView();
+					return;
+				}
+			}
+		},
+
+		about: function(){
+			this.play.html('<div class="row"><div class="col-md-12 lightBlue" style="border-radius:10px;padding-top:40px;padding-bottom:40px;"><h4>fibs is a classic game you may have played as a child or on a roadtrip.<br style="margin:10px;">As a Facebook game, you can now play this with friends near and far.<br style="margin:10px;">Stay tuned for our crowdfund as we aim to make this an iOS & Android app.<h4></div>');
+		},
+
+
 		tutorial: function(){
+			console.log('AppView inside tutorial');
 			var tv = new app.tutorialView();
-			this.app.html(tv.render().el);
+			this.topnav.hide();
+			this.play.html(tv.render().el);
 		},
 
 		options: function(info){
-			this.play.html('')
+			console.log('options triggered');
+			this.play.html('<div class="row darkBlue" id="support" style="border-top-left-radius:10px; border-top-right-radius:10px;"><div class="col-md-12 darkBlue"><h3>Support</h3></div></div><div class="row lightBlue"  id="about" style="border-bottom-left-radius:10px; border-bottom-right-radius:10px; cursor:pointer;"><div class="col-md-12 lightBlue"><h3>About</h3></div></div>');
 		},
 
 		sgp: function(response, info){
@@ -78,9 +126,10 @@ var app = app || {};
 		},
 
 		contact: function(){
+			console.log('contact clicked');
 			var cm = new app.contactModel();
 			var cv = new app.contactView({model: cm});
-			this.game.html(cv.render().el);
+			this.play.html(cv.render().el);
 		},
 
 		homeView: function(player){
@@ -261,7 +310,9 @@ var app = app || {};
 		timer: function(game_model, round, card){
 			this.card.hide();
 			this.topnav.hide();
+			this.play.empty();
 			this.play.show();
+			this.board.hide();
 			if(typeof game_model == 'object'){
 				var gm = game_model;
 			} else {
@@ -294,21 +345,20 @@ var app = app || {};
 			}
 			console.log('review has level: ' + level + ' and game_model ');
 			console.log(game_model);
-			//var gameview = new app.gameView({model: gm});
-			//this.play.html(gameview.render().el);
-			//app.AppView.vent.trigger('doneBtn');
-			//this.board.show();
-			this.board.hide();
-			var rrv = new app.roundResultView({model: gm.attributes.round[level - 1]});
-			this.play.html(rrv.render().el);
-			this.card.show();
 			this.topnav.show();
 			var cid = gm.attributes.round[level - 1].card;
 			var c = this.cardCollection.findWhere({_id: cid});
 			var cv = new app.cardView({model: c});
 			this.card.html(cv.render().el);
-			this.cb.hide();
+			this.card.show();
+			$('.cb').hide();
+			$('#cardTitle').show();
 			this.sharing.show();
+			this.board.hide();
+			var round = gm.attributes.round[level - 1];
+			console.log(round);
+			var rrv = new app.roundResultView({model: round});
+			this.play.html(rrv.render().el);
 		},
 
 		gameReview: function(game){
@@ -322,63 +372,70 @@ var app = app || {};
 
 		sendGD: function (info){
 			console.log(info);
-			if(info != undefined){
-				if (info.close){
-					var temp = 'no';
+			if(info.room == location.hash.split('/')[4]){
+				if(info.playerId != undefined){
+					if (info.close){
+						var temp = 'no';
+					} else {
+						var temp = name + " fibbed, its now your turn!";
+					}
+					var room = info.room;
+					var gm = this.gameCollection.findWhere({_id: room});
+					gm.saveData(info, {url: location.hash.slice(0, -6)});
 				} else {
-					var temp = "Your fib!";
+					var room = location.hash.split('/')[4];
+					var round = location.hash.split('/')[6];
+					var info = {
+						room: room,
+						level: round,
+						playerId: location.hash.slice(10).split('/')[0],
+						word_countdown: 0,
+						close: true
+					};
+					var gm = this.gameCollection.findWhere({_id: room});
+					var temp = "Review your fib with " + name + "!";
+					gm.saveData(info, {url: location.hash.slice(0, -6)});
 				}
-				var room = info.room;
-				var gm = this.gameCollection.findWhere({_id: room});
-				gm.saveData(info, {url: location.hash.slice(0, -6)});
-			} else {
-				var room = location.hash.split('/')[4];
-				var round = location.hash.split('/')[6];
-				var info = {
-					room: room,
-					level: round,
-					playerId: location.hash.slice(10).split('/')[0],
-					word_countdown: 0,
-					close: true
-				};
-				var gm = this.gameCollection.findWhere({_id: room});
-				var temp = "Review this fib!"
-				gm.saveData(info, {url: location.hash.slice(0, -6)});
-			}
-			var gp = gm.attributes.players;
-			var url = 'https://apps.facebook.com/playfibs';
-			var notify = info.notify;
-			function getFBID(element, index, array){
-				if(element.fb_id != currentUser){
-				FB.api('/' + element.fb_id + '/notifications',
-			        'post',
-			        {
-			            access_token: notify,
-		                href: url,
-		                template: temp
-			            
-			        },
-			        function (response) {
-			          console.log(response);
-			          }
-			    );
+				var gp = gm.attributes.players;
+				var url = location.hash;
+
+				var notify = info.notify;
+				function getFBID(element, index, array){
+					if(element.fb_id != currentUser && element.name == gm.attributes.word_turn){
+					FB.api('/' + element.fb_id + '/notifications',
+				        'post',
+				        {
+				            access_token: notify,
+			                href: url,
+			                template: temp
+				            
+				        },
+				        function (response) {
+				          console.log(response);
+				          }
+				    );
+					}
 				}
-			}
-			if(gm.attributes.place != 'Live'){
-				if(temp != 'no'){
-					gp.forEach(getFBID);
+				if(gm.attributes.place != 'Live'){
+					if(temp != 'no'){
+						gp.forEach(getFBID);
+					}
 				}
 			}
 		},
 
 //------Once FB registers the player has logged in, they trigger the click on loginPlayer
 //------for our database to find or register the player.
-		loginPlayer: function (){
+		loginPlayer: function (val){
+			if(val == false){
+				var val = val;
+			} else{var val = undefined;}
+			console.log(val);
 			console.log('loginPlayer');
 			this.collection.fetch({reset:true, 
 				success: function(collection){ 
 					console.log('about to loginPlayer');
-					collection.loginPlayer();
+					collection.loginPlayer(val);
 				}
 			});
 		},

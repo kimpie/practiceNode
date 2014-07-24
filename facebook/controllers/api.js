@@ -36,7 +36,8 @@ exports.postPlayer = function (req, res){
 			gender: req.body.gender,
 			url: req.body.url,
 		    last_login: req.body.last_login, 
-		    points: req.body.points
+		    points: req.body.points,
+		    first_login: req.body.first_login
 		});
 		player.save( function (err){
 			if (err) return handleError (err);
@@ -73,6 +74,7 @@ exports.updatePlayer = function (req, res){
 	    player.last_login = req.body.last_login;
         player.games = req.body.games;
         player.points = req.body.points;
+        player.first_login = req.body.first_login;
         
 	    return player.save( function( err ) {
 	        if( !err ) {

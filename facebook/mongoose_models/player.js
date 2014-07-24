@@ -12,6 +12,7 @@ var playerSchema = new Schema ({
 	gender: String,
 	total_games: Number,
     last_login: String,
+    first_login: Boolean,
 	games: [{ 
 		id: [{type: Schema.Types.ObjectId, ref: 'Game'}], 
 		players: [],

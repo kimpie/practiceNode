@@ -27,7 +27,8 @@ var app = app || {};
 				city: city,
 				url: currentUser,
 				gender: gender,
-				last_login: x
+				last_login: x,
+				first_login: true
 			};
 		},
 
@@ -35,18 +36,18 @@ var app = app || {};
 			this.create(this.setPlayerData(),
 				{
 		      	success: function (player) {
-		      		var model = new app.playerModel();
-		      		model.renderPlayer(player);
+		      		//var model = new app.playerModel();
+		      		//player.renderPlayer(player);
 					console.log('Creating new model with URL: ' + player.id);
-					var pcGames = player.attributes.games;
+					//var pcGames = player.attributes.games;
 					//app.AppView.vent.trigger('launchFetch', player, pcGames);
-					app.AppView.vent.trigger('showTutorial', player, pcGames);
+					app.AppView.vent.trigger('showTutorial');
 			    }
 			});
 
 	  	},
 
-	  	loginPlayer: function(){
+	  	loginPlayer: function(val){
 	  		console.log('inside loginPlayer');
 			if (currentUser) {
 				console.log(this);
@@ -58,11 +59,20 @@ var app = app || {};
 					this.createPlayer();
 				} else {
 					var thisplayer = this.get(player);
-					this.renderPlayer(thisplayer);
-					var pcGames = thisplayer.attributes.games;
-					app.AppView.vent.trigger('launchFetch', thisplayer, pcGames);
-			  		//this.trigger('loggedin', player);
-					//this.playersgames(player);
+					console.log('value of val is ' + val);
+					var value = false;
+					console.log(thisplayer.attributes.first_login);
+					if(thisplayer.attributes.first_login){
+						console.log('sending to tutorial');
+						app.AppView.vent.trigger('showTutorial');
+						thisplayer.update(value);
+					} else if(val == false || !thisplayer.attributes.first_login){
+						console.log('not sending to tutorial, fl setting to false');
+						this.renderPlayer(thisplayer);
+						thisplayer.update(value);
+						var pcGames = thisplayer.attributes.games;
+						app.AppView.vent.trigger('launchFetch', thisplayer, pcGames);
+					}
 				}
 			}				  		
 	  	},
@@ -92,7 +102,8 @@ var app = app || {};
 	  				console.log('saivng player to db');
 	  				that.create({
 	  					name: gp[i].name,
-	  					fb_id: gp[i].fb_id
+	  					fb_id: gp[i].fb_id,
+	  					first_login: true
 	  				},{
 	  					success: function(player){
 	  						console.log('successfully created player');

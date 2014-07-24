@@ -7,7 +7,7 @@ var app = app || {};
 
 		template: Handlebars.compile(
 			'<div class="row">' +
-				'<div class="col-md-12" id="timer">'+
+				'<div class="col-md-12" id="timer" style="padding-left: 0px; padding-right: 0px;">'+
 				'</div>' +
 			'</div>' +
 			'<div class="row">' +
@@ -15,7 +15,7 @@ var app = app || {};
 					'<div id="storyText"><h3>{{story}}</h3></div>' +
 				'</div>' +
 				'<div class="col-md-12" id="textArea">'+
-					'<div id="input" class="transparent-input" style="background-color: #FFC858; color: #359999">' +
+					'<div id="input" class="transparent-input">' +
 					'</div>' +
 				'</div>' +
 			'</div>'
@@ -34,18 +34,24 @@ var app = app || {};
 		},
 
 		events: {
-			'click #enter': 'speech',
+			'click .talk': 'speech',
 			'keypress #enter': 'submitWord'
 		},
 
-		wt: function(wt){
+		wt: function(wt){ 
+			var that = this;
 			if(wt == name){
-				var round = this.model.number;
-				this.startTimer();
-				if(this.place == 'Live'){
-					var input = '<h3 id="enter" class="lightOrange talk">Press to Talk</h3>';
+				var round = that.model.number;
+				that.startTimer();
+				var browserchrome = /chrom(e|ium)/.test(navigator.userAgent.toLowerCase());
+				if(that.place == 'Live' ){
+					if(browserchrome){
+						var input = '<h3 id="enter" class="lightOrange talk">Press to Talk</h3>';
+					} else {
+						var input = '<div style="text-align:center;"><em>Play in Chrome browser to use speech input.</em></div><input type="text" x-webkit-speech class="form-control" id="enter" name="enter_word" placeholder="Your turn to fib"></>';
+					}
 				} else {
-					var input = '<input type="text" x-webkit-speech class="form-control" id="enter" name="enter_word" placeholder="Your turn to fib"></>';
+					var input = '<div style="text-align:center;"><em>Space bar or enter to submit word.</em></div><input type="text" x-webkit-speech class="form-control" id="enter" name="enter_word" placeholder="Your turn to fib"></>';
 				}
 				$('#input').html(input);
 			} else {
@@ -64,14 +70,14 @@ var app = app || {};
 			  that.speech = event.results[0][0].transcript;
 			  that.submitWord(that.speech);
 			}
-			$('#enter').bind('touchstart', function(){
+			$('.talk').bind('touchstart', function(){
 				console.log('mousedown');
-				$('#enter').attr('class', 'lightBlue');
+				$('.talk').attr('class', 'lightBlue');
 				recognition.start();
 			});
-			$('#enter').bind('touchend', function(){
+			$('.talk').bind('touchend', function(){
 				console.log('mouseup');
-				$('#enter').attr('class', 'lightOrange');
+				$('.talk').attr('class', 'lightOrange');
 				recognition.stop();
 			});
 		},
@@ -126,7 +132,12 @@ var app = app || {};
 				if (that.count <= 0) {
 					clearInterval(counter);
 					console.log('counter ended');
-					that.endOfTimer();
+					if(that.place == 'Live'){
+						that.sendInfo();
+					} else {
+						that.endOfTimer();
+					}
+
 					return;
 				}
 				if(that.place == 'Live'){
@@ -156,7 +167,27 @@ var app = app || {};
 		},
 
 		endOfTimer: function(){
-			console.log('endOfTimer called');
+			$('#input').empty();
+			var counter = setInterval(timer, 1000);
+			var count = 3;
+			var t = jQuery('#storyText').text(); 
+			jQuery('#storyText').hide();
+			jQuery('#storyText').empty();
+			jQuery('#storyText').append('<h3 style="color:yellow">' + t +' <strong>' + this.word + '</strong></h3>');
+			jQuery('#storyText').fadeIn('slow');
+			var that = this;
+			function timer() {
+				count=count-1;
+				if (count <= 0) {
+					clearInterval(counter);
+					that.sendInfo();
+					return;
+				}
+			}
+		},
+
+		sendInfo: function(){
+			console.log('sendInfo called');
 			var that = this;
 			if(this.place == 'Live'){
 				that.word = jQuery('#storyText').text();
@@ -169,7 +200,7 @@ var app = app || {};
 						round: 'complete'
 				});
 			} else {
-				if(this.word != undefined && this.word != ''){
+				if(that.word != undefined && that.word != ''){
 					socket.emit('chat', {
 						word: that.word,
 						room: that.room,

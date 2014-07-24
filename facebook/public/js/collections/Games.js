@@ -84,21 +84,23 @@ var app = app || {};
 			//Find all active games on the Game Collection for the currentUser.
 			var p;
 			function getMatch(id, game){
+				console.log(game);
 				var t;
 				function findCU(element,index,array){
 					if(element.fb_id == Number(id)){
 						t = true;
 					}
-					return t;
 				}
 				var gp = game.attributes.players;
+				console.log(gp);
 				gp.forEach(findCU);
 				if(t){
 					p = game;
 				}
 				return p;
-			}
+			};
 			var activeGames = this.where({active:true});
+			console.log(activeGames);
 			var gcGames = activeGames.map(
 				function(game){
 					return{
@@ -106,9 +108,10 @@ var app = app || {};
 					}
 				}   
 			 );
+			console.log(gcGames);
 			//pcGames represent all the games saved to the Player Model.
 			var pcGames = pcGames;
-			
+			console.log(pcGames);
 
 			//Defining functions needed for code below....
 
@@ -117,12 +120,21 @@ var app = app || {};
 			 
 			    var list = [];
 			    function getId(element, index, arr){
+			    	console.log(element);
+			    	console.log(element.game);
+			    	console.log(element.game != undefined);
 			    	if(element.game){
-			    		var k = element.game.id;
-			    	} else {
+			    		if(element.game != undefined){
+							console.log('inside game');
+				    		var k = element.game.id;
+							list.push(k);
+				    	}
+			    	} else if(element.id){
+			    		console.log('inside non game');
 			    		var k = element.id;
+						list.push(k);
 			    	}
-					list.push(k);
+			    	console.log(list);
 			    };
 			    arr.forEach(getId);
 				console.log(list);
@@ -143,6 +155,9 @@ var app = app || {};
 			//PCID & GCID are arrays of game id's only.
 			var gcid = eliminateDuplicates(gcGames);
 			var pcid = eliminateDuplicates(pcGames);
+			console.log(gcid);
+			console.log(pcid);
+			console.log(gcid.length == pcid.length);
 
 			//Compare to see if array lengths are equal
 			if (gcid.length == pcid.length){
@@ -296,6 +311,7 @@ var app = app || {};
 
 		createGame: function(response, info){
 			var info = info,
+				people = info[1],
 				place = info[0],
 				stage = info[2],
 				that = this;
@@ -312,12 +328,18 @@ var app = app || {};
 				'stage' : 'in_progress'
 			}];
 			function setData(data){
-				console.log('fn setData on player ' + data);
+				console.log('fn setData on player ');
+				console.log(data);
 				var currentStage;
 				if(stage != undefined){
 					currentStage = stage;
 				} else {
 					currentStage = 'in_progress';
+				}
+				if(people == 'Group'){
+					var r = response.to.length;
+				} else if (people == 'One-on-One'){
+					var r = 1;
 				}
 				var playerInfo = {
 					'name': data.name,
@@ -328,7 +350,10 @@ var app = app || {};
 				};
 				modelPlayers.push(playerInfo);
 				console.log(modelPlayers);
-				if (modelPlayers != undefined){
+				console.log(modelPlayers.length);
+				console.log(r);
+				console.log(modelPlayers.length == r + 1);
+				if (modelPlayers.length == r + 1){
 					console.log('about to create game with these players:');
 					console.log(modelPlayers);
 					that.create({
@@ -356,11 +381,12 @@ var app = app || {};
 			    	setData(data);
 				});
 			} else {
+				var x = [];
 				var to = response.to;
-				for ( var i = 0; i <= to.length; i++){
+				for ( var i = 0; i < to.length; i++){
 			    	console.log('iterating through ' + to[i]);
 				    FB.api(to[i], function (data){
-				    	setData(data);
+						setData(data);
 					});
 				};
 			}
