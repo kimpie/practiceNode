@@ -91,6 +91,7 @@
 body{
 	min-width: 100%;
     overflow-x: hidden;
+    font-family: 'Open Sans Condensed', sans-serif;
 }
 
 .tut{
@@ -115,8 +116,8 @@ div#mfsContainer::-webkit-scrollbar {
 
 div#mfsContainer{
 	-webkit-min-height: 100px;
-	-webkit-max-height: 200px;
-	max-height:200px; 
+	-webkit-max-height: 400px;
+	max-height:400px; 
 	max-width:100%;
 	overflow-y: auto;
 	overflow-x: hidden;
@@ -150,6 +151,15 @@ div#card3 ul#cardList  li.cards {
 	color: white;
 }
 
+.darkBlueTop{
+	background-color: #658DF3;
+	color: white;
+	border-top-right-radius: 0px;
+	border-top-left-radius: 0px;
+	border-bottom-right-radius: 100px;
+	border-bottom-left-radius: 100px;
+}
+
 .darkOrangeTop{
 	background-color: #FFA358;
 	color: white;
@@ -162,6 +172,8 @@ div#card3 ul#cardList  li.cards {
 	background-color: #FFA358;
 	color: white;
 	text-align: center;
+	border-radius: 10px;
+	margin:3px;
 }
 
 .lightOrange{
@@ -169,16 +181,22 @@ div#card3 ul#cardList  li.cards {
 	background-color: #FFC858;
 	color: #359999;
 	cursor: pointer;
+	border-radius: 10px;
+	margin:3px;
 }
 
 .darkBlue{
 	background-color: #658DF3;
 	color: white;
+	border-radius: 10px;
+	margin:3px;
 }
 
 .lightBlue{
 	background-color: #53F1F1;
 	color: #0447F1;
+	border-radius: 10px;
+	margin:3px;
 }
 
 .lightBlue:active{
@@ -195,10 +213,11 @@ div#card3 ul#cardList  li.cards {
 	color: white;
 
 }
-.lightOrange:active{
-	background-color: #EDA105;
+.lightOrange:active, .lightOrange:hover, .darkOrange:active, .darkOrange:hover{
+	background-color: #658DF3;
 	color: white;
 }
+
 li#player_name:active{
 	background-color: 	#D3D3D3;
 	color: #808080;
@@ -235,16 +254,6 @@ input.transparent-input{
 #timerInfo{
 	min-height: 230px;
 	padding-top: 10px;
-}
-
-#tiTop{
-	border-top: 1px solid white;
-	border-radius: 5px 5px 0 0;
-}
-
-#tiBottom{
-	border-bottom: 1px solid white;
-	border-radius: 0 0 5px 5px;
 }
 
 #timer{
@@ -342,17 +351,14 @@ input.transparent-input{
 }
 
 #story{
-	border-top: 1px solid white;
-	border-left: 1px solid white;
-	border-right: 1px solid white;
-	border-radius: 5px;
 	min-height: 130px;
+	text-align: center;
 }
 
 #storyText{
-	margin: 10px 0px 10px 0px;
-	padding-top: 10px;
 	text-align: center;
+	padding-top: 30px;
+	color: #FFA358;
 }
 
 #storyText > li{
@@ -379,6 +385,7 @@ input.transparent-input{
 	padding-top: 15px;
 	padding-bottom: 15px;
 	text-align: center;
+	background-color: yellow;
 }
 
 #cardTitle{
@@ -563,12 +570,18 @@ div#intro{
 	padding-bottom: 20px;
 }
 
-#sendInvite:hover {
-	background-color: #658DF3;
-	color: white;
-}
 #sendInvite{
 	padding-top: 10px;
+}
+
+.deselectedlO{
+	cursor:default;
+	text-align:center;
+	background-color: #D3CBBA;
+	color: #B6AE9F;
+	border-radius: 10px;
+	margin:3px;
+	
 }
 
 li#player_name:hover a { 
@@ -584,25 +597,32 @@ a#indGame {
 	color: 	#CCCCFF;
 	list-style-type: none;
 	text-align: center;
-	padding: 5px 0 5px 0;
+	padding: 10px 0 10px 0;
+	border-radius: 10px;
+	margin:3px;
+	cursor: pointer;
 }
 
 li#player_name:nth-child(even){
 	cursor: pointer;
 	list-style-type: none;
 	text-align: center;
-	padding: 5px 0 5px 0;
+	padding: 10px 0 10px 0;
 	background-color: #53F1F1;
 	color: #0447F1;
+	border-radius: 10px;
+	margin:3px;
 }
 
 li#player_name:nth-child(odd){
 	cursor: pointer;
 	list-style-type: none;
 	text-align: center;
-	padding: 5px 0 5px 0;
+	padding: 10px 0 10px 0;
 	background-color: #658DF3;
 	color: white;
+	border-radius: 10px;
+	margin:3px;
 }
 
 .loggedoff {

@@ -3,21 +3,39 @@ var app = app || {};
 (function ($) {
         'use strict';
 
+	Handlebars.registerHelper('ifNew', function(story, options) {
+	  if(story != undefined) {
+	    return options.fn(this);
+	  } else {
+	  	return options.inverse(this); 
+	  }
+	}),
+	Handlebars.registerHelper('ifStrategy', function(story, options) {
+	  if(story != undefined) {
+	    return options.fn(this);
+	  } else {
+	  	return options.inverse(this); 
+	  }
+	}),
+
 	app.roundView = Backbone.View.extend({
 
 		template: Handlebars.compile(
 			'<div class="row">' +
-				'<div class="col-md-12" id="timer" style="padding-left: 0px; padding-right: 0px;">'+
-				'</div>' +
-			'</div>' +
-			'<div class="row">' +
-				'<div class="col-md-12 darkBlue" id="story">'+
-					'<div id="storyText"><h3>{{story}}</h3></div>' +
+				'<div class="col-md-12" id="story">'+
+					'{{#ifNew story}}'+
+						'<div class="st" id="storyText"><h2>{{story}}</h2></div>' +
+					'{{else}}' +
+						'<h3 class="st" style="color:B3B3B3;padding-top:30px;">Begin the story by entering the first word</h3>'+
+					'{{/ifNew}}' +
 				'</div>' +
 				'<div class="col-md-12" id="textArea">'+
 					'<div id="input" class="transparent-input">' +
 					'</div>' +
 				'</div>' +
+				'{{#ifStrategy sWord}}'+
+					'<div class="col-md-12"><strong>{{sWord}}<strong></div>'+
+				'{{/ifStrategy}}'+
 			'</div>'
 		),
 
@@ -42,7 +60,7 @@ var app = app || {};
 			var that = this;
 			if(wt == name){
 				var round = that.model.number;
-				that.startTimer();
+				//that.startTimer();
 				var browserchrome = /chrom(e|ium)/.test(navigator.userAgent.toLowerCase());
 				if(that.place == 'Live' ){
 					if(browserchrome){
@@ -104,7 +122,7 @@ var app = app || {};
 				} else {
 					console.log('game online');
 					that.word = jQuery('#enter').val();
-					that.count = 0;
+					that.endOfTimer();
 				}
 			}				
 
@@ -167,14 +185,24 @@ var app = app || {};
 		},
 
 		endOfTimer: function(){
+	        var audioElement = document.createElement('audio');
+	        audioElement.setAttribute('src', 'audio/laugh.mp3');
+	        audioElement.setAttribute('autoplay', 'autoplay');
+	        //audioElement.load()
+	        $.get();
+	        audioElement.addEventListener("load", function() {
+	            audioElement.play();
+	        }, true);
+            audioElement.play();
+            
 			$('#input').empty();
 			var counter = setInterval(timer, 1000);
 			var count = 3;
-			var t = jQuery('#storyText').text(); 
-			jQuery('#storyText').hide();
-			jQuery('#storyText').empty();
-			jQuery('#storyText').append('<h3 style="color:yellow">' + t +' <strong>' + this.word + '</strong></h3>');
-			jQuery('#storyText').fadeIn('slow');
+			var t = jQuery('.st').text(); 
+			jQuery('.st').hide();
+			jQuery('.st').empty();
+			jQuery('.st').append('<h3 style="color:yellow">' + t +' <strong>' + this.word + '</strong></h3>');
+			jQuery('.st').fadeIn('slow');
 			var that = this;
 			function timer() {
 				count=count-1;

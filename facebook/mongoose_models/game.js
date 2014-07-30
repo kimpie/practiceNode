@@ -9,6 +9,7 @@ var gameSchema = new Schema({
 	round_turn: String,
 	word_turn: String,
 	place: String,
+	gt: String,
 	word_countdown: Number,
 	ng_request: String,
 	round: [{
@@ -30,7 +31,8 @@ var gameSchema = new Schema({
 		fb_id: Number,
 		game_points: Number,
 		controller: Boolean,
-		stage: String
+		stage: String,
+		sWord: String
 	}]
 
 });

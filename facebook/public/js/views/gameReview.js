@@ -83,11 +83,24 @@ var app = app || {};
 			this.model = options.model;
 			console.log('gameReview initialized with ');
 			console.log(this.model);
+			var luagh = this.laughNow();
 		},
 
 		events: {
 			'click #fibAgain' : 'startNew',
 			'click .delete' : 'endGame'
+		},
+
+		laughNow: function(){
+	        var audioElement = document.createElement('audio');
+	        audioElement.setAttribute('src', 'audio/groupLaugh.mp3');
+	        audioElement.setAttribute('autoplay', 'autoplay');
+	        //audioElement.load()
+	        $.get();
+	        audioElement.addEventListener("load", function() {
+	            audioElement.play();
+	        }, true);
+            audioElement.play();
 		},
 
 		startNew: function(){

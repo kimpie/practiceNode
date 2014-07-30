@@ -279,10 +279,11 @@ var app = app || {};
 			var info = info;
 			console.log(response);
 			console.log(info);
-			var people = info[1];
+			var gt = info[1];
 			var that = this;
+			that.createGame(response, info);
   			//if (response.to.length > 1){ //If more than one friend requested
-  				if (people == "One-on-One"){ //If more than one friend req and games are one-on-one
+  				/*if (people == "One-on-One"){ //If more than one friend req and games are one-on-one
 					console.log('games are one one one');
 					var friends = response.to;
 	  				for (var i = 0; i < friends.length; i++){
@@ -296,13 +297,14 @@ var app = app || {};
 							that.createGame(friends[i], info);
 						}
 	  				}	
-  				} else if (people == "Group"){  //If more than one friend req but game is for group
-					console.log('more than one friend requested for the group game');
+  				} else if (people == "Group"){  *///If more than one friend req but game is for group
+
+					//console.log('more than one friend requested for the group game');
 					//logic needed: FB.api needs to loop through the list and assignGameData for each
 					//	Don't need to check if any games already exist with these people
 					//GameInfo will be a little different
-					that.createGame(response, info);
-  				} /// end of if/else if people		  				
+					//that.createGame(response, info);
+  				//} /// end of if/else if people		  				
   			//} else {
   			//	console.log('one friend requested, game will be one-on-one');
   			//	that.createGame(response, info);
@@ -310,21 +312,22 @@ var app = app || {};
 		},
 
 		createGame: function(response, info){
+			console.log(info);
 			var info = info,
-				people = info[1],
+				gt = info[1],
 				place = info[0],
 				stage = info[2],
 				that = this;
-			if(place == "Live"){
+			/*if(place == "Live"){
 				var t = true;
 			} else {
 				var t = false;
-			}
+			}*/
 			var modelPlayers = [{
 				'name': name,
 				'fb_id' : Number(currentUser),
 				'points' : Number('0'),
-				'controller' : t,
+				//'controller' : t,
 				'stage' : 'in_progress'
 			}];
 			function setData(data){
@@ -336,28 +339,29 @@ var app = app || {};
 				} else {
 					currentStage = 'in_progress';
 				}
-				if(people == 'Group'){
+				//if(people == 'Group'){
 					var r = response.to.length;
-				} else if (people == 'One-on-One'){
+				/*} else if (people == 'One-on-One'){
 					var r = 1;
-				}
+				}*/
 				var playerInfo = {
 					'name': data.name,
 					'fb_id' : Number(data.id),
 					'points': Number('0'),
-					'stage' : currentStage,
-					'controller' : false
+					'stage' : currentStage
+					//'controller' : false
 				};
 				modelPlayers.push(playerInfo);
 				console.log(modelPlayers);
 				console.log(modelPlayers.length);
 				console.log(r);
 				console.log(modelPlayers.length == r + 1);
-				if (modelPlayers.length == r + 1){
+				if (modelPlayers.length == r + 1 && gt == 'rounds'){
 					console.log('about to create game with these players:');
 					console.log(modelPlayers);
 					that.create({
 						'place': place,
+						'gt': gt,
 				    	'round_turn': modelPlayers[0].name,
 				    	'word_turn': modelPlayers[0].name,
 				    	'complete': false,
@@ -369,6 +373,23 @@ var app = app || {};
 					    		console.log(game);
 					    		game.saveRound();
 					    		app.AppView.vent.trigger('gameSaved', game);
+					    	}
+					})
+				} else if(modelPlayers.length == r + 1 && gt == 'strategy'){
+					console.log('create strategy game');
+					that.create({
+						'place': place,
+						'gt': gt,
+				    	'word_turn': modelPlayers[0].name,
+				    	'complete': false,
+				    	'active' : true,
+				    	'word_countdown' : 10,
+				    	'players' : modelPlayers
+					},{
+						success: function (game){
+					    		console.log(game);
+					    		app.AppView.vent.trigger('gameSaved', game);
+					    		app.AppView.vent.trigger('playGame', game);
 					    	}
 					})
 				}

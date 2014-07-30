@@ -120,6 +120,7 @@ exports.postGame = function (req, res){
 			round_turn: req.body.round_turn, 
 			word_turn: req.body.word_turn,
 			place: req.body.place,
+			gt: req.body.gt,
 			round: req.body.round,
 			players: req.body.players,
 			word_countdown: req.body.word_countdown,
@@ -142,6 +143,7 @@ exports.updateGame = function (req, res){
 		game.round_turn = req.body.round_turn;
 		game.word_turn = req.body.word_turn;
 		game.place = req.body.place;
+		game.gt = req.body.gt;
 		game.round = req.body.round;
 		game.players = req.body.players;
 		game.word_countdown = req.body.word_countdown;

@@ -57,7 +57,7 @@ var app = app || {};
 	app.gameView = Backbone.View.extend({
 
 		template: Handlebars.compile(
-			'<div class="row top_gv darkOrangeTop">' +
+			'<div class="row top_gv darkBlueTop">' +
 				'<div class="col-md-12" style="margin: 5px 0 5px 0;">'+
 					'{{#ifOnline place}}' +
 						'<div class=" col-xs-12 col-md-3 col-md-offset-2" id="word_countdown">' + 
@@ -75,7 +75,7 @@ var app = app || {};
 				'<div class="col-md-12">' +
 				'{{#ifOnline place}}' +
 				'{{#ifwc word_countdown}}'+
-					'<h3>{{lastP players word_turn}} entered "<strong>{{lastW round}}</strong>"'+
+					'<h3>{{lastP players word_turn}} entered "<strong>{{lastW round}}</strong>"<h3>'+
 				'{{/ifwc}}'+
 				'{{/ifOnline}}' +
 				'</div>' +

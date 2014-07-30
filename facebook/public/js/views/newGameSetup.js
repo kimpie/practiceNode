@@ -7,16 +7,16 @@ var app = app || {};
 
 		template: Handlebars.compile(
 
-		'<div class="darkOrangeTop" id="newGameSetup">' +
+		'<div  id="newGameSetup">' +
 			'<div class="row">'+
 				'<div class="col-md-8 col-md-offset-2" style="text-align:center"id="title">' +
-					'<h3>Setup your Fib</h3>' +
+					'<h3>Invite friends to fib</h3>' +
 				'</div>'+
 				'<div class="col-md-1 col-md-offset-1">'+
 					'<button type="button" aria-hidden="true" class="close">&times;</button>' +
 				'</div>' +
 			'</div>' +
-			'<div class="row">' +
+			/*'<div class="row">' +
 				'<div class="col-md-12 qtitle" id="placetitle"></div>' +
 			'</div>' +
 			'<div class="row">' +
@@ -33,19 +33,19 @@ var app = app || {};
 					'<section class="col-xs-12 col-md-6 select" id="peopletitle" style="background-color: #53F1F1;"><h3>In a Group</h3></section>'+
 					'<section class="col-xs-12 col-md-6 select" id="peopletitle" style="background-color: #658DF3;"><h3>One-on-One</h3></section>'+
 				'</div>' +
-			'</div>' +
-			'<div class="row" style="display:none;" id="qrow">'+
+			'</div>' +*/
+			'<div class="row" id="qrow">'+
 				'<div class="col-xs-12 col-md-10 col-md-offset-1">'+
-				    '<input class="form-control input-lg" type="text" name="q" id="query" placeholder="Find friends to fib with you..."/> ' +
+				    '<input class="form-control input-lg" type="text" name="q" id="query" placeholder="Search for friends"/> ' +
 				'</div>' +
 				'<div class="col-xs-12 col-md-10 col-md-offset-1">' +
 				  '<em>Click on a friend to add them to a game.</em>' +
 				'</div>' +
 			'</div>' +
-			'<div class="row" style="display:none; margin: 0 0 5px 5px;" id="mfsContainer">' +
+			'<div class="row" style="margin: 0 0 5px 5px;" id="mfsContainer">' +
 				    '<div class="col-xs-12 col-md-12" id="mfs"></div>' +
 			'</div>' +
-			'<div class="row lightOrange" id="sendInvite" style="display:none; vertical-align: middle; margin: 0px;">' +
+			'<div class="row deselectedlO" id="sendInvite" style="vertical-align: middle; margin: 0px;">' +
 				'<div class="col-xs-12 col-md-12" style="color:white;"">' +
 					'<em>Click on a friend to remove them from the game.</em>' +
 				 '</div>' +
@@ -54,7 +54,7 @@ var app = app || {};
 					'</div>'+
 				'</div>' +
 				'<div class="col-xs-12 col-md-12">' +
-					'<div id="sendInv"><h3>Start Fibbing</h3></div>'+
+					'<div class="sendInv" id="nosend"><h3>Start Fibbing</h3></div>'+
 				'</div>' +
 			'</div>' +
 		'</div>'
@@ -73,8 +73,11 @@ var app = app || {};
 	initialize: function  (options) {
 		console.log(options);
 		this.collection = options.collection;
+		this.gametype = options.gametype;
+		console.log(this.gametype);
 		console.log('newGameView has been initialized');
 		this.listenTo(this.collection, "change", this.render);
+		var gomfs = this.MFS();
 	},
 
 	closeSetup: function(info){
@@ -135,11 +138,13 @@ var app = app || {};
 		console.log(k);
 		if ( k.parent().attr('id') == 'listInvitees' ){
 			$('#mfsForm').append(k);
-			if($('div#listInvitees > div').length == 0){ 
-				$('#sendInvite').hide();
+			if($('#listInvitees').is(':empty')){ 
+				$('.sendInv').attr('id', 'nosend');
+				$('#sendInvite').attr('class', 'row deselectedlO');
 			}
 		} else {
-		    $('#sendInvite').show();
+			$('#sendInvite').attr('class', 'row lightOrange');
+			$('.sendInv').attr('id', 'sendInv');
 			$('#listInvitees').append(k);
 		}
 		/*if ( $('div#' + id).children('input').prop('checked') ){
@@ -170,25 +175,27 @@ var app = app || {};
 			message: 'Play fibs with me!',
 		}, callback);
 		var pla = $('div#placetitle').text().split(' ').length;
-		if(pla == 2){
+		/*if(pla == 2){
 			var place = $('div#placetitle').text().split(' ')[1];
 			console.log('place is ' + place);
 		} else {
 			var place = 'Live';
 			console.log('place is ' + place);
-		}
+		}*/
 		var ppl = $('div#peopletitle').text().split(' ').length;
 		if(ppl == 1){
 			var people = $('div#peopletitle').text();
 		} else {
 			var people = $('div#peopletitle').text().split(' ')[2];
 		}
-		var ginfo = [place, people];
+		var place = 'Online';
+		var gt = this.gametype;
+		var ginfo = [place, gt];
 		console.log(ginfo);
 		console.log(sendUIDs);
 		var that = this;
 		function callback(response) {
-			that.collection.startGameProcess(response, ginfo);
+			that.collection.createGame(response, ginfo);
 		};
 
 	},

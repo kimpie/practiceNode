@@ -59,7 +59,7 @@ var app = app || {};
 			"click #home": "homeView",
 			"click #menu" : "options",
 			"click #support": "contact",
-			"click #about": "about",
+			"click #about": "about"
 		},
 
 		startnav: function(){
@@ -180,7 +180,7 @@ var app = app || {};
 		play: function(game){
 			console.log('play triggered from AppView with game: ');
 			console.log(game);
-			
+			var that = this;
 			var player = this.collection.findWhere({fb_id: Number(currentUser)});
 			if(typeof game == "string"){
 				var game_model = this.gameCollection.findWhere({_id: game});
@@ -194,7 +194,21 @@ var app = app || {};
 			this.board.show();
 			var p_stage = game_model.checkStage(currentUser);
 			console.log('insdie AppView play, in stage ' + p_stage);
-			if(p_stage == 'review'){
+			var secret;
+			function getSW(element, index, array){
+				if(element.name == name && secret != undefined){
+					secret = element.sWord;
+				} else if(element.name == name && secret == undefined){
+					secret = undefined;
+				}
+				that.strategy(game_model, secret);
+			};
+
+			if(game_model.attributes.gt == 'strategy'){
+				console.log('strategy game started');
+				var gp = game_model.attributes.players;
+				gp.forEach(getSW);
+			} else if(p_stage == 'review'){
 				var x = level_complete.length;
 				var level = level_complete[x-1]; 
 				console.log(level);
@@ -204,12 +218,18 @@ var app = app || {};
 				console.log('game is complete, sending player to game review');
 				this.gameReview(game_model);
 			} else if (level_ip.length != 0){
-				var level = level_ip[0];
-				console.log(level);
-				app.AppRouter.navigate('#/players/' + player.id + '/games/' + game_model.id + '/round/' + level);
-				var cardId = game_model.attributes.round[level-1].card;
-				var card = this.cardCollection.findWhere({_id: cardId});
-				this.timer(game_model, level, card);
+				//if(game_model.attributes.word_turn == name){
+					var level = level_ip[0];
+					console.log(level);
+					app.AppRouter.navigate('#/players/' + player.id + '/games/' + game_model.id + '/round/' + level);
+					/*var cardId = game_model.attributes.round[level-1].card;
+					var card = this.cardCollection.findWhere({_id: cardId});
+					this.timer(game_model, level, card);
+				} else {*/
+					var level = level_ip[0];
+					this.round(game_model.id, level);
+				//}
+
 				//}
 			}else {
 				this.sharing.hide();
@@ -225,6 +245,60 @@ var app = app || {};
 				}
 		        this.play.html(bv.render().el);
 				app.AppRouter.navigate('#/players/' + player.id + '/games/' + game_model.id);
+			}
+		},
+
+		loadSW: function(game){
+			var that = this;
+			var k, count = 0;
+			function showWord(word){
+				console.log(word);
+				that.play.html('<h4>Your secret word is:<br></h4><h3><strong>' + word + '<strong></h3><button type="button" class="btn btn-danger" id="pass">PASS</button><br><div class="row lightOrange" id="sWordOK"><h2>got it</h2></div>');
+				$('#pass').click(function(){
+					RandomWord();
+					count + 1;
+					console.log(count);
+				});
+				$('#sWordOK').click(function(){
+					that.strategy(game, word);
+				});
+			}
+			function RandomWord() {
+				console.log('inside RandomWord fn');
+		       var requestStr = "http://randomword.setgetgo.com/get.php";
+		       $.ajax({
+		           type: "GET",
+		           url: requestStr,
+		           dataType: "jsonp",
+		           //jsonpCallback: 'RandomWordComplete',
+                   success:function(result){
+		                console.log(result);
+		                k = result.Word.split('/')[0];
+		                showWord(k);
+		            }
+		       });
+		    };
+			RandomWord();
+		},
+
+		strategy: function(game, secret){
+			if(secret == undefined){
+				this.loadSW(game);
+			} else {
+				console.log(game);
+				console.log(secret);
+
+				var gameview = new app.gameView({model: game});
+				this.play.html(gameview.render().el);
+				var r = {
+					story: game.attributes.gt_story,
+					sWord: secret
+				}
+				var place = 'online';
+				var wt = game.attributes.word_turn;
+				var rv = new app.roundView({model: r, place: place});
+		        this.board.html(rv.render().el);
+		        app.AppView.vent.trigger('wordTurn', wt);
 			}
 		},
 
@@ -259,7 +333,7 @@ var app = app || {};
 			
 			this.board.show();
 			this.wc.show();
-			this.topnav.hide();
+			this.topnav.show();
 			if(gm.attributes.word_countdown == 10){
 				var rc = round_cards[0].card;
 			} else {
@@ -440,13 +514,33 @@ var app = app || {};
 			});
 		},
 
+
 //------FB api used to invite friends to play game.
-		requestDialog: function(){
-			var player = this.collection.findWhere({fb_id: Number(currentUser)});
+		requestDialog: function(type){
+			var type = type;
+			console.log(type);
+			var ready = false;
 			var that = this;
-			var ngv = new app.newGameSetup({collection: that.gameCollection});
-			this.play.html(ngv.render().el);
-			app.AppRouter.navigate('#/players/' + player.id + '/games');
+			function opensesame(){
+				var player = that.collection.findWhere({fb_id: Number(currentUser)});
+				var ngv = new app.newGameSetup({collection: that.gameCollection, gametype: type});
+				that.play.html(ngv.render().el);
+				app.AppRouter.navigate('#/players/' + player.id + '/games');
+			};
+			if(type == 'rounds'){
+				this.play.html('<h2 style="color:#FFA358;">fibs with rounds</h2><br><h3>made up of 3 rounds</h3><br><h4>To start a round one player picks a card.  The cards have one rule & topic for that round.<br>Enter any word you want as long as it follows the rule and topic on your card.  Play continues with each player adding one word at a time.  Sentence and round end when 10 words are played.  Game ends after the third round.</h4><div class="row lightOrange" id="ready"><h2>got it</h2></div>');
+				$('#ready').click(function(){
+					console.log('opensesame trigger');
+					opensesame();
+				});
+			} else if(type == 'strategy'){
+				this.play.html('<h2 style="color:#FFA358;">fibs with strategy</h2><br><h3>a one sentence game</h3><br><h4>Each player is given a different secret word.  The aim of the game is to steer the sentence so that the other player enters your secret word before the sentence ends. When 10 words have been played the sentence and game end. If you get the other player to enter your word you win points. If you don\'t like your secret word, you\'re allowed one pass.</h4><div class="row lightOrange" id="ready"><h2>coming soon</h2></div>');
+				/*$('#ready').click(function(){
+					console.log('opensesame trigger');
+					opensesame();
+				});*/
+			}
+
 		}
 
 
