@@ -2,6 +2,7 @@ var Player = require('../mongoose_models/player.js');
 var Game = require('../mongoose_models/game.js');
 var Contact = require('../mongoose_models/contact.js');
 var Card = require('../mongoose_models/card.js');
+var Word = require('../mongoose_models/word.js');
 
 //------------------------------------------Player logic------------------------------------ 
 //Find all players
@@ -144,6 +145,7 @@ exports.updateGame = function (req, res){
 		game.word_turn = req.body.word_turn;
 		game.place = req.body.place;
 		game.gt = req.body.gt;
+		game.gt_story = req.body.gt_story;
 		game.round = req.body.round;
 		game.players = req.body.players;
 		game.word_countdown = req.body.word_countdown;
@@ -186,6 +188,25 @@ exports.getCard = function (req, res){
 	return Card.findById( req.params.id, function( err, cards) {
         if( !err ) {
             return res.send( cards );
+        } else {
+            return console.log( err );
+        }
+    });
+   
+};
+
+// Find all cards
+exports.getWords = function (req, res){
+	Word.find(function(err, words){
+    res.send(words);
+  });
+};
+
+//Find the card once selected
+exports.getWord = function (req, res){
+	return Word.findById( req.params.id, function( err, words) {
+        if( !err ) {
+            return res.send( words );
         } else {
             return console.log( err );
         }

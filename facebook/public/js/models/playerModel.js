@@ -36,14 +36,14 @@ var app = app || {};
             });
         },
 
-        updateTurn: function(game, p){ 
-            var game = game;
-            var p = p;
+        updateTurn: function(info){ 
+            var game = info.game;
+            var p = info.pIndex;
             console.log(game);
             console.log(p);
             var that = this;
             if(p != undefined){
-                this.save(this.turn(game, p),{
+                this.save(this.turn(info),{
                     success: function(player){
                         console.log('successfully updated player: ');
                         console.log(player);
@@ -54,9 +54,9 @@ var app = app || {};
             
         },
 
-        turn: function(game, p){
-            var game = game;
-            var p = p;
+        turn: function(info){
+            var game = info.game;
+            var p = info.p;
             console.log(game);
             console.log(p);
             var k = {};//k represents the game _id inside the players game object
@@ -84,6 +84,13 @@ var app = app || {};
                    configurable : true
                 });
                 console.log('setting turn to ' +  game.attributes.word_turn + ' with this object');
+            }
+            if(info.points != null){
+                obje = Object.defineProperty(k, "points", {value: info.points,
+                    writable : true,
+                   enumerable : true,
+                   configurable : true
+                });
             }
             console.log(obje);
         },
@@ -219,7 +226,8 @@ var app = app || {};
                 players: game.attributes.players,
                 url: String('#/players/' + player.id + '/games/' + game.id),
                 turn: game.attributes.word_turn,
-                controller: t
+                controller: t,
+                gt: game.attributes.gt
             };
 
 

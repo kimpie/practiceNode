@@ -23,10 +23,11 @@ var app = app || {};
 		template: Handlebars.compile(
 			'<div class="row">' +
 				'<div class="col-md-12" id="story">'+
+					'<div id="match" style="display:none; color:#61EB00"></div>'+
 					'{{#ifNew story}}'+
-						'<div class="st" id="storyText"><h2>{{story}}</h2></div>' +
+						'<div class="st" id="storyText"><h1><strong>{{story}}<strong></h1></div>' +
 					'{{else}}' +
-						'<h3 class="st" style="color:B3B3B3;padding-top:30px;">Begin the story by entering the first word</h3>'+
+						'<h2 class="st" style="color:B3B3B3;padding-top:30px;">Begin the story by entering the first word</h2>'+
 					'{{/ifNew}}' +
 				'</div>' +
 				'<div class="col-md-12" id="textArea">'+
@@ -34,7 +35,7 @@ var app = app || {};
 					'</div>' +
 				'</div>' +
 				'{{#ifStrategy sWord}}'+
-					'<div class="col-md-12"><strong>{{sWord}}<strong></div>'+
+					'<div class="col-md-12"><p class="lead">Your secret word is <strong>{{sWord}}<strong></p></div>'+
 				'{{/ifStrategy}}'+
 			'</div>'
 		),
@@ -49,6 +50,7 @@ var app = app || {};
 			socket.emit('room', {room: this.room});
 			app.AppView.vent.on('update', this.render, this);
 			app.AppView.vent.on('wordTurn', this.wt, this);
+			app.AppView.vent.once('playedSW', this.endOfTimer, this);
 		},
 
 		events: {
@@ -69,9 +71,12 @@ var app = app || {};
 						var input = '<div style="text-align:center;"><em>Play in Chrome browser to use speech input.</em></div><input type="text" x-webkit-speech class="form-control" id="enter" name="enter_word" placeholder="Your turn to fib"></>';
 					}
 				} else {
-					var input = '<div style="text-align:center;"><em>Space bar or enter to submit word.</em></div><input type="text" x-webkit-speech class="form-control" id="enter" name="enter_word" placeholder="Your turn to fib"></>';
+					var input = '<div style="text-align:center;"><p>Space bar or enter to submit word.</p></div><input type="text" x-webkit-speech class="form-control" id="enter" name="enter_word" style="font-size:24px;" placeholder="Your turn to fib"></>';
 				}
 				$('#input').html(input);
+				$('#enter').click(function(){
+					$('#enter').css({'backgound-color':'white'});
+				});
 			} else {
 				var text = 'Waiting for next fib'
 				$('#input').html('<input type="text" id="disabledTextInput" class="form-control" placeholder='+ text + ' disabled></>');
@@ -102,8 +107,12 @@ var app = app || {};
 
 		submitWord: function(event){
 			var that = this;
+			var r = this.room;
+			var p = location.hash.slice(10).split('/')[0];
+			var word = this.word;
 			console.log(typeof event == "string");
 			if (typeof event == "string" || event.which == 32 || event.which == 13) {
+
 				if(that.place == 'Live'){
 					if(typeof event == "string"){
 						that.word = event;
@@ -122,11 +131,10 @@ var app = app || {};
 				} else {
 					console.log('game online');
 					that.word = jQuery('#enter').val();
-					that.endOfTimer();
+					app.AppView.vent.trigger('checkWord', that.word, r, p);
+					//that.endOfTimer();
 				}
 			}				
-
-
 		},
 
 		startTimer: function(){
@@ -151,9 +159,9 @@ var app = app || {};
 					clearInterval(counter);
 					console.log('counter ended');
 					if(that.place == 'Live'){
-						that.sendInfo();
+						//that.sendInfo();
 					} else {
-						that.endOfTimer();
+						//that.endOfTimer();
 					}
 
 					return;
@@ -184,7 +192,21 @@ var app = app || {};
 			}
 		},
 
-		endOfTimer: function(){
+		endOfTimer: function(info){
+			console.log(info);
+			var playerID = location.hash.slice(10).split('/')[0];
+			if(info.pid == playerID){
+			console.log(this.word);
+				if(info.game == this.room && info.match == 'yes'){
+					console.log('match found');
+					$('#match').show();
+					$('#match').html('<strong>'+name + ' played ' + info.pointsFor + '\'s secret word ' + info.sWord + '!</strong>');
+					this.points = 10;
+					this.pf = info.pointsFor;
+				} else if(info.game == this.room && info.match == undefined){
+					console.log('no match');
+				}
+			}
 	        var audioElement = document.createElement('audio');
 	        audioElement.setAttribute('src', 'audio/laugh.mp3');
 	        audioElement.setAttribute('autoplay', 'autoplay');
@@ -198,10 +220,15 @@ var app = app || {};
 			$('#input').empty();
 			var counter = setInterval(timer, 1000);
 			var count = 3;
-			var t = jQuery('.st').text(); 
+			if(this.model.story == undefined){
+				var t = '';
+			} else {
+				var t = jQuery('.st').text(); 				
+			}
 			jQuery('.st').hide();
 			jQuery('.st').empty();
-			jQuery('.st').append('<h3 style="color:yellow">' + t +' <strong>' + this.word + '</strong></h3>');
+			console.log(this.word);
+			jQuery('.st').append('<h2 style="color:yellow">' + t +' <strong>' + this.word + '</strong></h2>');
 			jQuery('.st').fadeIn('slow');
 			var that = this;
 			function timer() {
@@ -227,7 +254,16 @@ var app = app || {};
 						place: 'Live',
 						round: 'complete'
 				});
-			} else {
+			} else if(that.model.sWord != undefined){
+				socket.emit('chat', {
+					word: that.word,
+					room: that.room,
+					sWord: that.model.sWord,
+					playerId: location.hash.slice(10).split('/')[0],
+					points: that.points,
+					pointsFor: that.pf
+				});
+			}else {
 				if(that.word != undefined && that.word != ''){
 					socket.emit('chat', {
 						word: that.word,

@@ -27,7 +27,6 @@ var app = app || {};
 		};
 		arr.forEach(removeMe);
 	 	for(var i=0; i<np.length; i++){
-	 		console.log(np[i].name);
 	 		if(i == np.length -1){
 	 			str = str + options.fn(np[i]);
 	 		} else {
@@ -47,6 +46,19 @@ var app = app || {};
 	 		return options.fn(this);
 	 	}
 	}),
+	Handlebars.registerHelper('ifGT', function(gt, options) {
+	 	if(gt == 'rounds' || gt == undefined){
+	 		return options.fn(this);
+	 	} else {
+	 		return options.inverse(this);
+	 	}
+	}),
+
+	Handlebars.registerHelper('ifPoints', function(points, options) {
+	 	if(points != null){
+	 		return options.fn(this);
+	 	}
+	}),
 
 	app.homeView = Backbone.View.extend({
 
@@ -60,38 +72,61 @@ var app = app || {};
 				'</div>'+
 				'<div class="row">'+
 					'<div class="col-xs-12 col-md-12 darkOrange startbtn" id="strategy">'+
-						'<h2>play fibs with strategy</h2>'+
+						'<h1>play fibs with strategy</h1>'+
 					'</div>'+
 					'<div class="col-xs-12 col-md-12 lightOrange startbtn" id="rounds">'+
-						'<h2>play fibs with rounds</h2>'+
+						'<h1>play fibs with rounds</h1>'+
 					'</div>'+
 				'</div>'+
+				
+				'{{#ifPoints points}}'+
+					'<div class="row darkBlue">'+
+						'<h3>TOTAL POINTS: {{points}}'+
+					'</div>'+
+				'{{/ifPoints}}'+
+				
 				'<div class="row">'+
 					'<div class="col-xs-12 col-md-12" style="padding-left: 0px; padding-right: 0px;">' +
-						'<h4 style="text-align:left;">your games</h4>' +
+						'<h3 class="light" style="text-align:left;">your games</h3>' +
 						'<ul id="gamelist">' +
 							'{{#each games}}' +
+							'{{#ifGT gt}}'+
 								'{{#ifIP stage}}' +
 								'{{#ifMyTurn turn controller}}' +
-									'<li id="player_name"><a id="indGame" href="{{url}}"><h3 style="margin-top:0px; margin-bottom:0px;">Fib with {{#insertComma players}}{{name}}{{/insertComma}}</h3></a></li>' +	
+									'<li id="player_name"><a id="indGame" href="{{url}}"><h3><em style="float:left;padding-left:4px;">Rounds</em><h3><h2 style="margin-top:0px; margin-bottom:0px;">Fib with {{#insertComma players}}{{name}}{{/insertComma}}</h2></a></li>' +	
 								'{{/ifMyTurn}}' +
 								'{{/ifIP}}' +
+							'{{else}}'+
+								'{{#ifIP stage}}' +
+								'{{#ifMyTurn turn controller}}' +
+									'<li id="player_name"><a id="indGame" href="{{url}}"><h3><em style="float:left;padding-left:4px;">Strategy</em></h3><h2 style="margin-top:0px; margin-bottom:0px;">Fib with {{#insertComma players}}{{name}}{{/insertComma}}</h2></a></li>' +	
+								'{{/ifMyTurn}}' +
+								'{{/ifIP}}' +
+							'{{/ifGT}}'+
 							'{{/each}}' +
 						'</ul>' +
 						'<ul id="gamelist">' +
 							'{{#each games}}' +
+							'{{#ifGT gt}}'+
 								'{{#ifIP stage}}' +
 								'{{#ifNotTurn turn controller}}' +
-									'<li id="notTurn"><a href="{{url}}"><h3 style="margin-top:0px; margin-bottom:0px;">Waiting for {{#insertComma players}}{{name}}{{/insertComma}}</h3></a></li>' +	
+									'<li id="notTurn"><a href="{{url}}"><h3><em style="float:left;padding-left:4px;">Rounds</em></h3><h2 style="margin-top:0px; margin-bottom:0px;">Waiting for {{#insertComma players}}{{name}}{{/insertComma}}</h2></a></li>' +	
 								'{{/ifNotTurn}}' +
 								'{{/ifIP}}' +
+							'{{else}}'+
+								'{{#ifIP stage}}' +
+								'{{#ifNotTurn turn controller}}' +
+									'<li id="notTurn"><a href="{{url}}"><h3><em style="float:left;padding-left:4px;">Strategy</em></h3><h2 style="margin-top:0px; margin-bottom:0px;">Waiting for {{#insertComma players}}{{name}}{{/insertComma}}</h2></a></li>' +	
+								'{{/ifNotTurn}}' +
+								'{{/ifIP}}' +
+							'{{/ifGT}}'+
 							'{{/each}}' +
 						'</ul>' +
 						'<ul id="gamelist">' +
 							'{{#each games}}' +
 								'{{#ifRE stage}}' +
-									'<h4 style="text-align:left;">game over</h4>' +
-									'<li id="notTurn"><h3 style="margin-top:0px; margin-bottom:0px;">Fib with {{#insertComma players}}{{name}}{{/insertComma}}</h3></li>' +
+									'<h3 class="light" style="text-align:left;">game over</h3>' +
+									'<li id="notTurn"><h2 style="margin-top:0px; margin-bottom:0px;">Fib with {{#insertComma players}}{{name}}{{/insertComma}}</h2></li>' +
 								'{{/ifRE}}' +
 							'{{/each}}' +
 						'</ul>' +

@@ -19,8 +19,10 @@ var playerSchema = new Schema ({
 		url: String,
 		turn: String,
 		stage: String,
-		controller: Boolean
-	}]
+		controller: Boolean,
+		points: Number
+	}],
+	points:Number
 });
 
 module.exports = db.model('Player', playerSchema);

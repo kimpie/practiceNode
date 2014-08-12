@@ -10,6 +10,7 @@ var gameSchema = new Schema({
 	word_turn: String,
 	place: String,
 	gt: String,
+	gt_story: String,
 	word_countdown: Number,
 	ng_request: String,
 	round: [{

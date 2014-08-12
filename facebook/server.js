@@ -81,6 +81,7 @@ app.post('/facebook/players/:playerid/games/:id', api.postGame);
 
 app.post('/facebook/contact', api.postContact);
 app.get('/facebook/players/:playerid/games/:id/round/:rid/cards', api.getCards);
+app.get('/facebook/players/:playerid/games/:id/words', api.getWords);
 
 //app.delete( '/facebook/players/:playerid/games/:id', api.deleteGame); 
 

@@ -41,8 +41,9 @@ var app = app || {};
 	 		} 
 	 	};
 	}),
-	Handlebars.registerHelper('lastW', function(round) {
+	Handlebars.registerHelper('lastW', function(round, gt_story) {
 		console.log(round);
+		console.log(gt_story);
 		var arr;
 		function getStory(element, index, array){
 			if(element.in_progress){
@@ -50,8 +51,23 @@ var app = app || {};
 				arr = element.story.split(' ');
 			}
 		}
-		round.forEach(getStory);
-		return arr[arr.length - 1];
+		if(round.length != 0){
+			round.forEach(getStory);
+			return arr[arr.length - 1];
+		} else if(gt_story == undefined) {
+			return '';		
+		} else {
+			arr = gt_story.split(' ');
+			return arr[arr.length - 1];
+		}
+		
+	}),
+
+	Handlebars.registerHelper('ifPoints', function(points, options) {
+		console.log(points);
+	  if(points != 0) {
+	    return options.fn(this);
+	  } 
 	}),
 
 	app.gameView = Backbone.View.extend({
@@ -59,13 +75,20 @@ var app = app || {};
 		template: Handlebars.compile(
 			'<div class="row top_gv darkBlueTop">' +
 				'<div class="col-md-12" style="margin: 5px 0 5px 0;">'+
+					'{{#each players}}'+
+						'{{#ifPoints points}}'+
+						'{{name}}: {{points}}'+
+						'{{/ifPoints}}'+
+					'{{/each}}'+
+				'</div>' +
+				'<div class="col-md-12" style="margin: 5px 0 5px 0;">'+
 					'{{#ifOnline place}}' +
 						'<div class=" col-xs-12 col-md-3 col-md-offset-2" id="word_countdown">' + 
 							'{{word_countdown}} Words Remaining' +
 						'</div>' +
 					'{{/ifOnline}}' +
 					'<div class="col-xs-12 col-md-7" id="playerList">'+
-						'<ul>'+
+						'<ul style="padding-left:0px;">'+
 						'{{#each players}}' +
 							'<li id="players" class="{{firstName name}}">{{name}}</li>'+
 						'{{/each}}'+
@@ -75,7 +98,7 @@ var app = app || {};
 				'<div class="col-md-12">' +
 				'{{#ifOnline place}}' +
 				'{{#ifwc word_countdown}}'+
-					'<h3>{{lastP players word_turn}} entered "<strong>{{lastW round}}</strong>"<h3>'+
+					'<h2>{{lastP players word_turn}} played "<strong>{{lastW round gt_story}}</strong>"<h2>'+
 				'{{/ifwc}}'+
 				'{{/ifOnline}}' +
 				'</div>' +
@@ -90,13 +113,11 @@ var app = app || {};
 		//this.model.saveRound();
 		this.model.bind("change", this.render, this);
 		this.model.bind("reset", this.render);
-
 	},
 
 	events: {
 		'click #addPlayer' : 'addPlayer'
 	},
-
 
 	addPlayer: function(){
 		console.log('Add Another Player to this Game');

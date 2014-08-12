@@ -84,7 +84,6 @@ var app = app || {};
 			//Find all active games on the Game Collection for the currentUser.
 			var p;
 			function getMatch(id, game){
-				console.log(game);
 				var t;
 				function findCU(element,index,array){
 					if(element.fb_id == Number(id)){
@@ -92,7 +91,6 @@ var app = app || {};
 					}
 				}
 				var gp = game.attributes.players;
-				console.log(gp);
 				gp.forEach(findCU);
 				if(t){
 					p = game;
@@ -100,7 +98,6 @@ var app = app || {};
 				return p;
 			};
 			var activeGames = this.where({active:true});
-			console.log(activeGames);
 			var gcGames = activeGames.map(
 				function(game){
 					return{
@@ -108,10 +105,8 @@ var app = app || {};
 					}
 				}   
 			 );
-			console.log(gcGames);
 			//pcGames represent all the games saved to the Player Model.
 			var pcGames = pcGames;
-			console.log(pcGames);
 
 			//Defining functions needed for code below....
 
@@ -120,24 +115,17 @@ var app = app || {};
 			 
 			    var list = [];
 			    function getId(element, index, arr){
-			    	console.log(element);
-			    	console.log(element.game);
-			    	console.log(element.game != undefined);
 			    	if(element.game){
 			    		if(element.game != undefined){
-							console.log('inside game');
 				    		var k = element.game.id;
 							list.push(k);
 				    	}
 			    	} else if(element.id){
-			    		console.log('inside non game');
 			    		var k = element.id;
 						list.push(k);
 			    	}
-			    	console.log(list);
 			    };
 			    arr.forEach(getId);
-				console.log(list);
 				 var i,
 				      len=list.length,
 				      out=[],
@@ -148,16 +136,12 @@ var app = app || {};
 				  for (i in obj) {
 				    out.push(i);
 				  }
-			  	console.log(out);
 				return out;
 			};
 
 			//PCID & GCID are arrays of game id's only.
 			var gcid = eliminateDuplicates(gcGames);
 			var pcid = eliminateDuplicates(pcGames);
-			console.log(gcid);
-			console.log(pcid);
-			console.log(gcid.length == pcid.length);
 
 			//Compare to see if array lengths are equal
 			if (gcid.length == pcid.length){
@@ -173,7 +157,6 @@ var app = app || {};
 			       var k = element;
 			       for(var i=0;i<array1.length; i++){
 			            if (k == array2[i]){
-			                console.log(k + ' equal to ' + array2[i]);
 			                match.push(array2[i]);
 			                var index = array1.indexOf(array2[i]);
 			                tbr.push(index);
@@ -182,7 +165,6 @@ var app = app || {};
 			    };
 			    
 			    function findMissing(element, index, array){
-			        console.log('tbr is' + tbr);
 			        var t = element;
 			            array1.splice(t, 1);
 			        //};
@@ -217,7 +199,6 @@ var app = app || {};
 					var array2 = pcid;
 					var array1 = gcid;
 				}
-				console.log('The array missing a game is ' + mgc);
 				//Returns the missing id's that aren't in the mgc(missing game collection).
 				//array1 will always be the array with more elements, array2 will always be 
 				//less and is therefore the collection missing an id.

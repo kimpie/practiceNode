@@ -4,10 +4,11 @@
 /* Small devices (tablets, 768px and up) */ 
 @media (min-width: 768px) and (max-width: 992px) { 
 	body{
-		background-image: url("http://i.imgur.com/SSzCTRh.png");
-		background-repeat:repeat-x;
+		background-image: url("https://i.imgur.com/XJzSaWE.png");
+		background-repeat:repeat-y;
 		background-position:center;
 	}
+
 	#ng_words{
 		display: block;
 	}
@@ -28,8 +29,8 @@
 /* Medium devices (desktops, 992px and up) */
 @media (min-width: 992px) and (max-width: 1200px) { 
 	body{
-		background-image: url("http://i.imgur.com/SSzCTRh.png");
-		background-repeat:repeat-x;
+		background-image: url("https://i.imgur.com/XJzSaWE.png");
+		background-repeat:repeat-y;
 		background-position:center;
 	}
 
@@ -60,8 +61,8 @@
 /* Large devices (large desktops, 1200px and up) */ 
 @media (min-width: 1200px) { 
 	body{
-		background-image: url("http://i.imgur.com/SSzCTRh.png");
-		background-repeat:repeat-x;
+		background-image: url("https://i.imgur.com/XJzSaWE.png");
+		background-repeat:repeat-y;
 		background-position:center;
 	}
 	#ng_words{
@@ -91,6 +92,31 @@
 body{
 	min-width: 100%;
     overflow-x: hidden;
+    font-family: 'Open Sans Condensed', sans-serif;
+    -webkit-animation-delay: 0.1s;
+    -webkit-animation-name: fontfix;
+    -webkit-animation-duration: 0.1s;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: linear;
+}
+
+@-webkit-keyframes fontfix {
+    from { opacity: 1; }
+    to   { opacity: 1; }
+}
+
+a {
+	text-decoration:none;
+}
+
+.light{
+	text-align:justify;
+	color: #737373;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Open Sans Condensed', sans-serif;
+}
+p, div {
     font-family: 'Open Sans Condensed', sans-serif;
 }
 
@@ -412,14 +438,15 @@ input.transparent-input{
 	display: inline;
 	margin: 7px;
 	list-style: none;
+	font-size: 20px;
+}
+
+#word_countdown{
+	font-size: 20px;
 }
 
 #addPlayer{
 	cursor: pointer;
-}
-
-.top_gv{
-	text-align: center;
 }
 
 .qtitle, .select{
@@ -603,11 +630,15 @@ a#indGame {
 	cursor: pointer;
 }
 
+ul#playerList{
+	list-style-type: none;
+}
+
 li#player_name:nth-child(even){
 	cursor: pointer;
 	list-style-type: none;
 	text-align: center;
-	padding: 10px 0 10px 0;
+	padding: 1px 0 10px 0;
 	background-color: #53F1F1;
 	color: #0447F1;
 	border-radius: 10px;
@@ -618,7 +649,7 @@ li#player_name:nth-child(odd){
 	cursor: pointer;
 	list-style-type: none;
 	text-align: center;
-	padding: 10px 0 10px 0;
+	padding: 1px 0 10px 0;
 	background-color: #658DF3;
 	color: white;
 	border-radius: 10px;
@@ -716,7 +747,7 @@ div#inputbox {
 	height: 30%;
 }
 
-#menu{
+span#menu{
 	cursor: pointer;
 	margin: 0 0 10px 0;
 }

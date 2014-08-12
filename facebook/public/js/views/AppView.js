@@ -14,7 +14,9 @@ var app = app || {};
 			this.gameCollection = new app.Games();
 			this.cc = new app.Contact();
 			this.cardCollection = new app.Card();
+			this.wordCollection = new app.Words();
 			this.cardCollection.fetch({reset:true});
+			this.wordCollection.fetch({reset:true});
 
 			this.listenTo(app.AppRouter, 'inGame', this.play);
 			this.listenTo(app.AppRouter, 'contact', this.contact);
@@ -40,6 +42,8 @@ var app = app || {};
 			app.AppView.vent.on('ty', this.ty, this);
 			app.AppView.vent.on('tvDone', this.loginPlayer, this);
 			app.AppView.vent.on('sendContact', this.sc, this);
+			app.AppView.vent.on('showWord', this.loadSW, this);
+			app.AppView.vent.on('checkWord', this.checkW, this);
 
 			var socket = io.connect('https://completethesentence.com/', {secure: true , resource:'facebook/socket.io'});
 
@@ -62,9 +66,59 @@ var app = app || {};
 			"click #about": "about"
 		},
 
+		checkW: function(word, gid, pid){
+			console.log(word + ' ' + gid + ' ' +pid);
+			var playerID = location.hash.slice(10).split('/')[0];
+			var game = this.gameCollection.findWhere({_id: gid});
+			var player = this.collection.findWhere({_id: pid});
+			var word = word;
+			var info = {
+				game: game.id,
+				pid: pid
+			};
+			var m = false;
+			function findSW(element,index,array){
+				if(element.name != name && element.sWord == word){
+					console.log(name + ' played '  + element.name + '\'s secret word ' + word + '!');
+					var match = 'yes';
+					Object.defineProperty(info, "match", {value : 'yes',
+                         writable : true,
+                         enumerable : true,
+                         configurable : true});
+					Object.defineProperty(info, "sWord", {value : element.sWord,
+                         writable : true,
+                         enumerable : true,
+                         configurable : true});
+					Object.defineProperty(info, "pointsFor", {value : element.name,
+                         writable : true,
+                         enumerable : true,
+                         configurable : true});
+					Object.defineProperty(info, "playedBy", {value : name,
+                         writable : true,
+                         enumerable : true,
+                         configurable : true});
+				} else {
+					console.log('no match');
+				}
+				if(index == array.length-1){
+					console.log('last item index ' + index);
+				    m = true;
+				}
+			}
+			var gp = game.attributes.players;
+			if(pid == playerID){
+				gp.forEach(findSW);
+			}
+			if(m){
+				console.log('trigger playedSW');
+				app.AppView.vent.trigger('playedSW', info);
+			}
+
+		},
+
 		startnav: function(){
 			console.log('start triggered');
-			$('.h').append('<a class="navbar-brand logoFont" id="home" style="float:none; color:black; font-size:25;">fibs</a>');
+			$('.h').append('<a class="logoFont" id="home" style="float:none; color:black; font-size:25; text-decoration:none;">fibs</a>');
 			$('.m').append('<span class="glyphicon glyphicon-th-large" id="menu" style="margin:25px 10px 0 10px;"></span>');
 			$('#home').bind('touchstart', function(){
 				console.log('touch home');
@@ -120,9 +174,9 @@ var app = app || {};
 			this.gameCollection.startGameProcess(response, info);
 		},
 
-		up: function(playerID, game, round){
-			var player = this.collection.findWhere({fb_id: playerID});
-			player.updateTurn(game, round);
+		up: function(info){
+			var player = this.collection.findWhere({fb_id: info.playerID});
+			player.updateTurn(info);
 		},
 
 		contact: function(){
@@ -180,6 +234,7 @@ var app = app || {};
 		play: function(game){
 			console.log('play triggered from AppView with game: ');
 			console.log(game);
+			console.log(typeof game);
 			var that = this;
 			var player = this.collection.findWhere({fb_id: Number(currentUser)});
 			if(typeof game == "string"){
@@ -196,9 +251,9 @@ var app = app || {};
 			console.log('insdie AppView play, in stage ' + p_stage);
 			var secret;
 			function getSW(element, index, array){
-				if(element.name == name && secret != undefined){
+				if(element.name == name && element.sWord != undefined){
 					secret = element.sWord;
-				} else if(element.name == name && secret == undefined){
+				} else if(element.name == name && element.sWord == undefined){
 					secret = undefined;
 				}
 				that.strategy(game_model, secret);
@@ -208,6 +263,9 @@ var app = app || {};
 				console.log('strategy game started');
 				var gp = game_model.attributes.players;
 				gp.forEach(getSW);
+				if(p_stage == 'review'){
+					this.gameReview(game_model);
+				}
 			} else if(p_stage == 'review'){
 				var x = level_complete.length;
 				var level = level_complete[x-1]; 
@@ -248,46 +306,29 @@ var app = app || {};
 			}
 		},
 
-		loadSW: function(game){
+		loadSW: function(word){
 			var that = this;
-			var k, count = 0;
-			function showWord(word){
-				console.log(word);
-				that.play.html('<h4>Your secret word is:<br></h4><h3><strong>' + word + '<strong></h3><button type="button" class="btn btn-danger" id="pass">PASS</button><br><div class="row lightOrange" id="sWordOK"><h2>got it</h2></div>');
-				$('#pass').click(function(){
-					RandomWord();
-					count + 1;
-					console.log(count);
-				});
-				$('#sWordOK').click(function(){
-					that.strategy(game, word);
-				});
-			}
-			function RandomWord() {
-				console.log('inside RandomWord fn');
-		       var requestStr = "http://randomword.setgetgo.com/get.php";
-		       $.ajax({
-		           type: "GET",
-		           url: requestStr,
-		           dataType: "jsonp",
-		           //jsonpCallback: 'RandomWordComplete',
-                   success:function(result){
-		                console.log(result);
-		                k = result.Word.split('/')[0];
-		                showWord(k);
-		            }
-		       });
-		    };
-			RandomWord();
+			this.board.hide();
+			this.card.hide();
+			that.play.html('<div class="row"><div class="col-md-10 col-md-offset-1 lightOrange" id="sWordOK"><h2>play</h2></div><div class="col-md-10 col-md-offset-1"><h2>Your secret word is:<br></h2><h1><strong>' + word + '<strong></h1><button type="button" class="btn btn-danger btn-lg" id="pass">PASS</button></div></div>');
+			$('#pass').click(function(){
+				app.AppView.vent.trigger('getWord');
+				$('#pass').attr('disabled', 'disabled');
+			});
+			$('#sWordOK').click(function(){
+				var g = location.hash.split('/')[4];
+				var game = that.gameCollection.findWhere({_id: g});
+				that.strategy(game, word);
+			});
 		},
 
 		strategy: function(game, secret){
 			if(secret == undefined){
-				this.loadSW(game);
+				app.AppView.vent.trigger('getWord');
 			} else {
 				console.log(game);
 				console.log(secret);
-
+				this.board.show();
 				var gameview = new app.gameView({model: game});
 				this.play.html(gameview.render().el);
 				var r = {
@@ -447,7 +488,7 @@ var app = app || {};
 		sendGD: function (info){
 			console.log(info);
 			if(info.room == location.hash.split('/')[4]){
-				if(info.playerId != undefined){
+				if(info.playerId != undefined && info.sWord == undefined){
 					if (info.close){
 						var temp = 'no';
 					} else {
@@ -455,8 +496,13 @@ var app = app || {};
 					}
 					var room = info.room;
 					var gm = this.gameCollection.findWhere({_id: room});
-					gm.saveData(info, {url: location.hash.slice(0, -6)});
-				} else {
+					gm.saveData(info);
+
+				} else if(info.playerId != undefined && info.sWord != undefined){
+					var room = info.room;
+					var gm = this.gameCollection.findWhere({_id: room});
+					gm.saveData(info);
+				}else {
 					var room = location.hash.split('/')[4];
 					var round = location.hash.split('/')[6];
 					var info = {
@@ -528,13 +574,13 @@ var app = app || {};
 				app.AppRouter.navigate('#/players/' + player.id + '/games');
 			};
 			if(type == 'rounds'){
-				this.play.html('<h2 style="color:#FFA358;">fibs with rounds</h2><br><h3>made up of 3 rounds</h3><br><h4>To start a round one player picks a card.  The cards have one rule & topic for that round.<br>Enter any word you want as long as it follows the rule and topic on your card.  Play continues with each player adding one word at a time.  Sentence and round end when 10 words are played.  Game ends after the third round.</h4><div class="row lightOrange" id="ready"><h2>got it</h2></div>');
+				this.play.html('<div class="light"><h1 style="color:#FFA358;">fibs with rounds</h1><h2>made up of 3 rounds</h2><br><h3>The round begins when one player picks a card.  Each card has a rule &amp; topic .  Enter any word you want as long as it follows the rule and topic on your card. <br><br> Play continues with each player adding one word at a time, until 10 words are played.  Game ends after the third round.</h3></div><div class="row lightOrange" id="ready" style="margin-top:30px;"><h2>got it</h2></div>');
 				$('#ready').click(function(){
 					console.log('opensesame trigger');
 					opensesame();
 				});
 			} else if(type == 'strategy'){
-				this.play.html('<h2 style="color:#FFA358;">fibs with strategy</h2><br><h3>a one sentence game</h3><br><h4>Each player is given a different secret word.  The aim of the game is to steer the sentence so that the other player enters your secret word before the sentence ends. When 10 words have been played the sentence and game end. If you get the other player to enter your word you win points. If you don\'t like your secret word, you\'re allowed one pass.</h4><div class="row lightOrange" id="ready"><h2>coming soon</h2></div>');
+				this.play.html('<div class="light"><h1 style="color:#FFA358;">fibs with strategy</h1><h2>a one sentence game</h2><br><h3>Each player is given a secret word.  The aim of the game is to get the other player to enter your secret word. When 10 words have been played the game is over.<br><br> If you get the other player to enter your word you win points. If you don\'t like your secret word, you\'re allowed to pass.</h3></div><div class="row deselectedlO" id="ready" style="margin-top:30px;"><h2>coming soon</h2></div>');
 				/*$('#ready').click(function(){
 					console.log('opensesame trigger');
 					opensesame();

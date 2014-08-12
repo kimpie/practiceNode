@@ -26,9 +26,6 @@ var app = app || {};
 			//iterate through the rounds, if level_one position 1 url is x 
 
 			_.bindAll(this, 'rotateTurn', 'saveData', 'getRound', 'checkRounds', 'addRounds', 'saveRound', 'setData', 'url');
-			console.log('gameModel received options:');
-			console.log(options);
-			console.log('and options id is: ' + options._id);
 
 			if (options != undefined){
 				if(location.hash.indexOf('games') !== -1){
@@ -251,7 +248,13 @@ var app = app || {};
 			var that = this,
 				rIndex = Number(info.level) - 1,
 				roundx = this.attributes.round[rIndex],
-				gp = this.attributes.players, w_c;
+				gp = this.attributes.players, w_c, itsMe;
+			function findMe(element,index,array){
+				if(element.name == name){
+					itsMe = element;
+				}
+			};
+			gp.forEach(findMe);
 			console.log(info.word_countdown);
 			if(info.word_countdown != undefined){
 				w_c = info.word_countdown;
@@ -350,101 +353,150 @@ var app = app || {};
 					}
 				} else {
 					console.log('game is online and w_c is ' + w_c);
+					var that = this;
 					if(w_c > 1){
-						console.log('w_c > 1');
-						var pStage = this.checkStage();
-						console.log('player stage is ' + pStage);
-						if(pStage == 'review'){
-							console.log('calling attrConstant fn');
-							//new round has started and player is now joinging it
-							var stage = 'in_progress';
-							attrConstant();
-						} else {
-							var wc = w_c - 1,
-								stage = 'in_progress',
-								rev = false, 
-								ip = true,
-								rturn = this.attributes.round_turn,
+						if(this.attributes.gt == 'strategy'){
+							if(this.attributes.gt_story == undefined){
+								var gts = info.word;
+							} else if(this.attributes.gt_story != undefined){
+								var gts = that.attributes.gt_story + ' ' + info.word;
+							}
+							var wc = w_c -1,
+								sw = info.sWord,
+								gt_story = gts,
 								wturn = this.rotateTurn({round_turn: false}),
-								z;
-							//On first save, save the card info, all other times refer back to round card.
-							if(wc == 9){
-								if(info.word != undefined && info.word != ''){
-									var story = info.word;
-								} else {
-									var story = '';
+								stage = 'in_progress';
+						} else {
+							console.log('w_c > 1');
+							var pStage = this.checkStage();
+							console.log('player stage is ' + pStage);
+							if(pStage == 'review'){
+								console.log('calling attrConstant fn');
+								//new round has started and player is now joinging it
+								var stage = 'in_progress';
+								attrConstant();
+							} else {
+								var wc = w_c - 1,
+									stage = 'in_progress',
+									rev = false, 
+									ip = true,
+									rturn = this.attributes.round_turn,
+									wturn = this.rotateTurn({round_turn: false}),
+									z;
+								//On first save, save the card info, all other times refer back to round card.
+								if(wc == 9){
+									if(info.word != undefined && info.word != ''){
+										var story = info.word;
+									} else {
+										var story = '';
+									}
+									if (round_cards != undefined){
+										var rd = info.level;
+										function cid(element, index, array){
+										    console.log(element);
+										    if(rd == element.round){
+											    z = element.card;
+										    }
+										};
+										round_cards.forEach(cid);
+									}
+								}else {
+									//Not first save, add the word to the story and save existing card.
+									//make sure a word was entered.
+									if(info.word != undefined && info.word != ''){
+										var story = this.attributes.round[rIndex].story + ' ' + info.word;
+									} else {
+										var story = this.attributes.round[rIndex].story;
+									}
+									z = this.attributes.round[rIndex].card;
 								}
-								if (round_cards != undefined){
-									var rd = info.level;
-									function cid(element, index, array){
-									    console.log(element);
-									    if(rd == element.round){
-										    z = element.card;
-									    }
-									};
-									round_cards.forEach(cid);
-								}
-							}else {
-								//Not first save, add the word to the story and save existing card.
-								//make sure a word was entered.
-								if(info.word != undefined && info.word != ''){
-									var story = this.attributes.round[rIndex].story + ' ' + info.word;
-								} else {
-									var story = this.attributes.round[rIndex].story;
-								}
-								z = this.attributes.round[rIndex].card;
 							}
 						}
+
 					} else if(w_c == 1) {  
 						console.log('w_c == 1');
-						//word_countdown will now be 0; Setup for roundReview
-						var wc = w_c - 1;
-						setupReview();
-						z = that.attributes.round[rIndex].card;
-						if(info.word != undefined && info.word != ''){
-							var story = this.attributes.round[rIndex].story + ' ' + info.word;
+						if(this.attributes.gt == 'strategy'){
+							if(this.attributes.gt_story == undefined){
+								var gts = info.word;
+							} else if(this.attributes.gt_story != undefined){
+								var gts = that.attributes.gt_story + ' ' + info.word;
+							}
+							var wc = w_c -1,
+								gt_story = gts,
+								wturn = this.rotateTurn({round_turn: false}),
+								sw = info.sWord,
+								stage = 'review';
 						} else {
-							var story = this.attributes.round[rIndex].story;
+							//word_countdown will now be 0; Setup for roundReview
+							var wc = w_c - 1;
+							setupReview();
+							z = that.attributes.round[rIndex].card;
+							if(info.word != undefined && info.word != ''){
+								var story = this.attributes.round[rIndex].story + ' ' + info.word;
+							} else {
+								var story = this.attributes.round[rIndex].story;
+							}
 						}
 
 					}else if(w_c == 0){
 						console.log('w_c == 0');
 						if (info.close != undefined){//done with round review
-							if(rIndex !== 2 && !this.attributes.round[rIndex + 1].in_progress && this.attributes.round_turn == name){
-								console.log('setting review to false, setting up new round');
-								setupNew();
+							if(this.attributes.gt == 'strategy'){
+							if(this.attributes.gt_story == undefined){
+								var gts = info.word;
+							} else if(this.attributes.gt_story != undefined){
+								var gts = that.attributes.gt_story + ' ' + info.word;
+							}
+								var wc = w_c -1,
+									gt_story = gts,
+									sw = info.sWord,
+									wturn = this.rotateTurn({round_turn: false}),
+									stage = 'complete';
 							} else {
-								console.log(rIndex);
-								if(rIndex == 2){
-									var stage = 'complete';
+								if(rIndex !== 2 && !this.attributes.round[rIndex + 1].in_progress && this.attributes.round_turn == name){
+									console.log('setting review to false, setting up new round');
+									setupNew();
 								} else {
-									console.log('keeping everything the same, setting stage to in_progress');
-									var stage = 'in_progress';
-									attrConstant();
+									console.log(rIndex);
+									if(rIndex == 2){
+										var stage = 'complete';
+									} else {
+										console.log('keeping everything the same, setting stage to in_progress');
+										var stage = 'in_progress';
+										attrConstant();
+									}
 								}
 							}
 						}
 					}//end of w_c conditional
 				}
 				console.log(z);
-				Object.defineProperty(roundx, "card", {value : z,
-	                               writable : true,
-	                               enumerable : true,
-	                               configurable : true});
+				if(typeof roundx == 'object'){
+					Object.defineProperty(roundx, "card", {value : z,
+			                           writable : true,
+			                           enumerable : true,
+			                           configurable : true});
 
-				Object.defineProperty(roundx, "story", {value : story,
-	                               writable : true,
-	                               enumerable : true,
-	                               configurable : true});
-				Object.defineProperty(roundx, "in_progress", {value : ip,
-	                               writable : true,
-	                               enumerable : true,
-	                               configurable : true});
-				Object.defineProperty(roundx, "review", {value : rev,
+					Object.defineProperty(roundx, "story", {value : story,
 		                               writable : true,
 		                               enumerable : true,
 		                               configurable : true});
+					Object.defineProperty(roundx, "in_progress", {value : ip,
+		                               writable : true,
+		                               enumerable : true,
+		                               configurable : true});
+					Object.defineProperty(roundx, "review", {value : rev,
+			                               writable : true,
+			                               enumerable : true,
+			                               configurable : true});	
+				}
 
+				if(info.sWord){
+					Object.defineProperty(itsMe, "sWord", {value : sw,
+                       writable : true,
+                       enumerable : true,
+                       configurable : true});
+				}
 				console.log(roundx);
 				console.log('word_countdown is ' + wc);
 			}
@@ -473,7 +525,8 @@ var app = app || {};
 			return{
 				word_countdown: wc,
 				word_turn: wturn,
-				round_turn: rturn
+				round_turn: rturn,
+				gt_story: gt_story
 			}
 		},
 
@@ -514,7 +567,13 @@ var app = app || {};
 						function update(element, index, array){
 							var pIndex = index;
 							var playerID = element.fb_id;
-						    app.AppView.vent.trigger('updateP', playerID, game, pIndex);
+							var info = {
+								playerID: playerID,
+								pIndex: pIndex,
+								game: game, 
+								points: element.points
+							};
+						    app.AppView.vent.trigger('updateP', info);
 						};
 						gp.forEach(update);
 					}

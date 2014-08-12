@@ -29,11 +29,13 @@
 	<script type="text/javascript" src="js/models/playerModel.js"></script>
 	<script type="text/javascript" src="js/models/contactModel.js"></script>
 	<script type="text/javascript" src="js/models/gameModel.js"></script>
+	<script type="text/javascript" src="js/models/wordModel.js"></script>
 	<script type="text/javascript" src="js/models/cardModel.js"></script>
 	<script type="text/javascript" src="js/collections/players.js"></script>
 	<script type="text/javascript" src="js/collections/Games.js"></script>
 	<script type="text/javascript" src="js/collections/contactCollection.js"></script>
 	<script type="text/javascript" src="js/collections/cardCollection.js"></script>
+	<script type="text/javascript" src="js/collections/Words.js"></script>
 	<script type="text/javascript" src="js/views/PlayersView.js"></script>
 	<script type="text/javascript" src="js/views/gameView.js"></script>
 	<script type="text/javascript" src="js/views/homeView.js"></script>
@@ -74,15 +76,15 @@
 		});
 	</script>
 </head>
-<body ontouchstart="" onmouseover="" style="font-family: 'Open Sans Condensed', sans-serif;">
+<body ontouchstart="" onmouseover="">
 	<div id="fb-root"></div>
 
 	<div class="container-fluid" id="app">
 		<div id="loading">Loading...</div>
 		<div class="row" id="topnav">
-			<div class="col-xs-3 col-md-2 col-md-offset-5 h" style="padding-top:25px;" ontouchstart="" onmouseover="">
+			<div class="col-xs-3 col-md-2 col-md-offset-5 h" style="padding-top:25px;">
 			</div>
-			<div class="col-xs-1 col-xs-offset-3 col-md-1 col-md-offset-1 m" ontouchstart="" onmouseover="">
+			<div class="col-xs-1 col-xs-offset-3 col-md-1 col-md-offset-1 m">
 			</div>
 			<div class="col-md-1" style="margin-top: 24px;">
 			<div class="fb-like" data-href="https://apps.facebook.com/playfibs/" data-layout="button" data-action="like" data-show-faces="false" data-share="false"></div>
@@ -98,10 +100,10 @@
 					<fb:login-button width="200" max-rows="1" id="login"></fb:login-button>
 				</div>
 			</div>
-			<div class="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 loggedin" id="play">
+			<div class="col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 loggedin" id="play">
 			</div>
-			<div class="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3" id="board"></div>
-			<div class="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3" id="card"></div>
+			<div class="col-xs-10 col-xs-offset-1  col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3" id="board"></div>
+			<div class="col-xs-10 col-xs-offset-1  col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3" id="card"></div>
 		</div>	
 
 	</div>
